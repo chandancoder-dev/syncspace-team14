@@ -2,7 +2,6 @@
 
 > A real-time collaborative workspace where multiple users can simultaneously draw diagrams and write code with conflict-free synchronization.
 
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-19-blue)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-green)
 ![Socket.io](https://img.shields.io/badge/Socket.io-RealTime-black)
@@ -10,125 +9,115 @@
 
 ---
 
-# 📌 Project Overview
+## 📌 Project Overview
 
-**SyncSpace** is a real-time collaborative whiteboard and code editor designed for distributed engineering teams, technical interviews, online classrooms, and pair programming.
+**SyncSpace** is a real-time collaborative whiteboard and code editor designed for distributed engineering teams, technical interviews, online classrooms, pair programming, and collaborative software development.
 
-Unlike traditional web applications that rely on the request-response model, SyncSpace enables multiple users to simultaneously edit code and draw on a shared canvas using **WebSockets** and **Conflict-free Replicated Data Types (CRDTs)**.
-
-The application ensures seamless collaboration with minimal latency while preventing conflicts during concurrent edits.
+Unlike traditional request-response web applications, SyncSpace enables multiple users to edit code and draw simultaneously using **WebSockets** and **Conflict-free Replicated Data Types (CRDTs)**, ensuring low-latency and conflict-free collaboration.
 
 ---
 
-# 🎯 Problem Statement
+## 🌐 Domain
 
-Standard web applications operate on a request/response model.
+**Developer Tools & Real-Time Collaboration**
 
-Building a system where multiple users can simultaneously draw on a shared whiteboard or edit code without race conditions, lag, or overwriting each other's work requires advanced synchronization techniques.
+---
 
-SyncSpace solves this problem using:
+## 🎯 Problem Statement
 
-- WebSockets (Socket.io)
-- Conflict-free Replicated Data Types (Yjs)
+Building applications where multiple users simultaneously edit shared documents or drawings requires advanced synchronization algorithms beyond traditional MERN applications.
+
+SyncSpace addresses this challenge using:
+
+- Socket.io (Real-Time Communication)
+- Yjs (Conflict-free Replicated Data Types)
 - Monaco Editor
-- Konva.js Canvas
+- Konva.js
 
 ---
 
-# 💡 Use Case
+## 💡 Use Case
 
-A distributed engineering team is conducting a technical interview.
+A distributed engineering team conducts a technical interview.
 
-- Candidate A draws a system architecture on the whiteboard.
-- Interviewer B writes Node.js code simultaneously.
-- Both users see each other's changes instantly.
-- If both edit the same line at the same time, Yjs merges the changes without conflicts.
+- Candidate A draws a system architecture.
+- Interviewer B writes Node.js code.
+- Both users view updates instantly.
+- Concurrent edits are automatically merged using Yjs without conflicts.
 
 ---
 
-# ✨ Features
+## 🏗 Key Modules
 
-## 🖊 Real-Time Whiteboard
+### 🔄 Real-Time Sync Engine
+- Express.js
+- Socket.io
+- Room Management
+- WebSocket Communication
 
+### 🧠 CRDT Engine
+- Yjs
+- Shared Document Synchronization
+- Cursor Awareness
+- Conflict Resolution
+
+### 🖊 Interactive Whiteboard
+- React
+- Konva.js
+- Drawing Tools
+- Shape Rendering
+
+### 💻 Collaborative Code Editor
+- Monaco Editor
+- Shared Text Model
+- Real-Time Code Synchronization
+
+---
+
+## ✨ Features
+
+### 🖊 Whiteboard
 - Freehand Drawing
-- Rectangle Tool
-- Circle Tool
-- Line Tool
+- Shapes (Rectangle, Circle, Line)
 - Text Tool
 - Eraser
 - Undo / Redo
 - Zoom & Pan
 
----
-
-## 💻 Collaborative Code Editor
-
-- Monaco Editor (VS Code)
+### 💻 Code Editor
+- Monaco Editor
 - Multi-user Editing
 - Syntax Highlighting
-- Auto Save
 - Shared Cursor
 - Shared Selection
+- Auto Save
 
----
-
-## 🌐 Real-Time Collaboration
-
+### 🌐 Collaboration
+- Room-based Collaboration
 - Live Cursor Tracking
 - User Presence
-- Room-based Collaboration
 - Instant Synchronization
-- WebSocket Communication
 
----
-
-## 🔐 Authentication
-
+### 🔐 Security
 - JWT Authentication
 - Protected Routes
 - Workspace Access Control
 
----
-
-## 💾 Persistence
-
-- MongoDB
-- Session Recovery
-- Automatic Document Saving
 
 ---
 
-## 📂 Assets
+## 🛠 Tech Stack
 
-- Upload Files
-- Download Files
-- Shared Workspace
-
----
-
-## ⏪ Replay
-
-- Timeline Replay
-- Session History
-- Drawing Playback
-
----
-
-# 🛠 Tech Stack
-
-## Frontend
-
+### Frontend
 - React
 - Vite
 - React Router
 - Konva.js
 - Monaco Editor
 - Yjs
-- Zustand
 - Socket.io Client
 
-## Backend
-
+### Backend
 - Node.js
 - Express.js
 - Socket.io
@@ -139,152 +128,67 @@ A distributed engineering team is conducting a technical interview.
 
 ---
 
-# 📁 Project Structure
+
+## 📁 Project Structure
 
 ```text
 syncspace-team14/
-
 ├── client/
-│
 ├── server/
-│
 ├── docs/
-│
 ├── .github/
-│
-├── README.md
 ├── .gitignore
-└── docker-compose.yml
+└── README.md
 ```
 
 ---
 
-# 📂 Frontend Structure
+## ⚙️ Installation
 
-```text
-client/
-
-src/
-
-├── assets/
-
-├── components/
-│   ├── common/
-│   ├── sidebar/
-│   ├── navbar/
-│   ├── toolbar/
-│   ├── whiteboard/
-│   ├── editor/
-│   └── assets/
-
-├── pages/
-│   ├── Login/
-│   ├── Dashboard/
-│   ├── Workspace/
-│   ├── Whiteboard/
-│   ├── CodeEditor/
-│   ├── Team/
-│   └── Settings/
-
-├── layouts/
-
-├── routes/
-
-├── context/
-
-├── hooks/
-
-├── services/
-
-├── utils/
-
-├── styles/
-
-├── App.jsx
-
-└── main.jsx
-```
-
----
-
-# 📂 Backend Structure
-
-```text
-server/
-
-src/
-
-├── config/
-
-├── controllers/
-
-├── middleware/
-
-├── models/
-
-├── routes/
-
-├── sockets/
-
-├── yjs/
-
-├── services/
-
-├── utils/
-
-├── app.js
-
-└── server.js
-```
-
----
-
-# ⚙️ Installation
-
-## Clone Repository
+### Clone Repository
 
 ```bash
 git clone https://github.com/chandancoder-dev/syncspace-team14.git
-
 cd syncspace-team14
 ```
 
----
-
-## Frontend
+### Frontend
 
 ```bash
 cd client
-
 npm install
-
 npm run dev
 ```
 
----
-
-## Backend
+### Backend
 
 ```bash
 cd server
-
 npm install
-
 npm run dev
 ```
 
 ---
 
-# 👥 Team
+## 🌿 Git Workflow
 
-Project developed as part of the Internship Program.
+- Create a feature branch for each task.
+- Commit changes with meaningful commit messages.
+- Open a Pull Request before merging.
+- Keep `main` stable.
+
+---
+
+## 👥 Team
 
 **Project:** SyncSpace
 
 **Domain:** Developer Tools & Real-Time Collaboration
 
+Developed as part of the Internship Program.
+
 ---
 
-# 📄 License
+## 📄 License
 
-This project is developed for educational purposes during the internship program.# SyncSpace
+This project is developed for educational purposes as part of the internship program.
