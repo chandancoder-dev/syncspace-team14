@@ -6,6 +6,7 @@ import "./styles/variables.css"
 import "./styles/global.css"
 import "./styles/navbar.css"
 import "./styles/button.css"
+import "./styles/login.css"
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <App />
