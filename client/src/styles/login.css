@@ -13,6 +13,7 @@
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    animation: fadeIn 0.8s ease;
 }
 
 .login-card h1 {
@@ -62,7 +63,6 @@
 .login-card button:hover {
     background: #1d4ed8;
     transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
 }
 .forgot-password {
     text-align: right;
@@ -106,4 +106,9 @@
 .show-password input{
     width:auto;
     margin:0;
+}
+.login-card input:focus {
+    outline: none;
+    border: 1px solid #3b82f6;
+    box-shadow: 0 0 8px rgba(59,130,246,0.4);
 }
