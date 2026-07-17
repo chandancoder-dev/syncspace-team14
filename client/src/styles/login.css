@@ -40,6 +40,12 @@
 .login-card input::placeholder {
     color: #94a3b8;
 }
+.login-card input:focus {
+    outline: none;
+    border: 1px solid #2563eb;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+    transition: all 0.3s ease;
+}
 
 .login-card button {
     width: 100%;
@@ -50,10 +56,13 @@
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .login-card button:hover {
     background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
 }
 .forgot-password {
     text-align: right;
