@@ -53,7 +53,7 @@ function Dashboard() {
                 Dashboard
               </p>
               <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                Welcome back, team.
+                Welcome back, Pratiksha...
               </h2>
               <p className="text-sm leading-6 text-slate-400 sm:text-base">
                 Create rooms, track members, and jump into active collaboration
