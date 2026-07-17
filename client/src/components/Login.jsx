@@ -10,7 +10,15 @@ function Login() {
         <input type="email" placeholder="Email" />
         <input type="password" placeholder="Password" />
 
+        <div className="forgot-password">
+          <a href="#">Forgot Password?</a>
+        </div>
+
         <button>Login</button>
+
+        <p className="register-text">
+          Don't have an account? <a href="#">Register</a>
+        </p>
       </div>
     </div>
   );
