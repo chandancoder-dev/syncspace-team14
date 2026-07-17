@@ -9,6 +9,11 @@ function Login() {
 
         <input type="email" placeholder="Email" />
         <input type="password" placeholder="Password" />
+        
+        <div className="show-password">
+        <input type="checkbox" id="showPassword" />
+        <label htmlFor="showPassword">Show Password</label>
+        </div>
 
         <div className="forgot-password">
           <a href="#">Forgot Password?</a>

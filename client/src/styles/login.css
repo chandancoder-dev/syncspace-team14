@@ -85,3 +85,16 @@
 .register-text a:hover {
     text-decoration: underline;
 }
+.show-password{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:18px;
+    color:#cbd5e1;
+    font-size:14px;
+}
+
+.show-password input{
+    width:auto;
+    margin:0;
+}
