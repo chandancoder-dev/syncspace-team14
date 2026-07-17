@@ -3,12 +3,12 @@ import Home from "./components/Home"
 import About from "./components/About"
 import Features from "./components/Features"
 import NavBar from "./components/navbar"
-import WhiteBoard from "./page/whiteboard/Whiteboard"
+import WorkSpace from "./page/workspace/WorkSpace"
 import "./styles/navbar.css"
 
 function App() {
   const location = useLocation();
-  const hideNav = location.pathname === "/whiteboard";
+  const hideNav = location.pathname.startsWith("/workspace");
 
   return (
     <>
@@ -17,7 +17,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/features" element={<Features />} />
-        <Route path="/whiteboard" element={<WhiteBoard />} />
+        <Route path="/workspace" element={<WorkSpace />} />
+        <Route path="/workspace/:roomId" element={<WorkSpace />} />
       </Routes>
     </>
   );
