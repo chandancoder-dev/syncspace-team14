@@ -1,6 +1,4 @@
-import { useState } from "react";
-
-import "../styles/features.css"
+import "../styles/Features.css";
 function Features(){
 
      return(
@@ -49,6 +47,7 @@ function Features(){
           </section>
         </>
      );
+
 }
 
 export default Features;
