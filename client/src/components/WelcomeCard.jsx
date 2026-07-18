@@ -22,7 +22,7 @@ export default function WelcomeCard() {
         rounded-3xl
         border
         border-[#334155]
-        bg-gradient-to-r
+        bg-linear-to-r
         from-[#1E293B]
         via-[#1E293B]
         to-[#172554]
