@@ -1,17 +1,13 @@
+import { Link } from "react-router-dom";
 import "../styles/Navbar.css";
 
 function Navbar() {
   return (
-    <nav>
-      <h2>SyncSpace</h2>
-
-      <ul>
-        <li>Home</li>
-        <li>About</li>
-        <li>Features</li>
-        <li>Login</li>
-        <li>Register</li>
-      </ul>
+    <nav className="navbar">
+      <Link to="/">Home</Link>
+      <Link to="/about">About</Link>
+      <Link to="/features">Features</Link>
+      <Link to="/login">Login</Link>
     </nav>
   );
 }
