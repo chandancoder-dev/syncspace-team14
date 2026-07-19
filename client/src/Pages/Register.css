@@ -1,0 +1,84 @@
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1A2334;
+  padding: 24px;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 420px;
+  background: #24293F;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 36px 32px;
+}
+
+.register-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 6px;
+  text-align: center;
+}
+
+.register-subtitle {
+  font-size: 14px;
+  color: #CBD5E1;
+  text-align: center;
+  margin: 0 0 26px;
+}
+
+.register-server-error {
+  background: #1E293B;
+  color: #FCA5A5;
+  border: 1px solid #EF4444;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.register-button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  background: #2563EB;
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.register-button:hover:not(:disabled) {
+  background: #1D4ED8;
+}
+
+.register-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.register-login-link {
+  text-align: center;
+  font-size: 13px;
+  color: #CBD5E1;
+  margin-top: 20px;
+}
+
+.register-login-link a {
+  color: #2563EB;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-login-link a:hover {
+  color: #1D4ED8;
+  text-decoration: underline;
+}
