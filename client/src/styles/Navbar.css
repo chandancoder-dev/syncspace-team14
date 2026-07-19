@@ -1,34 +1,14 @@
-/* Navbar Container */
-nav {
-  background-color: #111827;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 80px;
-}
+.navbar{
 
-/* Logo */
-nav h2 {
-  font-size: 32px;
-  color: #3b82f6;
-}
+    background: var(--card-color);
 
-/* Menu */
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 30px;
-}
+    color: var(--text-color);
 
-/* Menu Items */
-nav ul li {
-  cursor: pointer;
-  font-size: 18px;
-  transition: 0.3s;
-}
+    padding: 20px 60px;
 
-/* Hover Effect */
-nav ul li:hover {
-  color: #3b82f6;
+    display:flex;
+
+    justify-content:space-evenly;
+
+    align-items:center;
 }
