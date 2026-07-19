@@ -1,37 +1,25 @@
-import { useState } from "react";
 import Features from "./Features";
+import "../styles/Hero.css";
 
-import "../styles/hero.css"
-function Home(){
+function Home() {
+  return (
+    <>
+      <section className="hero">
+        <h1>🚀 Work Together in Real-Time</h1>
+        <p>
+          Create secure rooms and collaborate with your teammates
+          from anywhere in the world instantly.
+        </p>
 
-     return(
-        <>
-          
-          <section className="hero">
-              <h1>🚀 Work Together in Real-Time</h1>
-              <p>Create secure rooms and collaborate with your teammates
-               from anywhere in the world instantly.
-          </p>
+        <div className="hero-buttons">
+          <button className="primary-btn">Create Room</button>
+          <button className="secondary-btn">Join Room</button>
+        </div>
+      </section>
 
-          <div className="hero-buttons">
-
-                    <button className="primary-btn">
-                        Create Room
-                    </button>
-
-                    <button className="secondary-btn">
-                        Join Room
-                    </button>
-
-                </div>
-
-          </section>
-           
-     
-        <Features/>
-         
-        </>
-     )
+      <Features />
+    </>
+  );
 }
 
 export default Home;
