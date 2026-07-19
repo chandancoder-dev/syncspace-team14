@@ -1,104 +1,103 @@
 import { FaPlus, FaUsers } from "react-icons/fa";
 import { MdMeetingRoom } from "react-icons/md";
-import { HiOutlineSparkles } from "react-icons/hi";
+import { IoFlash } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 export default function WelcomeCard() {
   const navigate = useNavigate();
 
-  const handleCreateRoom = () => {
-    navigate("/create-room");
-  };
-
-  const handleJoinRoom = () => {
-    navigate("/join-room");
-  };
+  const stats = [
+    {
+      title: "Online Users",
+      value: "8",
+      icon: <FaUsers />,
+      color: "text-green-400",
+    },
+    {
+      title: "Active Rooms",
+      value: "5",
+      icon: <MdMeetingRoom />,
+      color: "text-blue-400",
+    },
+    {
+      title: "Today's Sessions",
+      value: "23",
+      icon: <IoFlash />,
+      color: "text-yellow-400",
+    },
+  ];
 
   return (
     <div
       className="
-        relative
-        overflow-hidden
-        rounded-3xl
-        border
-        border-[#334155]
-        bg-linear-to-r
-        from-[#1E293B]
-        via-[#1E293B]
-        to-[#172554]
-        p-10
-        shadow-xl
-      "
+      rounded-3xl
+      bg-gradient-to-r
+      from-[#2B3648]
+      via-[#313D52]
+      to-[#334A7D]
+      border
+      border-[#475569]
+      p-8
+      shadow-xl
+    "
     >
-      {/* Decorative Circle */}
-      <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[#2563EB]/20 blur-3xl"></div>
+      <div className="grid lg:grid-cols-2 gap-8 items-center">
 
-      <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
+        {/* LEFT SECTION */}
 
-        {/* Left Section */}
         <div>
 
-          <div className="flex items-center gap-3">
+          <h1 className="text-5xl font-bold text-white">
+            Welcome Back 👋
+          </h1>
 
-            <HiOutlineSparkles
-              className="text-yellow-400"
-              size={34}
-            />
-
-            <h2 className="text-5xl font-bold text-white">
-              Welcome Back
-            </h2>
-
-          </div>
-
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-[#CBD5E1]">
+          <p className="mt-5 text-lg leading-8 text-[#CBD5E1] max-w-xl">
             Build, draw, code and collaborate with your teammates in
-            real-time. Create a room or join an existing workspace to
-            start collaborating instantly.
+            real-time using SyncSpace. Create a room or join your
+            existing workspace instantly.
           </p>
 
-          {/* Buttons */}
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="flex gap-4 mt-8 flex-wrap">
 
             <button
-              onClick={handleCreateRoom}
+              onClick={() => navigate("/create-room")}
               className="
-                flex
-                items-center
-                gap-2
-                rounded-xl
-                bg-[#2563EB]
-                px-6
-                py-3
-                font-semibold
-                text-white
-                transition
-                duration-300
-                hover:bg-[#1D4ED8]
-                hover:scale-105
-              "
+              flex
+              items-center
+              gap-3
+              px-7
+              py-3
+              rounded-xl
+              bg-[#2563EB]
+              hover:bg-[#1D4ED8]
+              hover:scale-105
+              transition-all
+              duration-300
+              text-white
+              font-semibold
+              shadow-lg
+            "
             >
               <FaPlus />
-
               Create Room
             </button>
 
             <button
-              onClick={handleJoinRoom}
+              onClick={() => navigate("/join-room")}
               className="
-                rounded-xl
-                border
-                border-[#334155]
-                bg-[#0F172A]
-                px-6
-                py-3
-                font-semibold
-                text-white
-                transition
-                duration-300
-                hover:border-[#2563EB]
-                hover:bg-[#1E293B]
-              "
+              px-7
+              py-3
+              rounded-xl
+              border
+              border-[#475569]
+              bg-[#111827]
+              hover:border-[#2563EB]
+              hover:bg-[#1E293B]
+              transition-all
+              duration-300
+              text-white
+              font-semibold
+            "
             >
               Join Room
             </button>
@@ -107,67 +106,45 @@ export default function WelcomeCard() {
 
         </div>
 
-        {/* Right Section */}
+        {/* RIGHT SECTION */}
 
-        <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols-3 gap-4">
 
-          <div className="rounded-2xl bg-[#0F172A]/70 p-5 border border-[#334155]">
+          {stats.map((item) => (
 
-            <FaUsers
-              className="text-blue-400 mb-3"
-              size={28}
-            />
+            <div
+              key={item.title}
+              className="
+              bg-[#111827]
+              rounded-2xl
+              border
+              border-[#334155]
+              p-5
+              text-center
+              hover:border-[#2563EB]
+              hover:-translate-y-1
+              hover:shadow-lg
+              hover:shadow-blue-500/20
+              transition-all
+              duration-300
+            "
+            >
 
-            <h3 className="text-3xl font-bold text-white">
-              8
-            </h3>
+              <div className={`text-3xl mb-3 ${item.color}`}>
+                {item.icon}
+              </div>
 
-            <p className="text-[#CBD5E1]">
-              Online Users
-            </p>
+              <h2 className="text-4xl font-bold text-white">
+                {item.value}
+              </h2>
 
-          </div>
+              <p className="text-sm text-[#CBD5E1] mt-2">
+                {item.title}
+              </p>
 
-          <div className="rounded-2xl bg-[#0F172A]/70 p-5 border border-[#334155]">
+            </div>
 
-            <MdMeetingRoom
-              className="text-green-400 mb-3"
-              size={28}
-            />
-
-            <h3 className="text-3xl font-bold text-white">
-              5
-            </h3>
-
-            <p className="text-[#CBD5E1]">
-              Active Rooms
-            </p>
-
-          </div>
-
-          <div className="rounded-2xl bg-[#0F172A]/70 p-5 border border-[#334155]">
-
-            <h3 className="text-3xl font-bold text-white">
-              23
-            </h3>
-
-            <p className="text-[#CBD5E1]">
-              Sessions Today
-            </p>
-
-          </div>
-
-          <div className="rounded-2xl bg-[#0F172A]/70 p-5 border border-[#334155]">
-
-            <h3 className="text-3xl font-bold text-white">
-              99.9%
-            </h3>
-
-            <p className="text-[#CBD5E1]">
-              Sync Accuracy
-            </p>
-
-          </div>
+          ))}
 
         </div>
 

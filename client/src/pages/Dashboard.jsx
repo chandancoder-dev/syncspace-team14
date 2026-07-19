@@ -1,12 +1,13 @@
 import DNavbar from "../components/DNavbar";
 import WelcomeCard from "../components/WelcomeCard";
-import StatsCard from "../components/StatsCard";
 import ActionCard from "../components/ActionCard";
 import RecentRooms from "../components/RecentRooms";
+import {FaPlusCircle } from "react-icons/fa";
+import {MdMeetingRoom } from "react-icons/md";
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-[#0F172A]">
+    <div className="min-h-screen bg-[#1A2333]">
 
       <DNavbar />
 
@@ -15,28 +16,27 @@ export default function Dashboard() {
         {/* Welcome */}
         <WelcomeCard />
 
-        {/* Statistics */}
-        <StatsCard />
-
-        {/* Quick Actions */}
-        <div className="grid lg:grid-cols-2 gap-6 mt-8">
+        {/* Action Cards */}
+        <div className="grid lg:grid-cols-2 gap-8 mt-10">
 
           <ActionCard
-            title="Create Collaboration Room"
-            description="Create a new collaborative workspace for whiteboarding, coding and team discussions."
-            button="Create Room"
-          />
+  icon={<FaPlusCircle />}
+  title="Create Collaboration Room"
+  description="Create a new collaborative workspace for whiteboarding, coding and team discussions."
+  button="Create Room"
+/>
 
-          <ActionCard
-            title="Join Existing Room"
-            description="Join your teammates instantly using a Room ID and continue collaborating in real time."
-            button="Join Room"
-          />
+<ActionCard
+  icon={<MdMeetingRoom />}
+  title="Join Existing Room"
+  description="Join your teammates instantly using a Room ID and continue collaborating in real time."
+  button="Join Room"
+/>
 
         </div>
 
         {/* Recent Rooms */}
-        <div className="mt-10">
+        <div className="mt-12">
 
           <RecentRooms />
 
