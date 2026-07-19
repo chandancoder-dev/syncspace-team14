@@ -6,6 +6,7 @@ function CreateRoom() {
   const [description, setDescription] = useState("");
   const [language, setLanguage] = useState("JavaScript");
   const [visibility, setVisibility] = useState("Public");
+
   return (
     <div className="create-room-container">
       <div className="create-room-card">
@@ -28,12 +29,11 @@ function CreateRoom() {
               placeholder="Enter room description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-            ></textarea>
+            />
           </div>
 
           <div className="form-group">
             <label>Programming Language</label>
-
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
