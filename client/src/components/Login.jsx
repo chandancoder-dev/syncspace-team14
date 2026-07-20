@@ -2,51 +2,93 @@ import "../styles/login.css";
 import { useState } from "react";
 
 function Login() {
-    const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-    return (
-        <div className="login-container">
-            <div className="login-card">
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-                <h1>Welcome Back</h1>
-                <p>Sign in to continue to SyncSpace</p>
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                />
+  const handleLogin = () => {
+    setEmailError("");
+    setPasswordError("");
 
-                <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                />
+    let isValid = true;
 
-                <div className="show-password">
-                    <input
-                        type="checkbox"
-                        id="showPassword"
-                        checked={showPassword}
-                        onChange={() => setShowPassword(!showPassword)}
-                    />
-                    <label htmlFor="showPassword">
-                        Show Password
-                    </label>
-                </div>
+    if (email.trim() === "") {
+      setEmailError("Email is required");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      isValid = false;
+    }
 
-                <div className="forgot-password">
-                    <a href="#">Forgot Password?</a>
-                </div>
+    if (password.trim() === "") {
+      setPasswordError("Password is required");
+      isValid = false;
+    }
 
-                <button>Login</button>
+    if (isValid) {
+      alert("Login Successful! (Backend will be connected later)");
+    }
+  };
 
-                <p className="register-text">
-                    Don't have an account?{" "}
-                    <a href="#">Register</a>
-                </p>
+  return (
+    <div className="login-container">
+      <div className="login-card">
+        <h1>Welcome Back</h1>
+        <p>Sign in to continue to SyncSpace</p>
 
-            </div>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        {emailError && (
+          <p className="error-message">{emailError}</p>
+        )}
+
+        <input
+          type={showPassword ? "text" : "password"}
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        {passwordError && (
+          <p className="error-message">{passwordError}</p>
+        )}
+
+        <div className="show-password">
+          <input
+            type="checkbox"
+            id="showPassword"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
+          <label htmlFor="showPassword">
+            Show Password
+          </label>
         </div>
-    );
+
+        <div className="forgot-password">
+          <a href="#">Forgot Password?</a>
+        </div>
+
+        <button onClick={handleLogin}>
+          Login
+        </button>
+
+        <p className="register-text">
+          Don't have an account?{" "}
+          <a href="#">Register</a>
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default Login;

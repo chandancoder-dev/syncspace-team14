@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 
 function App() {
   const location = useLocation();
+
   const hideNav =
     location.pathname.startsWith("/workspace") ||
     location.pathname.startsWith("/dashboard");
@@ -17,11 +18,12 @@ function App() {
   return (
     <>
       {!hideNav && <NavBar />}
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/features" element={<Features />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/create-room" element={<CreateRoom />} />
         <Route path="/workspace" element={<WorkSpace />} />
         <Route path="/dashboard" element={<Dashboard />} />
