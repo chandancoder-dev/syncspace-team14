@@ -25,7 +25,7 @@ const TOOL_ICONS = {
 };
 
 
-const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor } = {}) => {
+const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave } = {}) => {
   const ydocRef = useRef(externalYdoc || new Y.Doc());
   const ydoc    = ydocRef.current;
   const yShapes = ydoc.getArray('shapes');
@@ -293,12 +293,12 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor } = {}) 
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100%',
-      background: '#F9FAFB', overflow: 'hidden', fontFamily: 'system-ui, sans-serif' }}>
+      background: '#F9FAFB', overflow: 'hidden', fontFamily: 'system-ui, sans-serif', position: 'relative' }}>
 
       {/* Toolbar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 14px',
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px',
         background: '#ffffff', borderBottom: '1px solid #E5E7EB',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.08)', zIndex: 10, minHeight: 54, flexWrap: 'wrap' }}>
+        boxShadow: '0 1px 4px rgba(0,0,0,0.08)', zIndex: 10, minHeight: 58, flexWrap: 'wrap' }}>
 
         {/* Tool buttons */}
         <div style={{ display: 'flex', gap: 3 }}>
@@ -316,19 +316,16 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor } = {}) 
         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
           <span style={{ fontSize: 11, color: '#6B7280', userSelect: 'none' }}>Stroke</span>
           <input type="color" value={strokeColor} onChange={(e) => setStroke(e.target.value)}
-            style={{ width: 32, height: 32, border: '1px solid #E5E7EB', borderRadius: '6px', cursor: 'pointer', padding: 2 }} />
+            style={{ width: 38, height: 38, border: 'none', borderRadius: '8px', cursor: 'pointer', padding: 2, background: '#c6d2e8c4' }} />
         </div>
 
         {/* Fill color */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
           <span style={{ fontSize: 11, color: '#6B7280', userSelect: 'none' }}>Fill</span>
           <input type="color" value={fillColor ?? '#ffffff'} onChange={(e) => setFill(e.target.value)}
-            style={{ width: 32, height: 32, border: '1px solid #E5E7EB', borderRadius: '6px', cursor: 'pointer', padding: 2 }} />
+            style={{ width: 38, height: 38, border: 'none', borderRadius: '8px', cursor: 'pointer', padding: 2, background: '#c6d2e8c4' }} />
           <button onClick={() => setFill(null)} title="No fill"
-            style={{ height: 28, padding: '0 9px', borderRadius: '6px', border: '1px solid #E5E7EB',
-              background: fillColor === null ? '#EFF6FF' : '#F3F4F6',
-              color:      fillColor === null ? '#2563EB' : '#6B7280',
-              cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>
+            style={toolBtnStyle(fillColor === null)}>
             ∅
           </button>
         </div>
@@ -348,19 +345,20 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor } = {}) 
 
         {/* Zoom */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <button onClick={() => setScale((s) => Math.min(s * 1.2, 5))} title="Zoom In" style={iconBtnStyle()}>+</button>
+          <button onClick={() => setScale((s) => Math.min(s * 1.2, 5))} title="Zoom In" style={toolBtnStyle(false)}>+</button>
           <span style={{ fontSize: 11, color: '#6B7280', minWidth: 40, textAlign: 'center' }}>{Math.round(scale * 100)}%</span>
-          <button onClick={() => setScale((s) => Math.max(s / 1.2, 0.2))} title="Zoom Out" style={iconBtnStyle()}>−</button>
-          <button onClick={() => { setScale(1); setPosition({ x: 0, y: 0 }); }} title="Reset" style={iconBtnStyle()}>⌖</button>
+          <button onClick={() => setScale((s) => Math.max(s / 1.2, 0.2))} title="Zoom Out" style={toolBtnStyle(false)}>−</button>
+          <button onClick={() => { setScale(1); setPosition({ x: 0, y: 0 }); }} title="Reset" style={toolBtnStyle(false)}>⌖</button>
         </div>
 
         <div style={dividerStyle} />
 
         {/* Undo / Redo / Clear */}
         <div style={{ display: 'flex', gap: 4 }}>
-          <button onClick={undo}        title="Undo (Ctrl+Z)" style={iconBtnStyle()}>↩</button>
-          <button onClick={redo}        title="Redo (Ctrl+Y)" style={iconBtnStyle()}>↪</button>
-          <button onClick={clearCanvas} title="Clear All"     style={iconBtnStyle(true)}>🗑</button>
+          <button onClick={undo}        title="Undo (Ctrl+Z)" style={toolBtnStyle(false)}>↩</button>
+          <button onClick={redo}        title="Redo (Ctrl+Y)" style={toolBtnStyle(false)}>↪</button>
+          <button onClick={clearCanvas} title="Clear All"
+            style={{ ...toolBtnStyle(false), background: '#fde8e8', color: '#EF4444' }}>🗑</button>
         </div>
       </div>
 
@@ -403,6 +401,8 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor } = {}) 
               boxShadow: '0 4px 12px rgba(0,0,0,0.10)' }} />
         )}
       </div>
+
+      {onLeave && null}
     </div>
   );
 };
