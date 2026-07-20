@@ -1,11 +1,6 @@
 import { FaArrowRight, FaCheckCircle } from "react-icons/fa";
 
-export default function ActionCard({
-  title,
-  description,
-  button,
-  icon,
-}) {
+export default function ActionCard({ title, description, button, icon }) {
   return (
     <div
       className="
@@ -22,35 +17,25 @@ export default function ActionCard({
       hover:shadow-blue-500/20
     "
     >
-      <div className="text-5xl mb-6 text-[#3B82F6]">
-        {icon}
-      </div>
+      <div className="text-5xl mb-6 text-[#3B82F6]">{icon}</div>
 
-      <h2 className="text-3xl font-bold text-white">
-        {title}
-      </h2>
+      <h2 className="text-3xl font-bold text-white">{title}</h2>
 
-      <p className="text-[#CBD5E1] mt-4 leading-8">
-        {description}
-      </p>
+      <p className="text-[#CBD5E1] mt-4 leading-8">{description}</p>
 
       <div className="space-y-3 mt-6 text-[#E2E8F0]">
-
         <div className="flex items-center gap-2">
           <FaCheckCircle className="text-green-400" />
           Real-Time Collaboration
         </div>
-
         <div className="flex items-center gap-2">
           <FaCheckCircle className="text-green-400" />
           Shared Whiteboard
         </div>
-
         <div className="flex items-center gap-2">
           <FaCheckCircle className="text-green-400" />
           Live Code Editor
         </div>
-
       </div>
 
       <button
@@ -71,7 +56,6 @@ export default function ActionCard({
       "
       >
         {button}
-
         <FaArrowRight />
       </button>
     </div>
