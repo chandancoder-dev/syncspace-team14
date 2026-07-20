@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import Home from "./components/Home";
+import Home from "./pages/Home";
 import About from "./components/About";
 import Features from "./components/Features";
 import Login from "./components/Login";
@@ -14,6 +14,7 @@ function App() {
   return (
     <>
       {!hideNav && <NavBar />}
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
