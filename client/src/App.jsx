@@ -16,7 +16,9 @@ import Footer from "./components/Footer";
 
 function AppContent() {
   const location = useLocation();
-  const hideChrome = location.pathname.startsWith("/workspace");
+  const hideChrome =
+    location.pathname.startsWith("/workspace") ||
+    location.pathname.startsWith("/dashboard");
 
   return (
     <>
