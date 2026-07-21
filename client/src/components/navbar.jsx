@@ -11,47 +11,66 @@ function NavBar() {
 
   const styles = {
     navbar: {
+      backgroundColor: "#1e293b",
+      color: "#ffffff",
+      padding: "20px 60px",
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      backgroundColor: "#1e293b",
-      padding: "15px 30px",
     },
+
     navLinks: {
       display: "flex",
-      gap: "20px",
+      alignItems: "center",
+      gap: "30px",
     },
+
     link: {
-      color: "white",
+      color: "#ffffff",
       textDecoration: "none",
       fontSize: "16px",
       fontWeight: "500",
+      transition: "0.3s",
     },
+
     rightSection: {
       display: "flex",
       alignItems: "center",
       gap: "15px",
     },
-    button: {
-      padding: "8px 15px",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      backgroundColor: "#2563eb",
-      color: "white",
-    },
+
     userName: {
-      color: "white",
-      fontWeight: "bold",
+      color: "#ffffff",
+      fontWeight: "600",
+      fontSize: "16px",
+    },
+
+    button: {
+      backgroundColor: "#2563eb",
+      color: "#ffffff",
+      border: "none",
+      borderRadius: "6px",
+      padding: "8px 16px",
+      cursor: "pointer",
+      fontSize: "15px",
+      fontWeight: "500",
     },
   };
 
   return (
     <nav style={styles.navbar}>
       <div style={styles.navLinks}>
-        <Link to="/" style={styles.link}>Home</Link>
-        <Link to="/about" style={styles.link}>About</Link>
-        <Link to="/features" style={styles.link}>Features</Link>
+        <Link to="/" style={styles.link}>
+          Home
+        </Link>
+
+        <Link to="/about" style={styles.link}>
+          About
+        </Link>
+
+        <Link to="/features" style={styles.link}>
+          Features
+        </Link>
       </div>
 
       <div style={styles.rightSection}>
@@ -60,7 +79,11 @@ function NavBar() {
             <span style={styles.userName}>
               Hello, {user.name}
             </span>
-            <button style={styles.button} onClick={handleLogout}>
+
+            <button
+              style={styles.button}
+              onClick={handleLogout}
+            >
               Logout
             </button>
           </>
