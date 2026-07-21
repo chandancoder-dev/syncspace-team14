@@ -1,63 +1,108 @@
 import { FaArrowRight, FaCheckCircle } from "react-icons/fa";
 
-export default function ActionCard({ title, description, button, icon }) {
+export default function ActionCard({
+  title,
+  description,
+  button,
+  icon,
+}) {
   return (
     <div
       className="
-      bg-[#263247]
-      border
-      border-[#3B4A63]
-      rounded-3xl
-      p-7
-      transition-all
-      duration-300
-      hover:-translate-y-2
-      hover:border-[#2563EB]
-      hover:shadow-xl
-      hover:shadow-blue-500/20
-    "
+        bg-white
+        border
+        border-[#BFDBFE]
+        rounded-3xl
+        p-7
+        shadow-sm
+        transition-all
+        duration-300
+        hover:-translate-y-2
+        hover:border-[#60A5FA]
+        hover:shadow-xl
+        hover:shadow-blue-200/50
+      "
     >
-      <div className="text-5xl mb-6 text-[#3B82F6]">{icon}</div>
 
-      <h2 className="text-3xl font-bold text-white">{title}</h2>
-
-      <p className="text-[#CBD5E1] mt-4 leading-8">{description}</p>
-
-      <div className="space-y-3 mt-6 text-[#E2E8F0]">
-        <div className="flex items-center gap-2">
-          <FaCheckCircle className="text-green-400" />
-          Real-Time Collaboration
-        </div>
-        <div className="flex items-center gap-2">
-          <FaCheckCircle className="text-green-400" />
-          Shared Whiteboard
-        </div>
-        <div className="flex items-center gap-2">
-          <FaCheckCircle className="text-green-400" />
-          Live Code Editor
-        </div>
+      {/* Icon */}
+      <div
+        className="
+          w-16
+          h-16
+          rounded-2xl
+          bg-[#EFF6FF]
+          flex
+          items-center
+          justify-center
+          text-4xl
+          mb-6
+          text-[#2563EB]
+        "
+      >
+        {icon}
       </div>
 
+
+      {/* Title */}
+      <h2 className="text-2xl lg:text-3xl font-bold text-[#1E3A8A]">
+        {title}
+      </h2>
+
+
+      {/* Description */}
+      <p className="text-[#64748B] mt-4 leading-8">
+        {description}
+      </p>
+
+
+      {/* Features */}
+      <div className="space-y-3 mt-6 text-[#475569]">
+
+        <div className="flex items-center gap-3">
+          <FaCheckCircle className="text-emerald-500 shrink-0" />
+          <span>Real-Time Collaboration</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <FaCheckCircle className="text-emerald-500 shrink-0" />
+          <span>Shared Whiteboard</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <FaCheckCircle className="text-emerald-500 shrink-0" />
+          <span>Live Code Editor</span>
+        </div>
+
+      </div>
+
+
+      {/* Button */}
       <button
         className="
-        w-full
-        mt-8
-        bg-[#2563EB]
-        hover:bg-[#1D4ED8]
-        py-4
-        rounded-xl
-        text-white
-        font-semibold
-        flex
-        justify-center
-        items-center
-        gap-2
-        transition-all
-      "
+          w-full
+          mt-8
+          bg-[#2563EB]
+          hover:bg-[#1D4ED8]
+          py-4
+          rounded-xl
+          text-white
+          font-semibold
+          flex
+          justify-center
+          items-center
+          gap-2
+          shadow-sm
+          hover:shadow-lg
+          hover:shadow-blue-200
+          transition-all
+          duration-300
+        "
       >
         {button}
+
         <FaArrowRight />
       </button>
+
     </div>
   );
 }

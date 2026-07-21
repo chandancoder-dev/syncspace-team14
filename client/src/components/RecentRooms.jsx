@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import rooms from "../data/rooms";
 
@@ -17,43 +17,56 @@ export default function RecentRooms() {
   };
 
   return (
-
     <section>
 
-      {/* Heading */}
+      {/* ============================= */}
+      {/* SECTION HEADER */}
+      {/* ============================= */}
 
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-start justify-between mb-8">
 
+        {/* Heading */}
         <div>
 
-          <h2 className="text-3xl font-bold text-white">
-
+          <h2 className="text-3xl font-bold text-[#1E3A8A]">
             Recent Rooms
-
           </h2>
 
-          <p className="text-[#94A3B8] mt-2">
-
+          <p className="text-[#64748B] mt-2">
             Continue collaborating where you left off.
-
           </p>
 
         </div>
 
-        <button
-          className="
-            text-[#3B82F6]
-            font-medium
-            hover:text-white
-            transition
-          "
-        >
-          View All
-        </button>
 
+        {/* View All */}
+        <Link
+  to="/rooms"
+  className="
+    inline-flex
+    items-center
+    justify-center
+    bg-[#DBEAFE]
+    text-[#1D4ED8]
+    text-sm
+    font-semibold
+    px-4
+    py-2
+    rounded-lg
+    hover:bg-[#BFDBFE]
+    transition-colors
+    duration-200
+    whitespace-nowrap
+  "
+>
+  View All
+</Link>
       </div>
 
-      {/* Cards */}
+
+      {/* ============================= */}
+      {/* ROOM CARDS */}
+      {/* ============================= */}
 
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
@@ -62,118 +75,153 @@ export default function RecentRooms() {
           <div
             key={room.id}
             className="
-              bg-[#1E293B]
+              group
+              h-full
+              bg-white
               rounded-3xl
               border
-              border-[#334155]
+              border-[#BFDBFE]
               p-6
-              hover:border-[#2563EB]
-              hover:-translate-y-2
-              hover:shadow-2xl
+              shadow-sm
+              hover:border-[#60A5FA]
+              hover:-translate-y-1
+              hover:shadow-xl
+              hover:shadow-blue-100/70
               transition-all
               duration-300
+              flex
+              flex-col
             "
           >
 
-            {/* Room Icon */}
+            {/* ============================= */}
+            {/* ROOM ICON */}
+            {/* ============================= */}
 
             <div
               className="
                 w-16
                 h-16
                 rounded-2xl
-                bg-[#2563EB]/20
+                bg-[#EFF6FF]
+                border
+                border-[#DBEAFE]
                 flex
                 items-center
                 justify-center
                 text-3xl
+                shadow-sm
+                group-hover:bg-[#DBEAFE]
+                transition-colors
+                duration-300
               "
             >
               🚀
             </div>
 
-            {/* Room Name */}
 
-            <h3
-              className="
-                mt-6
-                text-2xl
-                font-bold
-                text-white
-              "
-            >
-              {room.name}
-            </h3>
+            {/* ============================= */}
+            {/* ROOM DETAILS */}
+            {/* ============================= */}
 
-            {/* Status */}
+            <div className="flex-1">
 
-            <div
-              className="
-                mt-3
-                flex
-                items-center
-                gap-2
-              "
-            >
+              {/* Room Name */}
+              <h3
+                className="
+                  mt-6
+                  text-2xl
+                  font-bold
+                  text-[#1E3A8A]
+                  truncate
+                "
+                title={room.name}
+              >
+                {room.name}
+              </h3>
 
-              <FaCircle
-                className={
-                  room.color === "green"
-                    ? "text-green-500 text-xs"
-                    : room.color === "blue"
-                    ? "text-blue-500 text-xs"
-                    : "text-gray-500 text-xs"
-                }
-              />
 
-              <span className="text-[#CBD5E1]">
+              {/* ============================= */}
+              {/* ROOM STATUS */}
+              {/* ============================= */}
 
-                {room.status}
+              <div
+                className="
+                  mt-3
+                  flex
+                  items-center
+                  gap-2
+                "
+              >
 
-              </span>
+                <FaCircle
+                  className={
+                    room.color === "green"
+                      ? "text-emerald-500 text-[10px]"
+                      : room.color === "blue"
+                      ? "text-blue-500 text-[10px]"
+                      : "text-slate-400 text-[10px]"
+                  }
+                />
+
+                <span className="text-sm text-[#64748B]">
+                  {room.status}
+                </span>
+
+              </div>
+
+
+              {/* ============================= */}
+              {/* MEMBERS */}
+              {/* ============================= */}
+
+              <div
+                className="
+                  mt-6
+                  flex
+                  items-center
+                  gap-3
+                  text-sm
+                  text-[#64748B]
+                "
+              >
+
+                <FaUsers className="text-[#94A3B8]" />
+
+                <span>
+                  {room.members} Members
+                </span>
+
+              </div>
+
+
+              {/* ============================= */}
+              {/* LAST ACTIVE */}
+              {/* ============================= */}
+
+              <div className="mt-4">
+
+                <p className="text-xs text-[#94A3B8]">
+                  Last Active
+                </p>
+
+                <p className="mt-1 text-sm text-[#334155] font-medium">
+                  {room.lastActive}
+                </p>
+
+              </div>
 
             </div>
 
-            {/* Members */}
 
-            <div
-              className="
-                mt-6
-                flex
-                items-center
-                gap-3
-                text-[#CBD5E1]
-              "
-            >
-
-              <FaUsers />
-
-              {room.members} Members
-
-            </div>
-
-            {/* Last Active */}
-
-            <div className="mt-3">
-
-              <p className="text-sm text-[#94A3B8]">
-
-                Last Active
-
-              </p>
-
-              <p className="text-white">
-
-                {room.lastActive}
-
-              </p>
-
-            </div>
-
-            {/* Button */}
+            {/* ============================= */}
+            {/* OPEN WORKSPACE BUTTON */}
+            {/* ============================= */}
 
             <button
+              type="button"
               onClick={() => openRoom(room.id)}
+              aria-label={`Open ${room.name} workspace`}
               className="
                 mt-8
                 w-full
@@ -181,19 +229,33 @@ export default function RecentRooms() {
                 hover:bg-[#1D4ED8]
                 rounded-xl
                 py-3
+                px-4
                 text-white
                 font-semibold
                 flex
                 items-center
                 justify-center
                 gap-3
-                transition
+                shadow-sm
+                hover:shadow-lg
+                hover:shadow-blue-200
+                transition-all
+                duration-300
+                cursor-pointer
               "
             >
 
-              Open Workspace
+              <span>
+                Open Workspace
+              </span>
 
-              <FaArrowRight />
+              <FaArrowRight
+                className="
+                  transition-transform
+                  duration-300
+                  group-hover:translate-x-1
+                "
+              />
 
             </button>
 
@@ -204,7 +266,5 @@ export default function RecentRooms() {
       </div>
 
     </section>
-
   );
-
 }
