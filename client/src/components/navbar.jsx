@@ -15,14 +15,14 @@ function NavBar() {
       color: "#ffffff",
       padding: "20px 60px",
       display: "flex",
-      justifyContent: "space-between",
+      justifyContent: "center",
       alignItems: "center",
     },
 
-    navLinks: {
+    navContainer: {
       display: "flex",
       alignItems: "center",
-      gap: "30px",
+      gap: "35px",
     },
 
     link: {
@@ -31,12 +31,6 @@ function NavBar() {
       fontSize: "16px",
       fontWeight: "500",
       transition: "0.3s",
-    },
-
-    rightSection: {
-      display: "flex",
-      alignItems: "center",
-      gap: "15px",
     },
 
     userName: {
@@ -59,7 +53,7 @@ function NavBar() {
 
   return (
     <nav style={styles.navbar}>
-      <div style={styles.navLinks}>
+      <div style={styles.navContainer}>
         <Link to="/" style={styles.link}>
           Home
         </Link>
@@ -71,9 +65,7 @@ function NavBar() {
         <Link to="/features" style={styles.link}>
           Features
         </Link>
-      </div>
 
-      <div style={styles.rightSection}>
         {user ? (
           <>
             <span style={styles.userName}>
