@@ -1,11 +1,14 @@
+
 import React from "react";
 
-function FormInput({ label, type = "text", name, value, onChange, error, placeholder }) {
+function FormInput({ label, name, type = "text", value, onChange, placeholder, error }) {
   return (
-    <div className="flex flex-col mb-5 text-left">
-      <label htmlFor={name} className="text-sm font-semibold text-heading mb-2">
-        {label}
-      </label>
+    <div className="mb-5">
+      {label && (
+        <label htmlFor={name} className="block text-sm font-medium text-slate-700 mb-1">
+          {label}
+        </label>
+      )}
       <input
         id={name}
         name={name}
@@ -13,14 +16,11 @@ function FormInput({ label, type = "text", name, value, onChange, error, placeho
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`px-4 py-3 rounded-lg text-sm bg-field text-heading border outline-none transition
-          placeholder:text-paragraph
-          ${error
-            ? "border-red-500 focus:ring-2 focus:ring-red-500/30"
-            : "border-border focus:border-primary focus:ring-2 focus:ring-primary/30"
-          }`}
+        className={`w-full px-4 py-3 rounded-lg bg-gray-50 border ${
+          error ? "border-red-400" : "border-gray-300"
+        } text-slate-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
       />
-      {error && <span className="mt-1 text-xs text-red-400">{error}</span>}
+      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   );
 }

@@ -33,52 +33,87 @@ function Register() {
     if (Object.keys(validationErrors).length > 0) return;
 
     setIsSubmitting(true);
-    setServerError("");
     try {
       await registerUser(formData);
-      navigate("/login", { state: { justRegistered: true } });
+      navigate("/login");
     } catch (err) {
-      setServerError(err.message || "Something went wrong. Please try again.");
+      setServerError(err?.response?.data?.message || "Registration failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg px-6 py-6">
-      <div className="w-full max-w-md bg-card border border-border rounded-2xl px-8 py-9">
-        <h1 className="text-2xl font-bold text-heading text-center mb-1.5">
-          Create your account
-        </h1>
-        <p className="text-sm text-paragraph text-center mb-7">
-          Join to start creating and collaborating in real time.
-        </p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-slate-900">Create your account</h1>
+          <p className="text-gray-500 mt-1">Join to start creating and collaborating in real time.</p>
+        </div>
 
         {serverError && (
-          <div className="bg-field border border-red-500 text-red-400 text-sm rounded-lg px-3 py-2.5 mb-4 text-center">
+          <div className="mb-4 px-4 py-2 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
             {serverError}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} noValidate>
-          <FormInput label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} error={errors.fullName} placeholder="e.g. Jane Smith" />
-          <FormInput label="Username" name="username" value={formData.username} onChange={handleChange} error={errors.username} placeholder="e.g. janesmith" />
-          <FormInput label="Email" type="email" name="email" value={formData.email} onChange={handleChange} error={errors.email} placeholder="e.g. jane@example.com" />
-          <FormInput label="Password" type="password" name="password" value={formData.password} onChange={handleChange} error={errors.password} placeholder="At least 6 characters" />
-          <FormInput label="Confirm Password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} error={errors.confirmPassword} placeholder="Re-enter your password" />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <FormInput
+            label="Full Name"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            placeholder="e.g. Jane Smith"
+            error={errors.fullName}
+          />
+          <FormInput
+            label="Username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="e.g. janesmith"
+            error={errors.username}
+          />
+          <FormInput
+            label="Email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="e.g. jane@example.com"
+            error={errors.email}
+          />
+          <FormInput
+            label="Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="At least 6 characters"
+            error={errors.password}
+          />
+          <FormInput
+            label="Confirm Password"
+            name="confirmPassword"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Re-enter your password"
+            error={errors.confirmPassword}
+          />
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-2 py-3.5 rounded-lg text-white text-base font-semibold bg-primary hover:bg-primaryHover transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors"
           >
             {isSubmitting ? "Creating account..." : "Register"}
           </button>
         </form>
 
-        <p className="text-center text-sm text-paragraph mt-6">
+        <p className="text-center text-gray-500 mt-6">
           Already have an account?{" "}
-          <Link to="/login" className="text-primary font-semibold hover:text-primaryHover hover:underline">
+          <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
             Log in
           </Link>
         </p>
