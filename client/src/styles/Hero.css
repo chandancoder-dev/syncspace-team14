@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   padding: 60px 20px;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
+  background: var(--bg-color);
 }
 
 .hero-content {
@@ -15,9 +15,10 @@
 .hero-tagline {
   display: inline-block;
   padding: 8px 18px;
-  border: 1px solid #2563eb;
+  border: 1px solid var(--primary-color);
   border-radius: 25px;
-  color: #60a5fa;
+  background: var(--light-blue);
+  color: var(--primary-color);
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 24px;
@@ -25,24 +26,24 @@
 
 .hero h1 {
   font-size: 58px;
-  color: #ffffff;
+  color: var(--heading-color);
   line-height: 1.2;
   margin-bottom: 20px;
 }
 
 .hero h1 span {
-  color: #2563eb;
+  color: var(--primary-color);
 }
 
 .hero-description {
   font-size: 22px;
-  color: #cbd5e1;
+  color: var(--text-color);
   margin-bottom: 18px;
 }
 
 .hero-text {
   font-size: 18px;
-  color: #94a3b8;
+  color: var(--secondary-text);
   line-height: 1.8;
   margin-bottom: 40px;
 }
@@ -53,6 +54,7 @@
   gap: 20px;
 }
 
+/* Common Button Style */
 .primary-btn,
 .secondary-btn {
   padding: 14px 34px;
@@ -61,29 +63,34 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-width: 220px;
 }
 
+/* Create Room Button */
 .primary-btn {
-  background-color: #2563eb;
-  color: white;
+  background: var(--primary-color);
+  color: #ffffff;
   border: none;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
 }
 
 .primary-btn:hover {
-  background-color: #1d4ed8;
-  transform: translateY(-2px);
+  background: #1d4ed8;
+  transform: translateY(-3px);
 }
 
+/* Join Room Button */
 .secondary-btn {
-  background: transparent;
-  color: white;
+  background: #ffffff;
+  color: #2563eb;
   border: 2px solid #2563eb;
 }
 
 .secondary-btn:hover {
-  background-color: #2563eb;
-  transform: translateY(-2px);
+  background: #2563eb;
+  color: #ffffff;
+  border: 2px solid #2563eb;
+  transform: translateY(-3px);
 }
 
 @media (max-width: 768px) {

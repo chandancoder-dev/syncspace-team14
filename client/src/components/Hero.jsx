@@ -30,7 +30,16 @@ function Hero() {
             Create Room
           </button>
 
-          <button className="secondary-btn">Join Room</button>
+          <button
+            className="secondary-btn"
+            style={{
+              background: "#ffffff",
+              color: "#2563EB",
+              border: "2px solid #2563EB",
+            }}
+          >
+            Join Room
+          </button>
         </div>
       </div>
     </section>
