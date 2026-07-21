@@ -59,7 +59,7 @@ export default function ActionCard({
       <div className="space-y-3 mt-6 text-[#475569]">
 
         <div className="flex items-center gap-3">
-          <FaCheckCircle className="text-emerald-500 flex-shrink-0" />
+          <FaCheckCircle className="text-emerald-500 shrink-0" />
           <span>Real-Time Collaboration</span>
         </div>
 
