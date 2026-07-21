@@ -1,7 +1,11 @@
 import "../styles/login.css";
-import { useState} from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
 function Login() {
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -10,7 +14,7 @@ function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     setEmailError("");
     setPasswordError("");
 
@@ -30,24 +34,24 @@ function Login() {
     }
 
     if (isValid) {
+      try {
+        const res = await axios.post("http://localhost:8000/api/auth/login", {
+          email,
+          password,
+        });
 
-      try{
-           const res = await axios.post("http://localhost:8000/api/auth/login",{
-              email : email,
-              password : password
-           });
+        localStorage.setItem("token", res.data.token);
 
-           console.log(res.data.message);
-            alert("Login Successful! (Backend will be connected later)");
+        alert("Login Successful!");
 
-            localStorage.setItem("token", res.data.token);
+        // Redirect to Create Room page
+        navigate("/create-room");
+      } catch (e) {
+        console.log(e);
+
+        alert(e.response?.data?.message || "Login failed. Please try again.");
       }
-      catch(e){
-          console.log(e);
-      }
-     
     }
-
   };
 
   return (
@@ -63,9 +67,7 @@ function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        {emailError && (
-          <p className="error-message">{emailError}</p>
-        )}
+        {emailError && <p className="error-message">{emailError}</p>}
 
         <input
           type={showPassword ? "text" : "password"}
@@ -74,9 +76,7 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {passwordError && (
-          <p className="error-message">{passwordError}</p>
-        )}
+        {passwordError && <p className="error-message">{passwordError}</p>}
 
         <div className="show-password">
           <input
@@ -85,22 +85,17 @@ function Login() {
             checked={showPassword}
             onChange={() => setShowPassword(!showPassword)}
           />
-          <label htmlFor="showPassword">
-            Show Password
-          </label>
+          <label htmlFor="showPassword">Show Password</label>
         </div>
 
         <div className="forgot-password">
           <a href="#">Forgot Password?</a>
         </div>
 
-        <button onClick={handleLogin}>
-          Login
-        </button>
+        <button onClick={handleLogin}>Login</button>
 
         <p className="register-text">
-          Don't have an account?{" "}
-          <a href="#">Register</a>
+          Don't have an account? <a href="#">Register</a>
         </p>
       </div>
     </div>
