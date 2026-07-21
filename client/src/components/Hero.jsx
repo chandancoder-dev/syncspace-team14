@@ -1,6 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import "../styles/Hero.css";
 
 function Hero() {
+  const navigate = useNavigate();
+
   return (
     <section className="hero">
       <div className="hero-content">
@@ -20,7 +23,13 @@ function Hero() {
         </p>
 
         <div className="hero-buttons">
-          <button className="primary-btn">Create Room</button>
+          <button
+            className="primary-btn"
+            onClick={() => navigate("/create-room")}
+          >
+            Create Room
+          </button>
+
           <button className="secondary-btn">Join Room</button>
         </div>
       </div>
