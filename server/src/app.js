@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import roomRoutes from "./routes/room.routes.js";
 import userRoutes from "./routes/user.routes.js"
-import mongoose from "mongoose";
+import dbConnect from "./config/db.js";
 const app = express();
 
 // Middleware
@@ -15,9 +15,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 //Database connecttion.
-mongoose.connect("mongodb://127.0.0.1:27017/syncspaceDB")
-.then(()=>console.log("database connected"))
-.catch((e)=>console.log(e));
+dbConnect();
 // Routes
 app.use("/api/rooms", roomRoutes);
 app.use("/api",userRoutes);
