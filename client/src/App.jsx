@@ -1,3 +1,4 @@
+import "./styles/variables.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 // Pages
@@ -16,6 +17,7 @@ import Footer from "./components/Footer";
 
 function AppContent() {
   const location = useLocation();
+
   const hideChrome =
     location.pathname.startsWith("/workspace") ||
     location.pathname.startsWith("/dashboard");
