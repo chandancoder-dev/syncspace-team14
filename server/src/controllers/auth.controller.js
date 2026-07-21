@@ -6,13 +6,10 @@ const secretKey = process.env.JWT_SECRET || "secretKey";
 
 
 const login = async (req,res) =>{
-
     const {email , password} = req.body;
-
     try{
 
         const user = await UserModel.findOne({email : email});
-
         if(!user){
             return res.status(404).json({message : "user not found"});
         }
@@ -32,7 +29,7 @@ const login = async (req,res) =>{
     catch(e){
         console.log(e);
 
-        return res.status(500).json({message : "Fialed to login"});
+        return res.status(500).json({message : "Failed to login"});
     }
     
 }

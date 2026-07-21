@@ -1,6 +1,6 @@
 import "../styles/login.css";
-import { useState } from "react";
-
+import { useState} from "react";
+import axios from "axios";
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -10,7 +10,7 @@ function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async() => {
     setEmailError("");
     setPasswordError("");
 
@@ -30,8 +30,24 @@ function Login() {
     }
 
     if (isValid) {
-      alert("Login Successful! (Backend will be connected later)");
+
+      try{
+           const res = await axios.post("http://localhost:8000/api/auth/login",{
+              email : email,
+              password : password
+           });
+
+           console.log(res.data.message);
+            alert("Login Successful! (Backend will be connected later)");
+
+            localStorage.setItem("token", res.data.token);
+      }
+      catch(e){
+          console.log(e);
+      }
+     
     }
+
   };
 
   return (
