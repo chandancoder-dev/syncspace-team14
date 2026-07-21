@@ -7,19 +7,20 @@ function Hero() {
   return (
     <section className="hero">
       <div className="hero-content">
-        <p className="hero-tagline">Collaborative Coding Workspace</p>
+        <p className="hero-tagline">Real-Time Collaborative Coding Platform</p>
 
         <h1>
           Collaborate in <span>Real Time</span>
         </h1>
 
         <p className="hero-description">
-          Build, code, and brainstorm together in one collaborative workspace.
+          Code, sketch ideas, and collaborate instantly in one shared workspace.
         </p>
 
         <p className="hero-text">
-          Create secure coding rooms where developers and students can work
-          together, edit code, share ideas, and communicate seamlessly.
+          SyncSpace combines a live code editor, interactive whiteboard, and
+          real-time communication to help developers, students, and interviewers
+          collaborate seamlessly from anywhere.
         </p>
 
         <div className="hero-buttons">
@@ -30,16 +31,7 @@ function Hero() {
             Create Room
           </button>
 
-          <button
-            className="secondary-btn"
-            style={{
-              background: "#ffffff",
-              color: "#2563EB",
-              border: "2px solid #2563EB",
-            }}
-          >
-            Join Room
-          </button>
+          <button className="secondary-btn">Join Room</button>
         </div>
       </div>
     </section>

@@ -8,10 +8,6 @@
 
   border-bottom: 1px solid var(--border-color);
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
-
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
 .navbar a {
