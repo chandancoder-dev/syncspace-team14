@@ -4,6 +4,17 @@ import "../styles/Hero.css";
 function Hero() {
   const navigate = useNavigate();
 
+  const handleCreateRoom = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      navigate("/create-room");
+    } else {
+      alert("Please login to create a room.");
+      navigate("/login");
+    }
+  };
+
   return (
     <section className="hero">
       <div className="hero-content">
@@ -24,10 +35,7 @@ function Hero() {
         </p>
 
         <div className="hero-buttons">
-          <button
-            className="primary-btn"
-            onClick={() => navigate("/create-room")}
-          >
+          <button className="primary-btn" onClick={handleCreateRoom}>
             Create Room
           </button>
 
