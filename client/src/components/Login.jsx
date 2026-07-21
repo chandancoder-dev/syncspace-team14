@@ -39,6 +39,8 @@ function Login() {
 
            console.log(res.data.message);
             alert("Login Successful! (Backend will be connected later)");
+
+            localStorage.setItem("token", res.data.token);
       }
       catch(e){
           console.log(e);
