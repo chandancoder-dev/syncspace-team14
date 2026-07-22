@@ -3,7 +3,7 @@ import * as Y from 'yjs';
 import { io } from 'socket.io-client';
 
 // Server URL from .env file
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
 
 // Pick a random color for this user
 const randomColor = () => {

@@ -25,11 +25,14 @@ function CreateRoom() {
 
     setIsSubmitting(true);
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.post(`${SERVER_URL}/api/rooms`, {
         name: roomName,
         description,
         language,
         visibility,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       const roomId = response.data.room?.roomId || response.data.roomId;

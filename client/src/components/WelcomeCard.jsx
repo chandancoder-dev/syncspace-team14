@@ -17,8 +17,10 @@ export default function WelcomeCard() {
 
       try {
 
+        const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/dashboard/stats`
+          `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/dashboard/stats`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         setActiveRooms(response.data.stats.activeRooms);
