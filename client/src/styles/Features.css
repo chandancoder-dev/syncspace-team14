@@ -1,0 +1,88 @@
+.features {
+  padding: 90px 20px;
+  background-color: #111827;
+}
+
+.features-container {
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+
+.features-tagline {
+  display: inline-block;
+  padding: 8px 18px;
+  border: 1px solid #2563eb;
+  border-radius: 25px;
+  color: #60a5fa;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.features h2 {
+  font-size: 44px;
+  color: #ffffff;
+  margin-bottom: 15px;
+}
+
+.features-subtitle {
+  max-width: 700px;
+  margin: 0 auto 60px;
+  color: #9ca3af;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 320px;
+  background-color: #1f2937;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 35px 30px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  border-color: #2563eb;
+  box-shadow: 0 12px 25px rgba(37, 99, 235, 0.15);
+}
+
+.card h3 {
+  color: #3b82f6;
+  font-size: 24px;
+  margin-bottom: 18px;
+}
+
+.card p {
+  color: #d1d5db;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .features {
+    padding: 70px 20px;
+  }
+
+  .features h2 {
+    font-size: 36px;
+  }
+
+  .features-subtitle {
+    font-size: 16px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 350px;
+  }
+}
