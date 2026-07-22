@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import roomRoutes from "./routes/room.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import { protect } from "./middleware/auth.middleware.js";
 import dbConnect from "./config/db.js";
 
@@ -22,6 +23,7 @@ dbConnect();
 app.use("/api/auth", authRoutes);
 app.use("/api/rooms", protect, roomRoutes);
 app.use("/api/dashboard", protect, dashboardRoutes);
+app.use("/api", userRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
