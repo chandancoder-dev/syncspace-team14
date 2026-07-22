@@ -28,8 +28,10 @@ export default function RecentRooms() {
 
       try {
 
+        const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:5000/api/rooms"
+          `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/rooms`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         setRooms(response.data.rooms);
@@ -55,7 +57,7 @@ export default function RecentRooms() {
 
   // Open workspace
   const openRoom = (roomId) => {
-    navigate(`/room/${roomId}`);
+    navigate(`/workspace/${roomId}`);
   };
 
 

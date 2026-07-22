@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import DNavbar from "../components/DNavbar";
 import WelcomeCard from "../components/WelcomeCard";
 import ActionCard from "../components/ActionCard";
@@ -7,6 +8,8 @@ import { FaPlusCircle } from "react-icons/fa";
 import { MdMeetingRoom } from "react-icons/md";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-[#F0F7FF]">
 
@@ -27,6 +30,7 @@ export default function Dashboard() {
             title="Create Collaboration Room"
             description="Create a new collaborative workspace for whiteboarding, coding and team discussions."
             button="Create Room"
+            onClick={() => navigate("/create-room")}
           />
 
           <ActionCard
@@ -34,6 +38,7 @@ export default function Dashboard() {
             title="Join Existing Room"
             description="Join your teammates instantly using a Room ID and continue collaborating in real time."
             button="Join Room"
+            onClick={() => navigate("/join-room")}
           />
 
         </div>
