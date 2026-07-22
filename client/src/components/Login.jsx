@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { loginUser } from "../services/authService";
+import "../styles/login.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -12,10 +13,13 @@ function Login() {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [serverError, setServerError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = async () => {
     setEmailError("");
     setPasswordError("");
+    setServerError("");
 
     let isValid = true;
 
@@ -32,35 +36,56 @@ function Login() {
       isValid = false;
     }
 
-    if (isValid) {
-      alert("Login Successful! (Backend will be connected later)");
+    if (!isValid) return;
+
+    setIsSubmitting(true);
+    try {
+      const data = await loginUser({ email, password });
+      // Store token and user info
+      localStorage.setItem("token", data.token);
+      if (data.user) {
+        localStorage.setItem("syncspace_user", data.user.name);
+      }
+      navigate("/dashboard");
+    } catch (err) {
+      setServerError(
+        err?.response?.data?.message || "Login failed. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-    return (
-        <div className="login-container">
-            <div className="login-card">
+  return (
+    <div className="login-container">
+      <div className="login-card">
 
-                <h1>Welcome Back</h1>
-                <p>Sign in to continue to SyncSpace</p>
+        <h1>Welcome Back</h1>
+        <p>Sign in to continue to SyncSpace</p>
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+        {serverError && (
+          <p className="error-message" style={{ textAlign: "center", marginBottom: "15px" }}>
+            {serverError}
+          </p>
+        )}
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
         {emailError && (
           <p className="error-message">{emailError}</p>
         )}
 
-                <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+        <input
+          type={showPassword ? "text" : "password"}
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
         {passwordError && (
           <p className="error-message">{passwordError}</p>
@@ -78,17 +103,17 @@ function Login() {
           </label>
         </div>
 
-                <div className="forgot-password">
-                    <a href="#">Forgot Password?</a>
-                </div>
+        <div className="forgot-password">
+          <a href="#">Forgot Password?</a>
+        </div>
 
-        <button onClick={handleLogin}>
-          Login
+        <button onClick={handleLogin} disabled={isSubmitting}>
+          {isSubmitting ? "Logging in..." : "Login"}
         </button>
 
         <p className="register-text">
           Don't have an account?{" "}
-          <a href="#">Register</a>
+          <Link to="/register">Register</Link>
         </p>
       </div>
     </div>

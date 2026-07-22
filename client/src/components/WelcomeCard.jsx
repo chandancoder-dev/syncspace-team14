@@ -18,7 +18,7 @@ export default function WelcomeCard() {
       try {
 
         const response = await axios.get(
-          "http://localhost:5000/api/dashboard/stats"
+          `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/dashboard/stats`
         );
 
         setActiveRooms(response.data.stats.activeRooms);
