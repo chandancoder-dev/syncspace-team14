@@ -4,10 +4,12 @@ import dotenv from "dotenv";
 import cors from "cors";
 import app from "./app.js";
 import roomHandler from "./socket/roomHandler.js";
+import dbConnect from "./config/db.js";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 8000;
+dbConnect();
 
 const server = http.createServer(app);
 
