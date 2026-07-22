@@ -212,7 +212,7 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
 
   const renderShape = (shape) => {
     const common = {
-      key: shape.id, id: shape.id,
+      id: shape.id,
       draggable: tool === TOOLS.SELECT,
       onClick:   tool === TOOLS.SELECT ? () => setSelectedId(shape.id) : undefined,
       onTap:     tool === TOOLS.SELECT ? () => setSelectedId(shape.id) : undefined,
@@ -220,28 +220,28 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
     };
     switch (shape.type) {
       case 'pencil': return (
-        <Line {...common} points={shape.points} stroke={shape.stroke} strokeWidth={shape.strokeWidth}
+        <Line key={shape.id} {...common} points={shape.points} stroke={shape.stroke} strokeWidth={shape.strokeWidth}
           lineCap={shape.lineCap} lineJoin={shape.lineJoin} tension={shape.tension}
           globalCompositeOperation={shape.stroke === '#ffffff' ? 'destination-out' : 'source-over'} />
       );
       case 'rect': return (
-        <Rect {...common} x={shape.x} y={shape.y} width={shape.width} height={shape.height}
+        <Rect key={shape.id} {...common} x={shape.x} y={shape.y} width={shape.width} height={shape.height}
           stroke={shape.stroke} strokeWidth={shape.strokeWidth} fill={shape.fill || undefined} />
       );
       case 'circle': return (
-        <Circle {...common} x={shape.x} y={shape.y} radius={shape.radius || 0}
+        <Circle key={shape.id} {...common} x={shape.x} y={shape.y} radius={shape.radius || 0}
           stroke={shape.stroke} strokeWidth={shape.strokeWidth} fill={shape.fill || undefined} />
       );
       case 'line': return (
-        <Line {...common} points={shape.points} stroke={shape.stroke}
+        <Line key={shape.id} {...common} points={shape.points} stroke={shape.stroke}
           strokeWidth={shape.strokeWidth} lineCap={shape.lineCap} />
       );
       case 'arrow': return (
-        <Arrow {...common} points={shape.points} stroke={shape.stroke}
+        <Arrow key={shape.id} {...common} points={shape.points} stroke={shape.stroke}
           strokeWidth={shape.strokeWidth} fill={shape.fill} />
       );
       case 'text': return (
-        <Text {...common} x={shape.x} y={shape.y} text={shape.text}
+        <Text key={shape.id} {...common} x={shape.x} y={shape.y} text={shape.text}
           fontSize={shape.fontSize} fill={shape.fill}
           onDblClick={() => {
             const node = stageRef.current.findOne('#' + shape.id);

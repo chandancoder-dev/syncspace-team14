@@ -1,10 +1,13 @@
 import express from "express";
 import cors from "cors";
-
+import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import roomRoutes from "./routes/room.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
+import dbConnect from "./config/db.js";
 import userRoutes from "./routes/user.routes.js";
+dotenv.config();
+
 
 const app = express();
 
@@ -18,6 +21,9 @@ app.use(
 );
 
 app.use(express.json());
+
+// Database connection
+dbConnect();
 
 // Routes
 app.use("/api/auth", authRoutes);
