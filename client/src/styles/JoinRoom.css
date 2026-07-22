@@ -1,0 +1,103 @@
+.join-room-container {
+  min-height: 100vh;
+  background: #f0f7ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+}
+
+.join-room-card {
+  width: 100%;
+  max-width: 560px;
+  background: #ffffff;
+  border: 1px solid #bfdbfe;
+  border-radius: 18px;
+  padding: 40px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.join-room-card h1 {
+  text-align: center;
+  color: #1e3a8a;
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.join-room-description {
+  text-align: center;
+  color: #64748b;
+  font-size: 17px;
+  line-height: 1.6;
+  margin-bottom: 35px;
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1e3a8a;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+}
+
+.join-btn {
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.join-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .join-room-card {
+    padding: 30px 24px;
+  }
+
+  .join-room-card h1 {
+    font-size: 28px;
+  }
+
+  .join-room-description {
+    font-size: 15px;
+  }
+
+  .form-group label {
+    font-size: 16px;
+  }
+
+  .join-btn {
+    font-size: 16px;
+  }
+}
