@@ -4,18 +4,13 @@ dotenv.config();
 import http from "http";
 import { Server } from "socket.io";
 import app from "./app.js";
+import dbConnect from "./config/db.js";
 import roomHandler from "./socket/roomHandler.js";
+
+// Connect to database
+dbConnect();
 
 const PORT = process.env.PORT || 8000;
-import app from "./app.js";
-import connectDB from "./config/db.js";
-import roomHandler from "./socket/roomHandler.js";
-
-dotenv.config();
-
-const PORT = process.env.PORT || 5000;
-
-connectDB();
 
 const server = http.createServer(app);
 
