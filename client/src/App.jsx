@@ -14,6 +14,7 @@ import Features from "./components/Features";
 import Login from "./components/Login";
 import NavBar from "./components/Navbar";
 import Footer from "./components/Footer";
+import JoinRoom from "./components/JoinRoom";
 
 function AppContent() {
   const location = useLocation();
@@ -35,6 +36,7 @@ function AppContent() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create-room" element={<CreateRoom />} />
         <Route path="/workspace/:roomId" element={<WorkSpace />} />
+        <Route path="/join-room" element={<JoinRoom />} />
       </Routes>
 
       {!hideChrome && <Footer />}
