@@ -1,113 +1,107 @@
-import { FaPlus, FaUsers } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+import { FaUsers } from "react-icons/fa";
 import { MdMeetingRoom } from "react-icons/md";
 import { IoFlash } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
 
 export default function WelcomeCard() {
-  const navigate = useNavigate();
+
+  // Store active rooms count from backend
+  const [activeRooms, setActiveRooms] = useState(0);
+
+  // Fetch dashboard statistics
+  useEffect(() => {
+
+    const fetchDashboardStats = async () => {
+
+      try {
+
+        const response = await axios.get(
+          "http://localhost:5000/api/dashboard/stats"
+        );
+
+        setActiveRooms(response.data.stats.activeRooms);
+
+      } catch (error) {
+
+        console.error(
+          "Failed to fetch dashboard statistics:",
+          error
+        );
+
+      }
+
+    };
+
+    fetchDashboardStats();
+
+  }, []);
+
 
   const stats = [
     {
       title: "Online Users",
       value: "8",
       icon: <FaUsers />,
-      color: "text-green-400",
+      color: "text-emerald-500",
+      bg: "bg-emerald-50",
     },
     {
       title: "Active Rooms",
-      value: "5",
+      value: activeRooms,
       icon: <MdMeetingRoom />,
-      color: "text-blue-400",
+      color: "text-blue-600",
+      bg: "bg-blue-50",
     },
     {
       title: "Today's Sessions",
       value: "23",
       icon: <IoFlash />,
-      color: "text-yellow-400",
+      color: "text-amber-500",
+      bg: "bg-amber-50",
     },
   ];
 
   return (
-    <div
+    <section
       className="
-      rounded-3xl
-      bg-gradient-to-r
-      from-[#2B3648]
-      via-[#313D52]
-      to-[#334A7D]
-      border
-      border-[#475569]
-      p-8
-      shadow-xl
-    "
+        rounded-3xl
+        bg-linear-to-r
+        from-[#DCEBFF]
+        via-[#E5F0FF]
+        to-[#EEF6FF]
+        border
+        border-[#BFDBFE]
+        p-8
+        lg:p-10
+        shadow-sm
+      "
     >
-      <div className="grid lg:grid-cols-2 gap-8 items-center">
+
+      <div className="grid lg:grid-cols-2 gap-10 items-center">
 
         {/* LEFT SECTION */}
-
         <div>
 
-          <h1 className="text-5xl font-bold text-white">
+          <p className="text-blue-600 font-semibold text-sm uppercase tracking-wider mb-3">
+            SyncSpace Workspace
+          </p>
+
+          <h1 className="text-4xl lg:text-5xl font-bold text-[#1E3A8A]">
             Welcome Back 👋
           </h1>
 
-          <p className="mt-5 text-lg leading-8 text-[#CBD5E1] max-w-xl">
+          <p className="mt-5 text-lg leading-8 text-[#475569] max-w-xl">
             Build, draw, code and collaborate with your teammates in
             real-time using SyncSpace. Create a room or join your
             existing workspace instantly.
           </p>
 
-          <div className="flex gap-4 mt-8 flex-wrap">
-
-            <button
-              onClick={() => navigate("/create-room")}
-              className="
-              flex
-              items-center
-              gap-3
-              px-7
-              py-3
-              rounded-xl
-              bg-[#2563EB]
-              hover:bg-[#1D4ED8]
-              hover:scale-105
-              transition-all
-              duration-300
-              text-white
-              font-semibold
-              shadow-lg
-            "
-            >
-              <FaPlus />
-              Create Room
-            </button>
-
-            <button
-              onClick={() => navigate("/join-room")}
-              className="
-              px-7
-              py-3
-              rounded-xl
-              border
-              border-[#475569]
-              bg-[#111827]
-              hover:border-[#2563EB]
-              hover:bg-[#1E293B]
-              transition-all
-              duration-300
-              text-white
-              font-semibold
-            "
-            >
-              Join Room
-            </button>
-
-          </div>
-
         </div>
 
-        {/* RIGHT SECTION */}
 
+        {/* RIGHT SECTION - STATS */}
         <div className="grid grid-cols-3 gap-4">
 
           {stats.map((item) => (
@@ -115,30 +109,47 @@ export default function WelcomeCard() {
             <div
               key={item.title}
               className="
-              bg-[#111827]
-              rounded-2xl
-              border
-              border-[#334155]
-              p-5
-              text-center
-              hover:border-[#2563EB]
-              hover:-translate-y-1
-              hover:shadow-lg
-              hover:shadow-blue-500/20
-              transition-all
-              duration-300
-            "
+                bg-white/80
+                backdrop-blur-sm
+                rounded-2xl
+                border
+                border-[#BFDBFE]
+                p-5
+                text-center
+                shadow-sm
+                hover:shadow-md
+                hover:-translate-y-1
+                transition-all
+                duration-300
+              "
             >
 
-              <div className={`text-3xl mb-3 ${item.color}`}>
+              {/* Icon */}
+              <div
+                className={`
+                  ${item.bg}
+                  ${item.color}
+                  w-12
+                  h-12
+                  mx-auto
+                  rounded-xl
+                  flex
+                  items-center
+                  justify-center
+                  text-2xl
+                  mb-3
+                `}
+              >
                 {item.icon}
               </div>
 
-              <h2 className="text-4xl font-bold text-white">
+              {/* Value */}
+              <h2 className="text-3xl font-bold text-[#1E293B]">
                 {item.value}
               </h2>
 
-              <p className="text-sm text-[#CBD5E1] mt-2">
+              {/* Title */}
+              <p className="text-xs sm:text-sm text-[#64748B] mt-2">
                 {item.title}
               </p>
 
@@ -150,6 +161,6 @@ export default function WelcomeCard() {
 
       </div>
 
-    </div>
+    </section>
   );
 }

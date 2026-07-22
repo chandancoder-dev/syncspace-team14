@@ -1,34 +1,54 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import "./styles/variables.css";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+
+// Pages
 import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import CreateRoom from "./pages/CreateRoom";
+import Register from "./pages/Register";
+import WorkSpace from "./pages/workspace/WorkSpace";
+
+// Components
 import About from "./components/About";
 import Features from "./components/Features";
 import Login from "./components/Login";
 import NavBar from "./components/Navbar";
-import CreateRoom from "./pages/CreateRoom";
-import WorkSpace from "./pages/workspace/WorkSpace";
-import Dashboard from "./pages/Dashboard";
+import Footer from "./components/Footer";
+import JoinRoom from "./components/JoinRoom";
 
-function App() {
+function AppContent() {
   const location = useLocation();
 
-  const hideNav =
+  const hideChrome =
     location.pathname.startsWith("/workspace") ||
     location.pathname.startsWith("/dashboard");
 
   return (
     <>
-      {!hideNav && <NavBar />}
+      {!hideChrome && <NavBar />}
 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/features" element={<Features />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/create-room" element={<CreateRoom />} />
-        <Route path="/workspace" element={<WorkSpace />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/create-room" element={<CreateRoom />} />
+        <Route path="/workspace/:roomId" element={<WorkSpace />} />
+        <Route path="/join-room" element={<JoinRoom />} />
       </Routes>
+
+      {!hideChrome && <Footer />}
     </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
 

@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
-
-import rooms from "../data/rooms";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import {
   FaUsers,
@@ -12,199 +12,368 @@ export default function RecentRooms() {
 
   const navigate = useNavigate();
 
-  const openRoom = (id) => {
-    navigate(`/room/${id}`);
+  // Store rooms received from backend
+  const [rooms, setRooms] = useState([]);
+
+  // Loading state
+  const [loading, setLoading] = useState(true);
+
+  // Error state
+  const [error, setError] = useState("");
+
+  // Fetch rooms from backend
+  useEffect(() => {
+
+    const fetchRooms = async () => {
+
+      try {
+
+        const response = await axios.get(
+          "http://localhost:5000/api/rooms"
+        );
+
+        setRooms(response.data.rooms);
+
+      } catch (error) {
+
+        console.error("Failed to fetch rooms:", error);
+
+        setError("Failed to load recent rooms.");
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
+
+    fetchRooms();
+
+  }, []);
+
+
+  // Open workspace
+  const openRoom = (roomId) => {
+    navigate(`/room/${roomId}`);
   };
 
-  return (
 
-    <section>
+  // =============================
+  // LOADING STATE
+  // =============================
 
-      {/* Heading */}
+  if (loading) {
+    return (
+      <section>
 
-      <div className="flex items-center justify-between mb-8">
+        <div className="mb-8">
 
-        <div>
-
-          <h2 className="text-3xl font-bold text-white">
-
+          <h2 className="text-3xl font-bold text-[#1E3A8A]">
             Recent Rooms
-
           </h2>
 
-          <p className="text-[#94A3B8] mt-2">
-
-            Continue collaborating where you left off.
-
+          <p className="text-[#64748B] mt-2">
+            Loading your recent rooms...
           </p>
 
         </div>
 
-        <button
+      </section>
+    );
+  }
+
+
+  // =============================
+  // ERROR STATE
+  // =============================
+
+  if (error) {
+    return (
+      <section>
+
+        <div className="mb-8">
+
+          <h2 className="text-3xl font-bold text-[#1E3A8A]">
+            Recent Rooms
+          </h2>
+
+          <p className="text-red-500 mt-2">
+            {error}
+          </p>
+
+        </div>
+
+      </section>
+    );
+  }
+
+
+  return (
+    <section>
+
+      {/* ============================= */}
+      {/* SECTION HEADER */}
+      {/* ============================= */}
+
+      <div className="flex items-start justify-between mb-8">
+
+        {/* Heading */}
+        <div>
+
+          <h2 className="text-3xl font-bold text-[#1E3A8A]">
+            Recent Rooms
+          </h2>
+
+          <p className="text-[#64748B] mt-2">
+            Continue collaborating where you left off.
+          </p>
+
+        </div>
+
+
+        {/* View All */}
+        <Link
+          to="/rooms"
           className="
-            text-[#3B82F6]
-            font-medium
-            hover:text-white
-            transition
+            inline-flex
+            items-center
+            justify-center
+            bg-[#DBEAFE]
+            text-[#1D4ED8]
+            text-sm
+            font-semibold
+            px-4
+            py-2
+            rounded-lg
+            hover:bg-[#BFDBFE]
+            transition-colors
+            duration-200
+            whitespace-nowrap
           "
         >
           View All
-        </button>
+        </Link>
 
       </div>
 
-      {/* Cards */}
 
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+      {/* ============================= */}
+      {/* EMPTY STATE */}
+      {/* ============================= */}
 
-        {rooms.map((room) => (
+      {rooms.length === 0 ? (
 
-          <div
-            key={room.id}
-            className="
-              bg-[#1E293B]
-              rounded-3xl
-              border
-              border-[#334155]
-              p-6
-              hover:border-[#2563EB]
-              hover:-translate-y-2
-              hover:shadow-2xl
-              transition-all
-              duration-300
-            "
-          >
+        <div
+          className="
+            bg-white
+            rounded-3xl
+            border
+            border-[#BFDBFE]
+            p-8
+            text-center
+            shadow-sm
+          "
+        >
 
-            {/* Room Icon */}
+          <h3 className="text-xl font-semibold text-[#1E3A8A]">
+            No Recent Rooms
+          </h3>
 
-            <div
-              className="
-                w-16
-                h-16
-                rounded-2xl
-                bg-[#2563EB]/20
-                flex
-                items-center
-                justify-center
-                text-3xl
-              "
-            >
-              🚀
-            </div>
+          <p className="mt-2 text-[#64748B]">
+            Create or join a collaboration room to get started.
+          </p>
 
-            {/* Room Name */}
+        </div>
 
-            <h3
-              className="
-                mt-6
-                text-2xl
-                font-bold
-                text-white
-              "
-            >
-              {room.name}
-            </h3>
+      ) : (
 
-            {/* Status */}
+        /* ============================= */
+        /* ROOM CARDS */
+        /* ============================= */
+
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+          {rooms.map((room) => (
 
             <div
+              key={room.roomId}
               className="
-                mt-3
+                group
+                h-full
+                bg-white
+                rounded-3xl
+                border
+                border-[#BFDBFE]
+                p-6
+                shadow-sm
+                hover:border-[#60A5FA]
+                hover:-translate-y-1
+                hover:shadow-xl
+                hover:shadow-blue-100/70
+                transition-all
+                duration-300
                 flex
-                items-center
-                gap-2
+                flex-col
               "
             >
 
-              <FaCircle
-                className={
-                  room.color === "green"
-                    ? "text-green-500 text-xs"
-                    : room.color === "blue"
-                    ? "text-blue-500 text-xs"
-                    : "text-gray-500 text-xs"
-                }
-              />
+              {/* ============================= */}
+              {/* ROOM ICON */}
+              {/* ============================= */}
 
-              <span className="text-[#CBD5E1]">
+              <div
+                className="
+                  w-16
+                  h-16
+                  rounded-2xl
+                  bg-[#EFF6FF]
+                  border
+                  border-[#DBEAFE]
+                  flex
+                  items-center
+                  justify-center
+                  text-3xl
+                  shadow-sm
+                  group-hover:bg-[#DBEAFE]
+                  transition-colors
+                  duration-300
+                "
+              >
+                🚀
+              </div>
 
-                {room.status}
 
-              </span>
+              {/* ============================= */}
+              {/* ROOM DETAILS */}
+              {/* ============================= */}
+
+              <div className="flex-1">
+
+                {/* Room Name */}
+                <h3
+                  className="
+                    mt-6
+                    text-2xl
+                    font-bold
+                    text-[#1E3A8A]
+                    truncate
+                  "
+                  title={room.name}
+                >
+                  {room.name}
+                </h3>
+
+
+                {/* Room Status */}
+                <div
+                  className="
+                    mt-3
+                    flex
+                    items-center
+                    gap-2
+                  "
+                >
+
+                  <FaCircle className="text-emerald-500 text-[10px]" />
+
+                  <span className="text-sm text-[#64748B]">
+                    {room.visibility} Room
+                  </span>
+
+                </div>
+
+
+                {/* Members */}
+                <div
+                  className="
+                    mt-6
+                    flex
+                    items-center
+                    gap-3
+                    text-sm
+                    text-[#64748B]
+                  "
+                >
+
+                  <FaUsers className="text-[#94A3B8]" />
+
+                  <span>
+                    {room.participants?.length || 0} Members
+                  </span>
+
+                </div>
+
+
+                {/* Language */}
+                <div className="mt-4">
+
+                  <p className="text-xs text-[#94A3B8]">
+                    Language
+                  </p>
+
+                  <p className="mt-1 text-sm text-[#334155] font-medium">
+                    {room.language}
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              {/* ============================= */}
+              {/* OPEN WORKSPACE BUTTON */}
+              {/* ============================= */}
+
+              <button
+                type="button"
+                onClick={() => openRoom(room.roomId)}
+                aria-label={`Open ${room.name} workspace`}
+                className="
+                  mt-8
+                  w-full
+                  bg-[#2563EB]
+                  hover:bg-[#1D4ED8]
+                  rounded-xl
+                  py-3
+                  px-4
+                  text-white
+                  font-semibold
+                  flex
+                  items-center
+                  justify-center
+                  gap-3
+                  shadow-sm
+                  hover:shadow-lg
+                  hover:shadow-blue-200
+                  transition-all
+                  duration-300
+                  cursor-pointer
+                "
+              >
+
+                <span>
+                  Open Workspace
+                </span>
+
+                <FaArrowRight
+                  className="
+                    transition-transform
+                    duration-300
+                    group-hover:translate-x-1
+                  "
+                />
+
+              </button>
 
             </div>
 
-            {/* Members */}
+          ))}
 
-            <div
-              className="
-                mt-6
-                flex
-                items-center
-                gap-3
-                text-[#CBD5E1]
-              "
-            >
+        </div>
 
-              <FaUsers />
-
-              {room.members} Members
-
-            </div>
-
-            {/* Last Active */}
-
-            <div className="mt-3">
-
-              <p className="text-sm text-[#94A3B8]">
-
-                Last Active
-
-              </p>
-
-              <p className="text-white">
-
-                {room.lastActive}
-
-              </p>
-
-            </div>
-
-            {/* Button */}
-
-            <button
-              onClick={() => openRoom(room.id)}
-              className="
-                mt-8
-                w-full
-                bg-[#2563EB]
-                hover:bg-[#1D4ED8]
-                rounded-xl
-                py-3
-                text-white
-                font-semibold
-                flex
-                items-center
-                justify-center
-                gap-3
-                transition
-              "
-            >
-
-              Open Workspace
-
-              <FaArrowRight />
-
-            </button>
-
-          </div>
-
-        ))}
-
-      </div>
+      )}
 
     </section>
-
   );
-
 }

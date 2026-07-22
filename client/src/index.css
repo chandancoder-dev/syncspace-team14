@@ -1,13 +1,16 @@
 @import "tailwindcss";
 
-@layer base {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+@theme {
+  --color-bg: #0F172A;
+  --color-card: #1E293B;
+  --color-field: #0B1220;
+  --color-border: #334155;
+  --color-primary: #2563EB;
+  --color-primaryHover: #1D4ED8;
+  --color-heading: #FFFFFF;
+  --color-paragraph: #94A3B8;
+}
 
-  body {
-    font-family: Arial, sans-serif;
-  }
+html {
+  scroll-behavior: smooth;
 }

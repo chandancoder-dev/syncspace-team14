@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -9,7 +13,7 @@ function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setEmailError("");
     setPasswordError("");
 
@@ -28,10 +32,10 @@ function Login() {
       isValid = false;
     }
 
-        if (isValid) {
-            alert("Login Successful! (Backend will be connected later)");
-        }
-    };
+    if (isValid) {
+      alert("Login Successful! (Backend will be connected later)");
+    }
+  };
 
     return (
         <div className="login-container">
@@ -47,9 +51,9 @@ function Login() {
                     onChange={(e) => setEmail(e.target.value)}
                 />
 
-                {emailError && (
-                    <p className="error-message">{emailError}</p>
-                )}
+        {emailError && (
+          <p className="error-message">{emailError}</p>
+        )}
 
                 <input
                     type={showPassword ? "text" : "password"}
@@ -58,38 +62,37 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                {passwordError && (
-                    <p className="error-message">{passwordError}</p>
-                )}
+        {passwordError && (
+          <p className="error-message">{passwordError}</p>
+        )}
 
-                <div className="show-password">
-                    <input
-                        type="checkbox"
-                        id="showPassword"
-                        checked={showPassword}
-                        onChange={() => setShowPassword(!showPassword)}
-                    />
-                    <label htmlFor="showPassword">
-                        Show Password
-                    </label>
-                </div>
+        <div className="show-password">
+          <input
+            type="checkbox"
+            id="showPassword"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
+          <label htmlFor="showPassword">
+            Show Password
+          </label>
+        </div>
 
                 <div className="forgot-password">
                     <a href="#">Forgot Password?</a>
                 </div>
 
-                <button onClick={handleLogin}>
-                    Login
-                </button>
+        <button onClick={handleLogin}>
+          Login
+        </button>
 
-                <p className="register-text">
-                    Don't have an account?{" "}
-                    <a href="#">Register</a>
-                </p>
-
-            </div>
-        </div>
-    );
+        <p className="register-text">
+          Don't have an account?{" "}
+          <a href="#">Register</a>
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export default Login;
