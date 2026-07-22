@@ -1,8 +1,43 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import { FaUsers } from "react-icons/fa";
 import { MdMeetingRoom } from "react-icons/md";
 import { IoFlash } from "react-icons/io5";
 
 export default function WelcomeCard() {
+
+  // Store active rooms count from backend
+  const [activeRooms, setActiveRooms] = useState(0);
+
+  // Fetch dashboard statistics
+  useEffect(() => {
+
+    const fetchDashboardStats = async () => {
+
+      try {
+
+        const response = await axios.get(
+          "http://localhost:5000/api/dashboard/stats"
+        );
+
+        setActiveRooms(response.data.stats.activeRooms);
+
+      } catch (error) {
+
+        console.error(
+          "Failed to fetch dashboard statistics:",
+          error
+        );
+
+      }
+
+    };
+
+    fetchDashboardStats();
+
+  }, []);
+
 
   const stats = [
     {
@@ -14,7 +49,7 @@ export default function WelcomeCard() {
     },
     {
       title: "Active Rooms",
-      value: "5",
+      value: activeRooms,
       icon: <MdMeetingRoom />,
       color: "text-blue-600",
       bg: "bg-blue-50",

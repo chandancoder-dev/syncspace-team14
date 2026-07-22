@@ -2,7 +2,7 @@ import UserModel from "../models/User.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-const secretKey = process.env.JWT_SECRET || "secretKey";
+const secretKey = process.env.JWT_SECRET;
 
 // Register
 export const register = async (req, res) => {
@@ -65,9 +65,13 @@ export const login = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ userid: user._id }, secretKey, {
-      expiresIn: "24h",
-    });
+    const token = jwt.sign(
+      { userid: user._id },
+      secretKey,
+      {
+        expiresIn: "24h",
+      }
+    );
 
     return res.status(200).json({
       token,

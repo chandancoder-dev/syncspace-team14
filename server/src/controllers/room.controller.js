@@ -44,6 +44,24 @@ export const createRoom = (req, res) => {
   }
 };
 
+// Get All Rooms
+export const getAllRooms = (req, res) => {
+  try {
+    const allRooms = Array.from(rooms.values());
+
+    res.status(200).json({
+      success: true,
+      rooms: allRooms,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch rooms",
+    });
+  }
+};
+
+
 // Get Room
 export const getRoom = (req, res) => {
   try {
