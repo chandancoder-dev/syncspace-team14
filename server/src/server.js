@@ -7,9 +7,9 @@ import roomHandler from "./socket/roomHandler.js";
 
 dotenv.config();
 
-connectDB();
-
 const PORT = process.env.PORT || 5000;
+
+connectDB();
 
 const server = http.createServer(app);
 

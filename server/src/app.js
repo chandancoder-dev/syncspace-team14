@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+
 import authRoutes from "./routes/authRoutes.js";
 import roomRoutes from "./routes/room.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
@@ -11,6 +12,7 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:5173",
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
     credentials: true,
   })
 );
