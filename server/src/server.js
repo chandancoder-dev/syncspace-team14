@@ -3,6 +3,13 @@ import { Server } from "socket.io";
 import dotenv from "dotenv";
 import cors from "cors";
 import app from "./app.js";
+import connectDB from "./config/db.js";
+
+dotenv.config();
+
+connectDB();
+
+const PORT = process.env.PORT || 5000;
 import roomHandler from "./socket/roomHandler.js";
 
 dotenv.config();

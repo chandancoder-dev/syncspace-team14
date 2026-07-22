@@ -1,4 +1,3 @@
-import "../styles/login.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -34,49 +33,38 @@ function Login() {
     }
 
     if (isValid) {
-      try {
-        const res = await axios.post("http://localhost:8000/api/auth/login", {
-          email,
-          password,
-        });
-
-        localStorage.setItem("token", res.data.token);
-
-        alert("Login Successful!");
-
-        // Redirect to Create Room page
-        navigate("/create-room");
-      } catch (e) {
-        console.log(e);
-
-        alert(e.response?.data?.message || "Login failed. Please try again.");
-      }
+      alert("Login Successful! (Backend will be connected later)");
     }
   };
 
-  return (
-    <div className="login-container">
-      <div className="login-card">
-        <h1>Welcome Back</h1>
-        <p>Sign in to continue to SyncSpace</p>
+    return (
+        <div className="login-container">
+            <div className="login-card">
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+                <h1>Welcome Back</h1>
+                <p>Sign in to continue to SyncSpace</p>
 
-        {emailError && <p className="error-message">{emailError}</p>}
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
 
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        {emailError && (
+          <p className="error-message">{emailError}</p>
+        )}
 
-        {passwordError && <p className="error-message">{passwordError}</p>}
+                <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+
+        {passwordError && (
+          <p className="error-message">{passwordError}</p>
+        )}
 
         <div className="show-password">
           <input
@@ -85,17 +73,22 @@ function Login() {
             checked={showPassword}
             onChange={() => setShowPassword(!showPassword)}
           />
-          <label htmlFor="showPassword">Show Password</label>
+          <label htmlFor="showPassword">
+            Show Password
+          </label>
         </div>
 
-        <div className="forgot-password">
-          <a href="#">Forgot Password?</a>
-        </div>
+                <div className="forgot-password">
+                    <a href="#">Forgot Password?</a>
+                </div>
 
-        <button onClick={handleLogin}>Login</button>
+        <button onClick={handleLogin}>
+          Login
+        </button>
 
         <p className="register-text">
-          Don't have an account? <a href="#">Register</a>
+          Don't have an account?{" "}
+          <a href="#">Register</a>
         </p>
       </div>
     </div>

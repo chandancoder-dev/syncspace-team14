@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import authRoutes from "./routes/authRoutes.js";
+
 import dotenv from "dotenv";
 import roomRoutes from "./routes/room.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
@@ -11,6 +13,11 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Routes
+app.use("/api/auth", authRoutes);
+
+export default app;
 const corsOptions = {
     origin: "http://localhost:5173", 
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
