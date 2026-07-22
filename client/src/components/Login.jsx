@@ -32,110 +32,114 @@ function Login() {
             alert("Login Successful! (Backend will be connected later)");
         }
     };
-
     const styles = {
-        container: {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "90vh",
-            backgroundColor: "#0f172a",
-            padding: "20px",
-        },
+    container: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "90vh",
+        backgroundColor: "#F0F7FF",
+        padding: "20px",
+    },
 
-        card: {
-            width: "100%",
-            maxWidth: "400px",
-            backgroundColor: "#1e293b",
-            padding: "35px",
-            borderRadius: "12px",
-            textAlign: "center",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
-        },
+    card: {
+        width: "100%",
+        maxWidth: "430px",
+        backgroundColor: "#FFFFFF",
+        padding: "35px",
+        borderRadius: "16px",
+        border: "1px solid #DBEAFE",
+        textAlign: "center",
+        boxShadow: "0 8px 24px rgba(30, 58, 138, 0.12)",
+    },
 
-        heading: {
-            color: "#ffffff",
-            fontSize: "3rem",
-            fontWeight: "700",
-            marginBottom: "10px",
-            lineHeight: "1.1",
-            whiteSpace: "nowrap",
-        },
+    heading: {
+        color: "#1E3A8A",
+        fontSize: "2.2rem",
+        fontWeight: "700",
+        marginBottom: "10px",
+        lineHeight: "1.1",
+    },
 
-        subtitle: {
-            color: "#cbd5e1",
-            marginBottom: "25px",
-            fontSize: "16px",
-        },
+    subtitle: {
+        color: "#64748B",
+        marginBottom: "25px",
+        fontSize: "16px",
+    },
 
-        input: {
-            width: "100%",
-            padding: "12px",
-            marginBottom: "15px",
-            border: "none",
-            borderRadius: "8px",
-            backgroundColor: "#334155",
-            color: "#ffffff",
-            fontSize: "16px",
-            boxSizing: "border-box",
-        },
+    input: {
+        width: "100%",
+        padding: "12px",
+        marginBottom: "15px",
+        border: "1px solid #BFDBFE",
+        borderRadius: "8px",
+        backgroundColor: "#FFFFFF",
+        color: "#475569",
+        fontSize: "16px",
+        outline: "none",
+        boxSizing: "border-box",
+    },
 
-        error: {
-            color: "#ff4d4f",
-            fontSize: "14px",
-            textAlign: "left",
-            marginTop: "-8px",
-            marginBottom: "10px",
-        },
+    error: {
+        color: "#EF4444",
+        fontSize: "14px",
+        textAlign: "left",
+        marginTop: "-8px",
+        marginBottom: "10px",
+    },
 
-        showPassword: {
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            marginBottom: "18px",
-            color: "#cbd5e1",
-            fontSize: "14px",
-        },
+    showPassword: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        marginBottom: "18px",
+        color: "#475569",
+        fontSize: "14px",
+    },
 
-        checkbox: {
-            width: "auto",
-            margin: 0,
-        },
+    checkbox: {
+        width: "auto",
+        margin: 0,
+        accentColor: "#2563EB",
+    },
 
-        forgotPassword: {
-            textAlign: "right",
-            marginBottom: "18px",
-        },
+    forgotPassword: {
+        textAlign: "right",
+        marginBottom: "18px",
+    },
 
-        link: {
-            color: "#60a5fa",
-            textDecoration: "none",
-            fontSize: "14px",
-        },
+    link: {
+        color: "#2563EB",
+        textDecoration: "none",
+        fontSize: "14px",
+        fontWeight: "500",
+    },
 
-        button: {
-            width: "100%",
-            padding: "12px",
-            backgroundColor: "#2563eb",
-            color: "#ffffff",
-            border: "none",
-            borderRadius: "8px",
-            fontSize: "16px",
-            cursor: "pointer",
-        },
+    button: {
+        width: "100%",
+        padding: "12px",
+        backgroundColor: "#2563EB",
+        color: "#FFFFFF",
+        border: "none",
+        borderRadius: "8px",
+        fontSize: "16px",
+        fontWeight: "600",
+        cursor: "pointer",
+        transition: "0.3s ease",
+    },
 
-        register: {
-            marginTop: "20px",
-            color: "#cbd5e1",
-            fontSize: "14px",
-        },
+    register: {
+        marginTop: "20px",
+        color: "#64748B",
+        fontSize: "14px",
+    },
 
-        registerLink: {
-            color: "#60a5fa",
-            textDecoration: "none",
-            fontWeight: "600",
-        },
-    };
+    registerLink: {
+        color: "#2563EB",
+        textDecoration: "none",
+        fontWeight: "600",
+    },
+};
 
     return (
         <div style={styles.container}>
