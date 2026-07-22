@@ -5,6 +5,7 @@ export default function ActionCard({
   description,
   button,
   icon,
+  onClick,
 }) {
   return (
     <div
@@ -78,6 +79,7 @@ export default function ActionCard({
 
       {/* Button */}
       <button
+        onClick={onClick}
         className="
           w-full
           mt-8
