@@ -2,7 +2,7 @@ import UserModel from "../models/User.model.js";
 import jwt from "jsonwebtoken";
 import bycrypt from "bcryptjs"
 
-const secretKey = process.env.JWT_SECRET || "secretKey";
+const secretKey = process.env.JWT_SECRET;
 
 
 const login = async (req,res) =>{
@@ -15,7 +15,7 @@ const login = async (req,res) =>{
         }
         
         const isMatch = await bycrypt.compare(password,user.password);
-
+        
         if(!isMatch){
             return res.status(401).json({message : "Wrong password"});
         }
