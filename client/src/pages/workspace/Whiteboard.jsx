@@ -1,6 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
 import { Stage, Layer, Line, Rect, Circle, Arrow, Text, Transformer } from 'react-konva';
 import * as Y from 'yjs';
+import {
+  FiMousePointer,
+  FiEdit2,
+  FiSquare,
+  FiCircle,
+  FiMinus,
+  FiArrowUpRight,
+  FiType,
+  FiSlash,
+  FiZoomIn,
+  FiZoomOut,
+  FiMaximize2,
+  FiRotateCcw,
+  FiRotateCw,
+  FiTrash2,
+} from 'react-icons/fi';
+import { FaEraser } from 'react-icons/fa';
 
 const TOOLS = {
   SELECT: 'select',
@@ -14,14 +31,25 @@ const TOOLS = {
 };
 
 const TOOL_ICONS = {
-  [TOOLS.SELECT]: '⬡',
-  [TOOLS.PENCIL]: '✏️',
-  [TOOLS.RECT]:   '▭',
-  [TOOLS.CIRCLE]: '◯',
-  [TOOLS.LINE]:   '╱',
-  [TOOLS.ARROW]:  '➜',
-  [TOOLS.TEXT]:   'T',
-  [TOOLS.ERASER]: '⌫',
+  [TOOLS.SELECT]: <FiMousePointer />,
+  [TOOLS.PENCIL]: <FiEdit2 />,
+  [TOOLS.RECT]:   <FiSquare />,
+  [TOOLS.CIRCLE]: <FiCircle />,
+  [TOOLS.LINE]:   <FiMinus />,
+  [TOOLS.ARROW]:  <FiArrowUpRight />,
+  [TOOLS.TEXT]:   <FiType />,
+  [TOOLS.ERASER]: <FaEraser />,
+};
+
+const TOOL_LABELS = {
+  [TOOLS.SELECT]: 'Select',
+  [TOOLS.PENCIL]: 'Pencil',
+  [TOOLS.RECT]:   'Rectangle',
+  [TOOLS.CIRCLE]: 'Circle',
+  [TOOLS.LINE]:   'Line',
+  [TOOLS.ARROW]:  'Arrow',
+  [TOOLS.TEXT]:   'Text',
+  [TOOLS.ERASER]: 'Eraser',
 };
 
 
@@ -257,7 +285,7 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
   const renderRemoteCursors = () =>
     Array.from(users.entries()).map(([sid, { user, cursor }]) => {
       if (!cursor) return null;
-      const color = user?.color || '#888';
+      const color = user?.color || '#94A3B8';
       return (
         <div key={sid} style={{ position: 'absolute', left: cursor.x * scale + position.x, top: cursor.y * scale + position.y, pointerEvents: 'none', zIndex: 30 }}>
           <svg width="16" height="20" viewBox="0 0 16 20">
@@ -273,37 +301,79 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
     });
 
   const toolBtnStyle = (active) => ({
-    width: 38, height: 38, borderRadius: '8px', border: 'none',
-    cursor: 'pointer', fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center',
-    background: active ? '#5473b8a1' : '#c6d2e8c4',
-    color:      active ? '#ffffff' : '#374151',
-    boxShadow:  active ? '0 2px 8px rgba(37,99,235,0.35)' : 'none',
-    transition: 'all 0.15s',
+    width: 40, height: 40, borderRadius: '10px',
+    border: active ? '1px solid transparent' : '1px solid #DBEAFE',
+    cursor: 'pointer', fontSize: 19, display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: active ? '#3B82F6' : '#FFFFFF',
+    color:      active ? '#ffffff' : '#000000',
+    boxShadow:  active ? '0 2px 10px rgba(59, 130, 246, 0.35)' : 'none',
+    transition: 'all 0.15s ease',
   });
 
   const iconBtnStyle = (danger = false) => ({
-    width: 32, height: 32, borderRadius: '6px', border: '1px solid #E5E7EB',
+    width: 32, height: 32, borderRadius: '6px', border: '1px solid #DBEAFE',
     cursor: 'pointer', fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center',
-    background: danger ? '#FEF2F2' : '#F3F4F6',
-    color:      danger ? '#EF4444' : '#374151',
+    background: danger ? '#FEF2F2' : '#EFF6FF',
+    color:      danger ? '#EF4444' : '#1E3A8A',
     transition: 'background 0.12s',
   });
 
-  const dividerStyle = { width: 1, height: 28, background: '#E5E7EB', margin: '0 4px', flexShrink: 0 };
+  const isCompact = stageSize.width > 0 && stageSize.width < 640;
+
+  const dividerStyle = isCompact
+    ? { width: 28, height: 1, background: '#DBEAFE', margin: '4px 0', flexShrink: 0 }
+    : { width: 1, height: 28, background: '#DBEAFE', margin: '0 4px', flexShrink: 0 };
+
+  const toolbarStyle = isCompact
+    ? {
+        position: 'absolute',
+        top: 16,
+        left: 16,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 6,
+        padding: 8,
+        background: '#FFFFFF',
+        border: '1px solid #DBEAFE',
+        borderRadius: 14,
+        boxShadow: '0 8px 24px rgba(30, 58, 138, 0.15)',
+        zIndex: 20,
+        maxHeight: 'calc(100% - 32px)',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+      }
+    : {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: '8px 20px',
+        background: '#ffffff',
+        borderBottom: '1px solid #DBEAFE',
+        boxShadow: '0 1px 4px rgba(30, 58, 138, 0.06)',
+        zIndex: 10,
+        minHeight: 58,
+        flexWrap: 'wrap',
+      };
+
+  const groupStyle = {
+    display: 'flex',
+    flexDirection: isCompact ? 'column' : 'row',
+    alignItems: 'center',
+    gap: isCompact ? 4 : 5,
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100%',
-      background: '#F9FAFB', overflow: 'hidden', fontFamily: 'system-ui, sans-serif', position: 'relative' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%',
+      background: '#F0F7FF', overflow: 'hidden', fontFamily: 'system-ui, sans-serif', position: 'relative' }}>
 
       {/* Toolbar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 20px',
-        background: '#ffffff', borderBottom: '1px solid #E5E7EB',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.08)', zIndex: 10, minHeight: 58, flexWrap: 'wrap' }}>
+      <div style={toolbarStyle}>
 
         {/* Tool buttons */}
-        <div style={{ display: 'flex', gap: 3 }}>
+        <div style={groupStyle}>
           {Object.values(TOOLS).map((t) => (
-            <button key={t} title={t} onClick={() => { setTool(t); setSelectedId(null); }}
+            <button key={t} title={TOOL_LABELS[t]} onClick={() => { setTool(t); setSelectedId(null); }}
               style={toolBtnStyle(tool === t)}>
               {TOOL_ICONS[t]}
             </button>
@@ -313,52 +383,67 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
         <div style={dividerStyle} />
 
         {/* Stroke color */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <span style={{ fontSize: 11, color: '#6B7280', userSelect: 'none' }}>Stroke</span>
+        <div style={groupStyle}>
+          {!isCompact && <span style={{ fontSize: 11, color: '#64748B', userSelect: 'none' }}>Stroke</span>}
           <input type="color" value={strokeColor} onChange={(e) => setStroke(e.target.value)}
-            style={{ width: 38, height: 38, border: 'none', borderRadius: '8px', cursor: 'pointer', padding: 2, background: '#c6d2e8c4' }} />
+            title="Stroke color"
+            style={{ width: 40, height: 40, border: '1px solid #DBEAFE', borderRadius: '10px', cursor: 'pointer', padding: 2, background: '#EFF6FF' }} />
         </div>
 
         {/* Fill color */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <span style={{ fontSize: 11, color: '#6B7280', userSelect: 'none' }}>Fill</span>
+        <div style={groupStyle}>
+          {!isCompact && <span style={{ fontSize: 11, color: '#64748B', userSelect: 'none' }}>Fill</span>}
           <input type="color" value={fillColor ?? '#ffffff'} onChange={(e) => setFill(e.target.value)}
-            style={{ width: 38, height: 38, border: 'none', borderRadius: '8px', cursor: 'pointer', padding: 2, background: '#c6d2e8c4' }} />
-          <button onClick={() => setFill(null)} title="No fill"
-            style={toolBtnStyle(fillColor === null)}>
-            ∅
+            title="Fill color"
+            style={{ width: 40, height: 40, border: '1px solid #DBEAFE', borderRadius: '10px', cursor: 'pointer', padding: 2, background: '#EFF6FF' }} />
+          <button
+            onClick={() => setFill(null)}
+            title={fillColor === null ? 'No fill (current)' : 'Remove fill'}
+            style={{
+              ...toolBtnStyle(false),
+              ...(fillColor === null && {
+                background: '#F1F5F9',
+                color: '#64748B',
+                borderColor: '#CBD5E1',
+              }),
+            }}
+          >
+            <FiSlash />
           </button>
         </div>
 
         <div style={dividerStyle} />
 
         {/* Stroke width */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <span style={{ fontSize: 11, color: '#6B7280', userSelect: 'none' }}>Width</span>
+        <div style={groupStyle}>
+          {!isCompact && <span style={{ fontSize: 11, color: '#64748B', userSelect: 'none' }}>Width</span>}
           <input type="range" min={1} max={20} value={strokeWidth}
+            title={`Width: ${strokeWidth}px`}
             onChange={(e) => setWidth(Number(e.target.value))}
-            style={{ width: 80, accentColor: '#2563EB' }} />
-          <span style={{ fontSize: 11, color: '#6B7280', minWidth: 28 }}>{strokeWidth}px</span>
+            style={{ width: isCompact ? 40 : 80, accentColor: '#2563EB' }} />
+          {!isCompact && <span style={{ fontSize: 11, color: '#64748B', minWidth: 28 }}>{strokeWidth}px</span>}
         </div>
 
         <div style={dividerStyle} />
 
         {/* Zoom */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <button onClick={() => setScale((s) => Math.min(s * 1.2, 5))} title="Zoom In" style={toolBtnStyle(false)}>+</button>
-          <span style={{ fontSize: 11, color: '#6B7280', minWidth: 40, textAlign: 'center' }}>{Math.round(scale * 100)}%</span>
-          <button onClick={() => setScale((s) => Math.max(s / 1.2, 0.2))} title="Zoom Out" style={toolBtnStyle(false)}>−</button>
-          <button onClick={() => { setScale(1); setPosition({ x: 0, y: 0 }); }} title="Reset" style={toolBtnStyle(false)}>⌖</button>
+        <div style={groupStyle}>
+          <button onClick={() => setScale((s) => Math.min(s * 1.2, 5))} title="Zoom In" style={toolBtnStyle(false)}><FiZoomIn /></button>
+          {!isCompact && (
+            <span style={{ fontSize: 11, color: '#64748B', minWidth: 40, textAlign: 'center' }}>{Math.round(scale * 100)}%</span>
+          )}
+          <button onClick={() => setScale((s) => Math.max(s / 1.2, 0.2))} title="Zoom Out" style={toolBtnStyle(false)}><FiZoomOut /></button>
+          <button onClick={() => { setScale(1); setPosition({ x: 0, y: 0 }); }} title="Reset View" style={toolBtnStyle(false)}><FiMaximize2 /></button>
         </div>
 
         <div style={dividerStyle} />
 
         {/* Undo / Redo / Clear */}
-        <div style={{ display: 'flex', gap: 4 }}>
-          <button onClick={undo}        title="Undo (Ctrl+Z)" style={toolBtnStyle(false)}>↩</button>
-          <button onClick={redo}        title="Redo (Ctrl+Y)" style={toolBtnStyle(false)}>↪</button>
+        <div style={groupStyle}>
+          <button onClick={undo}        title="Undo (Ctrl+Z)" style={toolBtnStyle(false)}><FiRotateCcw /></button>
+          <button onClick={redo}        title="Redo (Ctrl+Y)" style={toolBtnStyle(false)}><FiRotateCw /></button>
           <button onClick={clearCanvas} title="Clear All"
-            style={{ ...toolBtnStyle(false), background: '#fde8e8', color: '#EF4444' }}>🗑</button>
+            style={{ ...toolBtnStyle(false), background: '#FEE2E2', color: '#EF4444' }}><FiTrash2 /></button>
         </div>
       </div>
 
@@ -373,7 +458,7 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
           onWheel={handleWheel}>
           <Layer>
             {shapes.length === 0 && (
-              <Text text="Click a tool above and start drawing…" x={20} y={20} fontSize={14} fill="#9CA3AF" />
+              <Text text="Pick a tool to start drawing…" x={20} y={20} fontSize={14} fill="#94A3B8" />
             )}
             {shapes.map(renderShape)}
             {tool === TOOLS.SELECT && (
