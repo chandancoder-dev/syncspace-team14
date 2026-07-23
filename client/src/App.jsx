@@ -15,6 +15,7 @@ import Login from "./components/Login";
 import NavBar from "./components/Navbar";
 import Footer from "./components/Footer";
 import JoinRoom from "./components/JoinRoom";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
@@ -33,10 +34,42 @@ function AppContent() {
         <Route path="/features" element={<Features />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-room" element={<CreateRoom />} />
-        <Route path="/workspace/:roomId" element={<WorkSpace />} />
-        <Route path="/join-room" element={<JoinRoom />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/create-room"
+          element={
+            <ProtectedRoute>
+              <CreateRoom />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/join-room"
+          element={
+            <ProtectedRoute>
+              <JoinRoom />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/workspace/:roomId"
+          element={
+            <ProtectedRoute>
+              <WorkSpace />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
 
       {!hideChrome && <Footer />}
