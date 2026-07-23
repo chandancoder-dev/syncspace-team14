@@ -5,14 +5,11 @@ function Hero() {
   const navigate = useNavigate();
 
   const handleCreateRoom = () => {
-    const token = localStorage.getItem("token");
+    navigate("/create-room");
+  };
 
-    if (token) {
-      navigate("/create-room");
-    } else {
-      alert("Please login to create a room.");
-      navigate("/login");
-    }
+  const handleJoinRoom = () => {
+    navigate("/join-room");
   };
 
   return (
@@ -39,7 +36,9 @@ function Hero() {
             Create Room
           </button>
 
-          <button className="secondary-btn">Join Room</button>
+          <button className="secondary-btn" onClick={handleJoinRoom}>
+            Join Room
+          </button>
         </div>
       </div>
     </section>
