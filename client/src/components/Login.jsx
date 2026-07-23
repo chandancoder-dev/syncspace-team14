@@ -4,9 +4,6 @@ import { loginUser } from "../services/authService";
 import "../styles/login.css";
 import axios from "axios";
 
-
-
-
 function Login() {
   const navigate = useNavigate();
 
@@ -18,44 +15,44 @@ function Login() {
   const [passwordError, setPasswordError] = useState("");
   console.log("LOGIN COMPONENT UPDATED");
   const handleLogin = async () => {
-  setEmailError("");
-  setPasswordError("");
+    setEmailError("");
+    setPasswordError("");
 
-  let isValid = true;
+    let isValid = true;
 
-  if (email.trim() === "") {
-    setEmailError("Email is required");
-    isValid = false;
-  } else if (!/\S+@\S+\.\S+/.test(email)) {
-    setEmailError("Please enter a valid email");
-    isValid = false;
-  }
+    if (email.trim() === "") {
+      setEmailError("Email is required");
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Please enter a valid email");
+      isValid = false;
+    }
 
-  if (password.trim() === "") {
-    setPasswordError("Password is required");
-    isValid = false;
-  }
+    if (password.trim() === "") {
+      setPasswordError("Password is required");
+      isValid = false;
+    }
 
-  if (!isValid) return;
+    if (!isValid) return;
 
-  try {
-    const res = await axios.post(
-      "http://localhost:5000/api/auth/login",
-      {
-        email,
-        password,
-      }
-    );
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/auth/login`,
+        {
+          email,
+          password,
+        },
+      );
 
-    localStorage.setItem("token", res.data.token);
+      localStorage.setItem("token", res.data.token);
 
-    alert("Login Successful!");
-    navigate("/create-room");
-  } catch (e) {
-    console.log(e);
-    alert(e.response?.data?.message || "Login failed");
-  }
-};
+      alert("Login Successful!");
+      navigate("/dashboard");
+    } catch (e) {
+      console.log(e);
+      alert(e.response?.data?.message || "Login failed");
+    }
+  };
   const styles = {
     page: {
       minHeight: "100vh",
@@ -158,9 +155,7 @@ function Login() {
       <div style={styles.card}>
         <h1 style={styles.heading}>Welcome Back</h1>
 
-        <p style={styles.subHeading}>
-          Sign in to continue to SyncSpace
-        </p>
+        <p style={styles.subHeading}>Sign in to continue to SyncSpace</p>
 
         <input
           style={styles.input}
@@ -170,9 +165,7 @@ function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        {emailError && (
-          <p style={styles.error}>{emailError}</p>
-        )}
+        {emailError && <p style={styles.error}>{emailError}</p>}
 
         <input
           style={styles.input}
@@ -182,10 +175,8 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        {passwordError && (
-          <p style={styles.error}>{passwordError}</p>
-        )}
-                <div style={styles.checkboxRow}>
+        {passwordError && <p style={styles.error}>{passwordError}</p>}
+        <div style={styles.checkboxRow}>
           <input
             type="checkbox"
             id="showPassword"
@@ -193,9 +184,7 @@ function Login() {
             onChange={() => setShowPassword(!showPassword)}
           />
 
-          <label htmlFor="showPassword">
-            Show Password
-          </label>
+          <label htmlFor="showPassword">Show Password</label>
         </div>
 
         <div style={styles.forgot}>
@@ -204,18 +193,15 @@ function Login() {
           </a>
         </div>
 
-        <button
-          style={styles.button}
-          onClick={handleLogin}
-        >
+        <button style={styles.button} onClick={handleLogin}>
           Login
         </button>
 
         <p style={styles.register}>
           Don't have an account?{" "}
-          <a href="#" style={styles.registerLink}>
+          <Link to="/register" style={styles.registerLink}>
             Register
-          </a>
+          </Link>
         </p>
       </div>
     </div>
