@@ -1,13 +1,14 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
-function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("token");
+export default function ProtectedRoute({ children }) {
+  const location = useLocation();
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   if (!token) {
-    return <Navigate to="/login" replace />;
+    const next = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`/login?next=${next}`} replace />;
   }
 
   return children;
 }
-
-export default ProtectedRoute;

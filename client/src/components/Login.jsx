@@ -1,11 +1,16 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { loginUser } from "../services/authService";
 import "../styles/login.css";
 import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextParam = searchParams.get("next");
+  const registerLinkTo = nextParam
+    ? `/register?next=${encodeURIComponent(nextParam)}`
+    : "/register";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,7 +52,7 @@ function Login() {
       localStorage.setItem("token", res.data.token);
 
       alert("Login Successful!");
-      navigate("/dashboard");
+      navigate(nextParam || "/dashboard");
     } catch (e) {
       console.log(e);
       alert(e.response?.data?.message || "Login failed");
@@ -157,6 +162,23 @@ function Login() {
 
         <p style={styles.subHeading}>Sign in to continue to SyncSpace</p>
 
+        {nextParam && (
+          <div
+            style={{
+              padding: "10px 12px",
+              background: "#EFF6FF",
+              border: "1px solid #BFDBFE",
+              borderRadius: 8,
+              color: "#1E3A8A",
+              fontSize: 13,
+              marginBottom: 16,
+              textAlign: "center",
+            }}
+          >
+            Sign in to continue to your shared room.
+          </div>
+        )}
+
         <input
           style={styles.input}
           type="email"
@@ -199,7 +221,7 @@ function Login() {
 
         <p style={styles.register}>
           Don't have an account?{" "}
-          <Link to="/register" style={styles.registerLink}>
+          <Link to={registerLinkTo} style={styles.registerLink}>
             Register
           </Link>
         </p>
