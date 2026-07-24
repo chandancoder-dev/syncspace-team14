@@ -4,7 +4,9 @@ import authRoutes from "./routes/authRoutes.js";
 import roomRoutes from "./routes/room.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import { protect } from "./middleware/auth.middleware.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 
 // Middleware
