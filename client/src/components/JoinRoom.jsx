@@ -10,7 +10,7 @@ function JoinRoom() {
   const [roomId, setRoomId] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting] = useState(false);
 
   const handleJoinRoom = async (e) => {
     e.preventDefault();
@@ -22,7 +22,9 @@ function JoinRoom() {
     }
 
     // Store name for workspace
-    const username = name.trim() || localStorage.getItem("syncspace_user") || "Anonymous";
+    const username =
+      name.trim() || localStorage.getItem("syncspace_user") || "Anonymous";
+
     if (name.trim()) {
       localStorage.setItem("syncspace_user", name.trim());
     }
@@ -33,6 +35,10 @@ function JoinRoom() {
 
   return (
     <div className="join-room-container">
+      <button className="back-btn" onClick={() => navigate("/dashboard")}>
+        ← Back
+      </button>
+
       <div className="join-room-card">
         <h1>Join an Existing Room</h1>
 
@@ -41,7 +47,9 @@ function JoinRoom() {
           collaboration room.
         </p>
 
-        {error && <p style={{ color: "#ff4d4f", marginBottom: "15px" }}>{error}</p>}
+        {error && (
+          <p style={{ color: "#ff4d4f", marginBottom: "15px" }}>{error}</p>
+        )}
 
         <form onSubmit={handleJoinRoom}>
           <div className="form-group">
