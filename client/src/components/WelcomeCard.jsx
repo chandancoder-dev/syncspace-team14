@@ -7,10 +7,23 @@ import { IoFlash } from "react-icons/io5";
 
 export default function WelcomeCard() {
 
-  // Store active rooms count from backend
+  // =============================
+  // DASHBOARD STATS
+  // =============================
+
   const [activeRooms, setActiveRooms] = useState(0);
 
-  // Fetch dashboard statistics
+  const [onlineUsers, setOnlineUsers] = useState(0);
+
+  const [todaysSessions, setTodaysSessions] = useState(0);
+
+  const [loading, setLoading] = useState(true);
+
+
+  // =============================
+  // FETCH DASHBOARD STATISTICS
+  // =============================
+
   useEffect(() => {
 
     const fetchDashboardStats = async () => {
@@ -18,12 +31,26 @@ export default function WelcomeCard() {
       try {
 
         const token = localStorage.getItem("token");
+
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/dashboard/stats`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
-        setActiveRooms(response.data.stats.activeRooms);
+        const stats = response.data.stats || {};
+
+        // Active rooms from backend
+        setActiveRooms(stats.activeRooms || 0);
+
+        // Online users from backend
+        setOnlineUsers(stats.onlineUsers || 0);
+
+        // Today's sessions from backend
+        setTodaysSessions(stats.todaysSessions || 0);
 
       } catch (error) {
 
@@ -31,6 +58,10 @@ export default function WelcomeCard() {
           "Failed to fetch dashboard statistics:",
           error
         );
+
+      } finally {
+
+        setLoading(false);
 
       }
 
@@ -41,10 +72,14 @@ export default function WelcomeCard() {
   }, []);
 
 
+  // =============================
+  // STATS
+  // =============================
+
   const stats = [
     {
       title: "Online Users",
-      value: "8",
+      value: onlineUsers,
       icon: <FaUsers />,
       color: "text-emerald-500",
       bg: "bg-emerald-50",
@@ -58,12 +93,13 @@ export default function WelcomeCard() {
     },
     {
       title: "Today's Sessions",
-      value: "23",
+      value: todaysSessions,
       icon: <IoFlash />,
       color: "text-amber-500",
       bg: "bg-amber-50",
     },
   ];
+
 
   return (
     <section
@@ -83,7 +119,10 @@ export default function WelcomeCard() {
 
       <div className="grid lg:grid-cols-2 gap-10 items-center">
 
+        {/* ============================= */}
         {/* LEFT SECTION */}
+        {/* ============================= */}
+
         <div>
 
           <p className="text-blue-600 font-semibold text-sm uppercase tracking-wider mb-3">
@@ -103,7 +142,10 @@ export default function WelcomeCard() {
         </div>
 
 
-        {/* RIGHT SECTION - STATS */}
+        {/* ============================= */}
+        {/* RIGHT SECTION */}
+        {/* ============================= */}
+
         <div className="grid grid-cols-3 gap-4">
 
           {stats.map((item) => (
@@ -127,6 +169,7 @@ export default function WelcomeCard() {
             >
 
               {/* Icon */}
+
               <div
                 className={`
                   ${item.bg}
@@ -145,12 +188,24 @@ export default function WelcomeCard() {
                 {item.icon}
               </div>
 
+
               {/* Value */}
+
               <h2 className="text-3xl font-bold text-[#1E293B]">
-                {item.value}
+
+                {loading ? (
+                  <span className="animate-pulse">
+                    ...
+                  </span>
+                ) : (
+                  item.value
+                )}
+
               </h2>
 
+
               {/* Title */}
+
               <p className="text-xs sm:text-sm text-[#64748B] mt-2">
                 {item.title}
               </p>
