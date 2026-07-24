@@ -12,16 +12,22 @@ export default function RecentRooms() {
 
   const navigate = useNavigate();
 
-  // Store rooms received from backend
+
+  // =============================
+  // STATE
+  // =============================
+
   const [rooms, setRooms] = useState([]);
 
-  // Loading state
   const [loading, setLoading] = useState(true);
 
-  // Error state
   const [error, setError] = useState("");
 
-  // Fetch rooms from backend
+
+  // =============================
+  // FETCH RECENT ROOMS
+  // =============================
+
   useEffect(() => {
 
     const fetchRooms = async () => {
@@ -29,16 +35,39 @@ export default function RecentRooms() {
       try {
 
         const token = localStorage.getItem("token");
+
         const response = await axios.get(
           `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/rooms`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
-        setRooms(response.data.rooms);
+
+        setRooms(response.data.rooms || []);
+
 
       } catch (error) {
 
-        console.error("Failed to fetch rooms:", error);
+        console.error(
+          "Failed to fetch rooms:",
+          error
+        );
+
+
+        if (error.response?.status === 401) {
+
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+
+          navigate("/login");
+
+          return;
+
+        }
+
 
         setError("Failed to load recent rooms.");
 
@@ -50,14 +79,20 @@ export default function RecentRooms() {
 
     };
 
+
     fetchRooms();
 
-  }, []);
+  }, [navigate]);
 
 
-  // Open workspace
+  // =============================
+  // OPEN WORKSPACE
+  // =============================
+
   const openRoom = (roomId) => {
+
     navigate(`/workspace/${roomId}`);
+
   };
 
 
@@ -66,7 +101,9 @@ export default function RecentRooms() {
   // =============================
 
   if (loading) {
+
     return (
+
       <section>
 
         <div className="mb-8">
@@ -82,7 +119,9 @@ export default function RecentRooms() {
         </div>
 
       </section>
+
     );
+
   }
 
 
@@ -91,7 +130,9 @@ export default function RecentRooms() {
   // =============================
 
   if (error) {
+
     return (
+
       <section>
 
         <div className="mb-8">
@@ -107,11 +148,14 @@ export default function RecentRooms() {
         </div>
 
       </section>
+
     );
+
   }
 
 
   return (
+
     <section>
 
       {/* ============================= */}
@@ -120,7 +164,6 @@ export default function RecentRooms() {
 
       <div className="flex items-start justify-between mb-8">
 
-        {/* Heading */}
         <div>
 
           <h2 className="text-3xl font-bold text-[#1E3A8A]">
@@ -135,6 +178,7 @@ export default function RecentRooms() {
 
 
         {/* View All */}
+
         <Link
           to="/rooms"
           className="
@@ -252,7 +296,6 @@ export default function RecentRooms() {
 
               <div className="flex-1">
 
-                {/* Room Name */}
                 <h3
                   className="
                     mt-6
@@ -268,6 +311,7 @@ export default function RecentRooms() {
 
 
                 {/* Room Status */}
+
                 <div
                   className="
                     mt-3
@@ -287,6 +331,7 @@ export default function RecentRooms() {
 
 
                 {/* Members */}
+
                 <div
                   className="
                     mt-6
@@ -308,6 +353,7 @@ export default function RecentRooms() {
 
 
                 {/* Language */}
+
                 <div className="mt-4">
 
                   <p className="text-xs text-[#94A3B8]">
@@ -324,7 +370,7 @@ export default function RecentRooms() {
 
 
               {/* ============================= */}
-              {/* OPEN WORKSPACE BUTTON */}
+              {/* OPEN WORKSPACE */}
               {/* ============================= */}
 
               <button
@@ -377,5 +423,7 @@ export default function RecentRooms() {
       )}
 
     </section>
+
   );
+
 }

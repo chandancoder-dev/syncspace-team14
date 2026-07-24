@@ -44,6 +44,8 @@ function AppContent() {
           }
         />
 
+        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+
         <Route
           path="/create-room"
           element={
