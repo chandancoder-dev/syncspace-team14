@@ -8,6 +8,36 @@ import { IoFlash } from "react-icons/io5";
 export default function WelcomeCard() {
 
   // =============================
+  // USERNAME
+  // =============================
+
+  const getUserName = () => {
+    const storedUser = localStorage.getItem("user");
+
+    if (!storedUser) {
+      return "User";
+    }
+
+    try {
+      const user = JSON.parse(storedUser);
+
+      return (
+        user.name ||
+        user.username ||
+        user.fullName ||
+        user.email?.split("@")[0] ||
+        "User"
+      );
+    } catch (error) {
+      console.error("Failed to read logged-in user:", error);
+      return "User";
+    }
+  };
+
+  const userName = getUserName();
+
+
+  // =============================
   // DASHBOARD STATS
   // =============================
 
@@ -114,6 +144,11 @@ export default function WelcomeCard() {
         p-8
         lg:p-10
         shadow-sm
+        transition-all
+        duration-300
+        hover:border-[#93C5FD]
+        hover:shadow-lg
+        hover:shadow-blue-100/60
       "
     >
 
@@ -130,7 +165,7 @@ export default function WelcomeCard() {
           </p>
 
           <h1 className="text-4xl lg:text-5xl font-bold text-[#1E3A8A]">
-            Welcome Back 👋
+            Welcome, {userName}
           </h1>
 
           <p className="mt-5 text-lg leading-8 text-[#475569] max-w-xl">
@@ -153,6 +188,7 @@ export default function WelcomeCard() {
             <div
               key={item.title}
               className="
+                group
                 bg-white/80
                 backdrop-blur-sm
                 rounded-2xl
@@ -161,10 +197,13 @@ export default function WelcomeCard() {
                 p-5
                 text-center
                 shadow-sm
-                hover:shadow-md
-                hover:-translate-y-1
+                hover:shadow-lg
+                hover:shadow-blue-200/50
+                hover:-translate-y-2
+                hover:border-[#60A5FA]
                 transition-all
                 duration-300
+                cursor-default
               "
             >
 
@@ -183,6 +222,10 @@ export default function WelcomeCard() {
                   justify-center
                   text-2xl
                   mb-3
+                  transition-all
+                  duration-300
+                  group-hover:scale-110
+                  group-hover:rotate-3
                 `}
               >
                 {item.icon}
@@ -191,7 +234,16 @@ export default function WelcomeCard() {
 
               {/* Value */}
 
-              <h2 className="text-3xl font-bold text-[#1E293B]">
+              <h2
+                className="
+                  text-3xl
+                  font-bold
+                  text-[#1E293B]
+                  transition-colors
+                  duration-300
+                  group-hover:text-[#2563EB]
+                "
+              >
 
                 {loading ? (
                   <span className="animate-pulse">
