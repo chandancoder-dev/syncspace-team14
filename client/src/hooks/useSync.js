@@ -11,6 +11,22 @@ const randomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
+// Get the logged-in user's display name
+const getUserName = () => {
+  const directName = localStorage.getItem('syncspace_user');
+  if (directName) return directName;
+
+  const stored = localStorage.getItem('user');
+  if (stored) {
+    try {
+      const user = JSON.parse(stored);
+      return user.name || user.username || user.fullName || user.email?.split('@')[0] || 'Anonymous';
+    } catch { /* ignore parse errors */ }
+  }
+
+  return 'Anonymous';
+};
+
 const useSync = (roomId) => {
   const ydocRef = useRef(new Y.Doc());
   const socketRef = useRef(null);
@@ -21,7 +37,7 @@ const useSync = (roomId) => {
   const [users, setUsers] = useState(new Map());
 
   const meRef = useRef({
-    name: localStorage.getItem('syncspace_user') || 'Anonymous',
+    name: getUserName(),
     color: randomColor(),
   });
 
