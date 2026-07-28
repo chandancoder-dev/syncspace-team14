@@ -96,10 +96,13 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
       });
 
       monaco.editor.setTheme('syncspace-light');
-      if (yText.length === 0) {
-        const currentLang = yMeta.get('language') || 'javascript';
-        yText.insert(0, DEFAULT_CODE[currentLang] || DEFAULT_CODE.javascript);
-      }
+      
+      setTimeout(() => {
+        if (yText.length === 0) {
+          const currentLang = yMeta.get('language') || 'javascript';
+          yText.insert(0, DEFAULT_CODE[currentLang] || DEFAULT_CODE.javascript);
+        }
+      }, 500);
 
   
       // Create the Yjs <-> Monaco binding with awareness for remote cursors
