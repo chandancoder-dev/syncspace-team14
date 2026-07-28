@@ -44,8 +44,6 @@ function Login() {
     );
 
     localStorage.setItem("token", res.data.token);
-
-    alert("Login Successful!");
     navigate("/create-room");
   } catch (e) {
     console.log(e);
