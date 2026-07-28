@@ -210,9 +210,9 @@ function Login() {
         </div>
 
         <div style={styles.forgot}>
-          <a href="#" style={styles.forgotLink}>
+          <Link to = "/forget-password" style={styles.forgotLink}>
             Forgot Password?
-          </a>
+          </Link>
         </div>
 
         <button style={styles.button} onClick={handleLogin}>
