@@ -10,6 +10,7 @@ export default function ActionCard({
   return (
     <div
       className="
+        group
         bg-white
         border
         border-[#BFDBFE]
@@ -18,14 +19,21 @@ export default function ActionCard({
         shadow-sm
         transition-all
         duration-300
+        ease-in-out
         hover:-translate-y-2
-        hover:border-[#60A5FA]
+        hover:border-[#3B82F6]
         hover:shadow-xl
-        hover:shadow-blue-200/50
+        hover:shadow-blue-200/60
+        hover:bg-gradient-to-br
+        hover:from-white
+        hover:to-[#F8FBFF]
       "
     >
 
-      {/* Icon */}
+      {/* ============================= */}
+      {/* ICON */}
+      {/* ============================= */}
+
       <div
         className="
           w-16
@@ -38,46 +46,145 @@ export default function ActionCard({
           text-4xl
           mb-6
           text-[#2563EB]
+          border
+          border-[#DBEAFE]
+          shadow-sm
+          transition-all
+          duration-300
+          group-hover:bg-[#DBEAFE]
+          group-hover:border-[#93C5FD]
+          group-hover:shadow-md
+          group-hover:scale-105
         "
       >
         {icon}
       </div>
 
 
-      {/* Title */}
-      <h2 className="text-2xl lg:text-3xl font-bold text-[#1E3A8A]">
+      {/* ============================= */}
+      {/* TITLE */}
+      {/* ============================= */}
+
+      <h2
+        className="
+          text-2xl
+          lg:text-3xl
+          font-bold
+          text-[#1E3A8A]
+          transition-colors
+          duration-300
+          group-hover:text-[#2563EB]
+        "
+      >
         {title}
       </h2>
 
 
-      {/* Description */}
-      <p className="text-[#64748B] mt-4 leading-8">
+      {/* ============================= */}
+      {/* DESCRIPTION */}
+      {/* ============================= */}
+
+      <p
+        className="
+          text-[#64748B]
+          mt-4
+          leading-8
+        "
+      >
         {description}
       </p>
 
 
-      {/* Features */}
+      {/* ============================= */}
+      {/* FEATURES */}
+      {/* ============================= */}
+
       <div className="space-y-3 mt-6 text-[#475569]">
 
-        <div className="flex items-center gap-3">
-          <FaCheckCircle className="text-emerald-500 shrink-0" />
-          <span>Real-Time Collaboration</span>
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+            transition-transform
+            duration-300
+            group-hover:translate-x-1
+          "
+        >
+          <FaCheckCircle
+            className="
+              text-emerald-500
+              shrink-0
+              transition-transform
+              duration-300
+              group-hover:scale-110
+            "
+          />
+
+          <span>
+            Real-Time Collaboration
+          </span>
         </div>
 
-        <div className="flex items-center gap-3">
-          <FaCheckCircle className="text-emerald-500 shrink-0" />
-          <span>Shared Whiteboard</span>
+
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+            transition-transform
+            duration-300
+            group-hover:translate-x-1
+          "
+        >
+          <FaCheckCircle
+            className="
+              text-emerald-500
+              shrink-0
+              transition-transform
+              duration-300
+              group-hover:scale-110
+            "
+          />
+
+          <span>
+            Shared Whiteboard
+          </span>
         </div>
 
-        <div className="flex items-center gap-3">
-          <FaCheckCircle className="text-emerald-500 shrink-0" />
-          <span>Live Code Editor</span>
+
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+            transition-transform
+            duration-300
+            group-hover:translate-x-1
+          "
+        >
+          <FaCheckCircle
+            className="
+              text-emerald-500
+              shrink-0
+              transition-transform
+              duration-300
+              group-hover:scale-110
+            "
+          />
+
+          <span>
+            Live Code Editor
+          </span>
         </div>
 
       </div>
 
 
-      {/* Button */}
+      {/* ============================= */}
+      {/* BUTTON */}
+      {/* ============================= */}
+
       <button
         onClick={onClick}
         className="
@@ -102,7 +209,13 @@ export default function ActionCard({
       >
         {button}
 
-        <FaArrowRight />
+        <FaArrowRight
+          className="
+            transition-transform
+            duration-300
+            group-hover:translate-x-1
+          "
+        />
       </button>
 
     </div>

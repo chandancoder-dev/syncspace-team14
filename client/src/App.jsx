@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateRoom from "./pages/CreateRoom";
 import Register from "./pages/Register";
 import WorkSpace from "./pages/workspace/WorkSpace";
+import ForgetPassword from "./pages/ForgotPassword";
 
 // Components
 import About from "./components/About";
@@ -34,17 +35,18 @@ function AppContent() {
         <Route path="/features" element={<Features />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path = "/forget-password" element={<ForgetPassword/>}/>
 
-        <Route
+        {/* <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           }
-        />
+        /> */}
 
-        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+        <Route path="/dashboard" element={<Dashboard />} />
 
         <Route
           path="/create-room"
