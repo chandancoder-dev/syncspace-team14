@@ -99,7 +99,7 @@ const Avatar = ({ name, color, isSelf = false, offset = 0 }) => {
 const WorkSpace = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const { ydoc, socket, connected, users, me, emitCursor } = useSync(roomId);
+  const { ydoc, awareness, socket, connected, users, me, emitCursor } = useSync(roomId);
   const [leftWidth, setLeftWidth] = useState(50);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
@@ -585,7 +585,7 @@ const WorkSpace = () => {
         />
 
         <div style={{ flex: 1, height: '100%', overflow: 'hidden' }}>
-          <CodeEditor ydoc={ydoc} me={me} users={users} />
+          <CodeEditor ydoc={ydoc} awareness={awareness} me={me} users={users} />
         </div>
       </div>
 

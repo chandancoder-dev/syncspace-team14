@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as Y from 'yjs';
+import { Awareness } from 'y-protocols/awareness';
+import * as awarenessProtocol from 'y-protocols/awareness';
 import { io } from 'socket.io-client';
 
 // Server URL from .env file
@@ -29,11 +31,10 @@ const getUserName = () => {
 
 const useSync = (roomId) => {
   const ydocRef = useRef(new Y.Doc());
+  const awarenessRef = useRef(new Awareness(ydocRef.current));
   const socketRef = useRef(null);
 
   const [connected, setConnected] = useState(false);
-
- 
   const [users, setUsers] = useState(new Map());
 
   const meRef = useRef({
@@ -45,11 +46,17 @@ const useSync = (roomId) => {
     if (!roomId) return;
 
     const ydoc = ydocRef.current;
+    const awareness = awarenessRef.current;
     const me = meRef.current;
 
     const socket = io(SERVER_URL, { transports: ['websocket'] });
     socketRef.current = socket;
 
+    // Set local awareness state (user info for remote cursor labels)
+    awareness.setLocalStateField('user', {
+      name: me.name,
+      color: me.color,
+    });
 
     socket.on('connect', () => {
       setConnected(true);
@@ -57,6 +64,8 @@ const useSync = (roomId) => {
     });
 
     socket.on('disconnect', () => setConnected(false));
+
+    // Yjs document sync
     socket.on('sync-state', ({ update }) => {
       Y.applyUpdate(ydoc, new Uint8Array(update));
     });
@@ -70,6 +79,22 @@ const useSync = (roomId) => {
     };
     ydoc.on('update', onLocalUpdate);
 
+    // === Code editor awareness (y-protocols) ===
+    // When local awareness changes, send to server
+    const onAwarenessChange = ({ added, updated, removed }, origin) => {
+      if (origin === 'local') return; // skip if triggered by remote
+      const changedClients = added.concat(updated).concat(removed);
+      const update = awarenessProtocol.encodeAwarenessUpdate(awareness, changedClients);
+      socket.emit('code-awareness', { roomId, update: Array.from(update) });
+    };
+    awareness.on('update', onAwarenessChange);
+
+    // When server sends awareness update from other clients
+    socket.on('code-awareness', ({ update }) => {
+      awarenessProtocol.applyAwarenessUpdate(awareness, new Uint8Array(update), 'remote');
+    });
+
+    // === Whiteboard awareness (custom, existing) ===
     socket.on('awareness-init', (states) => {
       setUsers((prev) => {
         const next = new Map(prev);
@@ -102,9 +127,10 @@ const useSync = (roomId) => {
       });
     });
 
-
     return () => {
       ydoc.off('update', onLocalUpdate);
+      awareness.off('update', onAwarenessChange);
+      awareness.setLocalState(null); // signal removal to peers
       socket.disconnect();
       socketRef.current = null;
       setConnected(false);
@@ -112,7 +138,7 @@ const useSync = (roomId) => {
     };
   }, [roomId]);
 
-  
+  // Whiteboard cursor emit (existing)
   const emitCursor = (cursor) => {
     if (!socketRef.current || !roomId) return;
     socketRef.current.emit('awareness-update', {
@@ -123,6 +149,7 @@ const useSync = (roomId) => {
 
   return {
     ydoc: ydocRef.current,
+    awareness: awarenessRef.current,
     socket: socketRef.current,
     connected,
     users,
