@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, Navigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import { validateRegisterForm } from "../utils/validation";
 import { registerUser } from "../services/authService";
@@ -19,6 +19,12 @@ function Register() {
   const loginLinkTo = nextParam
     ? `/login?next=${encodeURIComponent(nextParam)}`
     : "/login";
+
+  // If already logged in, redirect away from register page
+  const token = localStorage.getItem("token");
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});

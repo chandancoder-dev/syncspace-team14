@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useNavigate, Link, useSearchParams, Navigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
 import "../styles/login.css";
 import axios from "axios";
@@ -11,6 +11,12 @@ function Login() {
   const registerLinkTo = nextParam
     ? `/register?next=${encodeURIComponent(nextParam)}`
     : "/register";
+
+  // If already logged in, redirect away from login page
+  const token = localStorage.getItem("token");
+  if (token) {
+    return <Navigate to={nextParam || "/dashboard"} replace />;
+  }
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,6 +56,8 @@ function Login() {
       );
 
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("syncspace_user", res.data.user?.name || "Anonymous");
 
       alert("Login Successful!");
       navigate(nextParam || "/dashboard");

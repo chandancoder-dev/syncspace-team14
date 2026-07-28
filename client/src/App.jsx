@@ -23,7 +23,9 @@ function AppContent() {
 
   const hideChrome =
     location.pathname.startsWith("/workspace") ||
-    location.pathname.startsWith("/dashboard");
+    location.pathname.startsWith("/dashboard") ||
+    location.pathname.startsWith("/create-room")||
+    location.pathname.startsWith("/join-room");
 
   return (
     <>
