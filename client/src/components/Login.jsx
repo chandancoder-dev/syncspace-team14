@@ -1,7 +1,10 @@
 import "../styles/login.css";
 import { useState} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 function Login() {
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -31,20 +34,11 @@ function Login() {
 
     if (isValid) {
 
-      try{
-           const res = await axios.post("http://localhost:8000/api/auth/login",{
-              email : email,
-              password : password
-           });
-
-           console.log(res.data.message);
-            alert("Login Successful! (Backend will be connected later)");
-
-            localStorage.setItem("token", res.data.token);
-      }
-      catch(e){
-          console.log(e);
-      }
+      console.log("Pretending login succeeded (no backend yet):", email);
+alert("Login Successful! (Backend not connected yet)");
+localStorage.setItem("token", "dummy-token-for-now");
+localStorage.setItem("userId", email);
+navigate("/");
      
     }
 
