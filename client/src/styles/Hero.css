@@ -48,9 +48,12 @@
 }
 
 .hero-buttons {
-  display: flex;
+  display: flex !important;
+  flex-direction: row !important;
   justify-content: center;
-  gap: 20px;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
 }
 
 .primary-btn,
@@ -61,6 +64,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  width: auto !important;
 }
 
 .primary-btn {
@@ -103,13 +107,9 @@
     font-size: 16px;
   }
 
-  .hero-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-
   .primary-btn,
   .secondary-btn {
-    width: 220px;
+    padding: 12px 20px;
+    font-size: 14px;
   }
 }

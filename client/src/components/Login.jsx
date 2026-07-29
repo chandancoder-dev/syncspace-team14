@@ -1,104 +1,94 @@
-import "../styles/login.css";
-import { useState} from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-function Login() {
-  const navigate = useNavigate();
+import { useAuth } from "./AuthContext";
 
-  const [showPassword, setShowPassword] = useState(false);
-
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogin = async() => {
-    setEmailError("");
-    setPasswordError("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError("");
 
-    let isValid = true;
-
-    if (email.trim() === "") {
-      setEmailError("Email is required");
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError("Please enter a valid email address");
-      isValid = false;
+    if (!email || !password) {
+      setError("Please enter email and password.");
+      return;
     }
 
-    if (password.trim() === "") {
-      setPasswordError("Password is required");
-      isValid = false;
-    }
+    // Replace this with your real API call when ready
+    const userData = {
+      id: email.split("@")[0],
+      name: email.split("@")[0],
+      email: email,
+    };
 
-    if (isValid) {
-
-      console.log("Pretending login succeeded (no backend yet):", email);
-alert("Login Successful! (Backend not connected yet)");
-localStorage.setItem("token", "dummy-token-for-now");
-localStorage.setItem("userId", email);
-navigate("/");
-     
-    }
-
+    login(userData);
+    navigate("/home");
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h1>Welcome Back</h1>
-        <p>Sign in to continue to SyncSpace</p>
+    <div className="min-h-screen flex items-center justify-center bg-slate-900">
+      <div className="w-full max-w-md bg-slate-800 rounded-2xl shadow-xl p-8">
+        <h1 className="text-3xl font-bold text-white text-center mb-2">
+          Welcome Back
+        </h1>
+        <p className="text-slate-400 text-center mb-8">
+          Sign in to continue to SyncSpace
+        </p>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        {emailError && (
-          <p className="error-message">{emailError}</p>
-        )}
-
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        {passwordError && (
-          <p className="error-message">{passwordError}</p>
-        )}
-
-        <div className="show-password">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            type="checkbox"
-            id="showPassword"
-            checked={showPassword}
-            onChange={() => setShowPassword(!showPassword)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <label htmlFor="showPassword">
-            Show Password
-          </label>
-        </div>
 
-        <div className="forgot-password">
-          <a href="#">Forgot Password?</a>
-        </div>
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg bg-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
-        <button onClick={handleLogin}>
-          Login
-        </button>
+          <div className="flex items-center justify-between text-sm">
+            <label className="flex items-center gap-2 text-slate-300">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              Show Password
+            </label>
+            <a href="#" className="text-blue-400 hover:underline">
+              Forgot Password?
+            </a>
+          </div>
 
-        <p className="register-text">
+          {error && <p className="text-red-400 text-sm">{error}</p>}
+
+          <button
+            type="submit"
+            className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="text-center text-slate-400 text-sm mt-6">
           Don't have an account?{" "}
-          <a href="#">Register</a>
+          <a href="/register" className="text-blue-400 hover:underline">
+            Register
+          </a>
         </p>
       </div>
     </div>
   );
 }
-
-export default Login;

@@ -5,15 +5,56 @@ function Home() {
   return (
     <>
       <section className="hero">
-        <h1>🚀 Work Together in Real-Time</h1>
+        <h1>Build, code, and brainstorm together in one collaborative workspace.</h1>
         <p>
-          Create secure rooms and collaborate with your teammates
-          from anywhere in the world instantly.
+          Create secure coding rooms where developers and students can work together,
+          edit code, share ideas, and communicate seamlessly.
         </p>
 
-        <div className="hero-buttons">
-          <button className="primary-btn">Create Room</button>
-          <button className="secondary-btn">Join Room</button>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "nowrap",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "16px",
+            marginTop: "24px",
+            width: "100%",
+          }}
+        >
+          <button
+            style={{
+              padding: "14px 32px",
+              backgroundColor: "#2563eb",
+              color: "#fff",
+              fontWeight: 600,
+              fontSize: "16px",
+              borderRadius: "10px",
+              border: "none",
+              cursor: "pointer",
+              width: "auto",
+              display: "inline-block",
+            }}
+          >
+            Create Room
+          </button>
+          <button
+            style={{
+              padding: "14px 32px",
+              backgroundColor: "transparent",
+              color: "#3b82f6",
+              fontWeight: 600,
+              fontSize: "16px",
+              borderRadius: "10px",
+              border: "2px solid #3b82f6",
+              cursor: "pointer",
+              width: "auto",
+              display: "inline-block",
+            }}
+          >
+            Join Room
+          </button>
         </div>
       </section>
 

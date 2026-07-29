@@ -1,5 +1,5 @@
 .features {
-  padding: 90px 20px;
+  padding: 75px 20px;
   background-color: #111827;
 }
 
@@ -11,7 +11,7 @@
 
 .features-tagline {
   display: inline-block;
-  padding: 8px 18px;
+  padding: 7px 17px;
   border: 1px solid #2563eb;
   border-radius: 25px;
   color: #60a5fa;
@@ -21,68 +21,69 @@
 }
 
 .features h2 {
-  font-size: 44px;
+  font-size: 40px;
   color: #ffffff;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .features-subtitle {
-  max-width: 700px;
-  margin: 0 auto 60px;
+  max-width: 650px;
+  margin: 0 auto 48px;
   color: #9ca3af;
-  font-size: 18px;
-  line-height: 1.8;
+  font-size: 16px;
+  line-height: 1.7;
 }
 
 .feature-cards {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.feature-cards .card:nth-child(3) {
+  grid-column: 1 / -1;
+  max-width: 288px;
+  margin: 0 auto;
 }
 
 .card {
-  width: 320px;
   background-color: #1f2937;
   border: 1px solid #334155;
-  border-radius: 14px;
-  padding: 35px 30px;
+  border-radius: 12px;
+  padding: 26px 22px;
   transition: all 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-6px);
   border-color: #2563eb;
-  box-shadow: 0 12px 25px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.15);
 }
 
 .card h3 {
   color: #3b82f6;
-  font-size: 24px;
-  margin-bottom: 18px;
+  font-size: 19px;
+  margin-bottom: 12px;
 }
 
 .card p {
   color: #d1d5db;
-  font-size: 16px;
-  line-height: 1.8;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 @media (max-width: 768px) {
   .features {
-    padding: 70px 20px;
+    padding: 55px 20px;
   }
 
   .features h2 {
-    font-size: 36px;
+    font-size: 32px;
   }
 
   .features-subtitle {
-    font-size: 16px;
-  }
-
-  .card {
-    width: 100%;
-    max-width: 350px;
+    font-size: 15px;
   }
 }
