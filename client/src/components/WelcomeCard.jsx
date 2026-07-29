@@ -7,9 +7,9 @@ import { IoFlash } from "react-icons/io5";
 
 export default function WelcomeCard() {
 
-  // =============================
-  // USERNAME
-  // =============================
+  // ==========================================
+  // GET USERNAME
+  // ==========================================
 
   const getUserName = () => {
     const storedUser = localStorage.getItem("user");
@@ -22,12 +22,14 @@ export default function WelcomeCard() {
       const user = JSON.parse(storedUser);
 
       return (
-        user.name ||
         user.username ||
-        user.fullName ||
+        user.userName ||
         user.email?.split("@")[0] ||
+        user.name?.split(" ")[0] ||
+        user.fullName?.split(" ")[0] ||
         "User"
       );
+
     } catch (error) {
       console.error("Failed to read logged-in user:", error);
       return "User";
@@ -37,22 +39,19 @@ export default function WelcomeCard() {
   const userName = getUserName();
 
 
-  // =============================
+  // ==========================================
   // DASHBOARD STATS
-  // =============================
+  // ==========================================
 
   const [activeRooms, setActiveRooms] = useState(0);
-
   const [onlineUsers, setOnlineUsers] = useState(0);
-
   const [todaysSessions, setTodaysSessions] = useState(0);
-
   const [loading, setLoading] = useState(true);
 
 
-  // =============================
-  // FETCH DASHBOARD STATISTICS
-  // =============================
+  // ==========================================
+  // FETCH DASHBOARD STATS
+  // ==========================================
 
   useEffect(() => {
 
@@ -73,13 +72,8 @@ export default function WelcomeCard() {
 
         const stats = response.data.stats || {};
 
-        // Active rooms from backend
         setActiveRooms(stats.activeRooms || 0);
-
-        // Online users from backend
         setOnlineUsers(stats.onlineUsers || 0);
-
-        // Today's sessions from backend
         setTodaysSessions(stats.todaysSessions || 0);
 
       } catch (error) {
@@ -102,9 +96,9 @@ export default function WelcomeCard() {
   }, []);
 
 
-  // =============================
+  // ==========================================
   // STATS
-  // =============================
+  // ==========================================
 
   const stats = [
     {
@@ -154,9 +148,7 @@ export default function WelcomeCard() {
 
       <div className="grid lg:grid-cols-2 gap-10 items-center">
 
-        {/* ============================= */}
-        {/* LEFT SECTION */}
-        {/* ============================= */}
+        {/* LEFT */}
 
         <div>
 
@@ -177,9 +169,7 @@ export default function WelcomeCard() {
         </div>
 
 
-        {/* ============================= */}
-        {/* RIGHT SECTION */}
-        {/* ============================= */}
+        {/* RIGHT */}
 
         <div className="grid grid-cols-3 gap-4">
 
@@ -203,11 +193,8 @@ export default function WelcomeCard() {
                 hover:border-[#60A5FA]
                 transition-all
                 duration-300
-                cursor-default
               "
             >
-
-              {/* Icon */}
 
               <div
                 className={`
@@ -225,26 +212,19 @@ export default function WelcomeCard() {
                   transition-all
                   duration-300
                   group-hover:scale-110
-                  group-hover:rotate-3
                 `}
               >
                 {item.icon}
               </div>
-
-
-              {/* Value */}
 
               <h2
                 className="
                   text-3xl
                   font-bold
                   text-[#1E293B]
-                  transition-colors
-                  duration-300
                   group-hover:text-[#2563EB]
                 "
               >
-
                 {loading ? (
                   <span className="animate-pulse">
                     ...
@@ -252,11 +232,7 @@ export default function WelcomeCard() {
                 ) : (
                   item.value
                 )}
-
               </h2>
-
-
-              {/* Title */}
 
               <p className="text-xs sm:text-sm text-[#64748B] mt-2">
                 {item.title}
