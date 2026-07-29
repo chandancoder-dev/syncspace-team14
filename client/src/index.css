@@ -9,6 +9,16 @@
   --color-primaryHover: #1D4ED8;
   --color-heading: #FFFFFF;
   --color-paragraph: #94A3B8;
+
+  --bg-color: var(--color-bg);
+  --card-color: var(--color-card);
+  --border-color: var(--color-border);
+  --primary-color: var(--color-primary);
+  --heading-color: var(--color-heading);
+  --text-color: var(--color-paragraph);
+  --secondary-text: var(--color-paragraph);
+  --light-blue: #1E293B;
+  --transition: 0.3s ease;
 }
 
 html {
