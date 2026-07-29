@@ -24,7 +24,7 @@ function AppContent() {
   const hideChrome =
     location.pathname.startsWith("/workspace") ||
     location.pathname.startsWith("/dashboard") ||
-    location.pathname.startsWith("/create-room")||
+    location.pathname.startsWith("/create-room") ||
     location.pathname.startsWith("/join-room");
 
   return (
@@ -37,7 +37,7 @@ function AppContent() {
         <Route path="/features" element={<Features />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path = "/forget-password" element={<ForgetPassword/>}/>
+        <Route path="/forget-password" element={<ForgetPassword />} />
 
         {/* <Route
           path="/dashboard"
@@ -51,7 +51,7 @@ function AppContent() {
         <Route path="/dashboard" element={<Dashboard />} />
 
         <Route
-          path="/create-room"
+          path="/createroom"
           element={
             <ProtectedRoute>
               <CreateRoom />
@@ -60,7 +60,7 @@ function AppContent() {
         />
 
         <Route
-          path="/join-room"
+          path="/joinroom"
           element={
             <ProtectedRoute>
               <JoinRoom />
