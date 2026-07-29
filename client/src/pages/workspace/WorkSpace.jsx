@@ -204,7 +204,7 @@ const WorkSpace = () => {
           flexShrink: 0,
         }}
       >
-        {/* LEFT — back + room */}
+        {/* LEFT — back + logo + room */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <button
             onClick={() => setShowLeaveConfirm(true)}
@@ -228,6 +228,13 @@ const WorkSpace = () => {
           >
             <FiArrowLeft />
           </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img src="/SyncSpace.png" alt="SyncSpace" style={{ width: 26, height: 26 }} />
+            <span style={{ color: '#1E3A8A', fontSize: 14, fontWeight: 700 }}>SyncSpace</span>
+          </div>
+
+          <div style={{ width: 1, height: 24, background: '#DBEAFE' }} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ color: '#64748B', fontSize: 12, fontWeight: 500 }}>Room</span>
