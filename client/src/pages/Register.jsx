@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, Navigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import { validateRegisterForm } from "../utils/validation";
 import { registerUser } from "../services/authService";
@@ -14,6 +14,18 @@ const initialFormState = {
 
 function Register() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextParam = searchParams.get("next");
+  const loginLinkTo = nextParam
+    ? `/login?next=${encodeURIComponent(nextParam)}`
+    : "/login";
+
+  // If already logged in, redirect away from register page
+  const token = localStorage.getItem("token");
+  if (token) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
@@ -35,7 +47,7 @@ function Register() {
     setIsSubmitting(true);
     try {
       await registerUser(formData);
-      navigate("/login");
+      navigate(loginLinkTo);
     } catch (err) {
       setServerError(err?.response?.data?.message || "Registration failed. Please try again.");
     } finally {
@@ -50,6 +62,12 @@ function Register() {
           <h1 className="text-2xl font-bold text-slate-900">Create your account</h1>
           <p className="text-gray-500 mt-1">Join to start creating and collaborating in real time.</p>
         </div>
+
+        {nextParam && (
+          <div className="mb-4 px-3 py-2 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E3A8A] text-sm text-center">
+            Create an account to join your shared room.
+          </div>
+        )}
 
         {serverError && (
           <div className="mb-4 px-4 py-2 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
@@ -113,7 +131,7 @@ function Register() {
 
         <p className="text-center text-gray-500 mt-6">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link to={loginLinkTo} className="text-blue-600 hover:text-blue-700 font-medium">
             Log in
           </Link>
         </p>

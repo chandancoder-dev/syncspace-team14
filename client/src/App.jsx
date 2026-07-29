@@ -1,3 +1,4 @@
+import "./styles/variables.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 // Pages
@@ -6,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateRoom from "./pages/CreateRoom";
 import Register from "./pages/Register";
 import WorkSpace from "./pages/workspace/WorkSpace";
+import ForgetPassword from "./pages/ForgotPassword";
 
 // Components
 import About from "./components/About";
@@ -13,10 +15,17 @@ import Features from "./components/Features";
 import Login from "./components/Login";
 import NavBar from "./components/Navbar";
 import Footer from "./components/Footer";
+import JoinRoom from "./components/JoinRoom";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
-  const hideChrome = location.pathname.startsWith("/workspace");
+
+  const hideChrome =
+    location.pathname.startsWith("/workspace") ||
+    location.pathname.startsWith("/dashboard") ||
+    location.pathname.startsWith("/create-room")||
+    location.pathname.startsWith("/join-room");
 
   return (
     <>
@@ -29,9 +38,45 @@ function AppContent() {
         <Route path="/features" element={<Features />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path = "/forget-password" element={<ForgetPassword/>}/>
+
+        {/* <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        /> */}
+
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-room" element={<CreateRoom />} />
-        <Route path="/workspace/:roomId" element={<WorkSpace />} />
+
+        <Route
+          path="/create-room"
+          element={
+            <ProtectedRoute>
+              <CreateRoom />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/join-room"
+          element={
+            <ProtectedRoute>
+              <JoinRoom />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/workspace/:roomId"
+          element={
+            <ProtectedRoute>
+              <WorkSpace />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
 
       {!hideChrome && <Footer />}

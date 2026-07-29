@@ -1,18 +1,37 @@
 :root {
+  /* Background */
+  --bg-color: #f0f7ff;
 
-    --bg-color: #0F172A;
+  /* Cards */
+  --card-color: #ffffff;
 
-    --card-color: #1E293B;
+  /* Primary Button */
+  --primary-color: #2563eb;
 
-    --primary-color: #3B82F6;
+  /* Headings */
+  --heading-color: #1e3a8a;
 
-    --text-color: #FFFFFF;
+  /* Main Text */
+  --text-color: #475569;
 
-    --secondary-text: #CBD5E1;
+  /* Secondary Text */
+  --secondary-text: #64748b;
 
-    --border-color: #334155;
+  /* Light Blue Sections */
+  --light-blue: #eff6ff;
 
-    --radius: 8px;
+  /* Highlights */
+  --highlight-blue: #dbeafe;
 
-    --transition: 0.3s;
+  /* Borders */
+  --border-color: #bfdbfe;
+
+  /* Status Colors */
+  --active-color: #22c55e;
+  --working-color: #2563eb;
+  --offline-color: #94a3b8;
+
+  /* Others */
+  --radius: 8px;
+  --transition: 0.3s;
 }

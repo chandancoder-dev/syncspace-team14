@@ -1,7 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import Features from "./Features";
 import "../styles/Hero.css";
 
 function Home() {
+  const navigate = useNavigate();
+
+  const handleCreateRoom = () => {
+    navigate("/create-room");
+  };
+
+  const handleJoinRoom = () => {
+    navigate("/join-room");
+  };
+
   return (
     <>
       <section className="hero">
@@ -11,48 +22,12 @@ function Home() {
           edit code, share ideas, and communicate seamlessly.
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "nowrap",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "16px",
-            marginTop: "24px",
-            width: "100%",
-          }}
-        >
-          <button
-            style={{
-              padding: "14px 32px",
-              backgroundColor: "#2563eb",
-              color: "#fff",
-              fontWeight: 600,
-              fontSize: "16px",
-              borderRadius: "10px",
-              border: "none",
-              cursor: "pointer",
-              width: "auto",
-              display: "inline-block",
-            }}
-          >
+        <div className="hero-buttons">
+          <button className="primary-btn" onClick={handleCreateRoom}>
             Create Room
           </button>
-          <button
-            style={{
-              padding: "14px 32px",
-              backgroundColor: "transparent",
-              color: "#3b82f6",
-              fontWeight: 600,
-              fontSize: "16px",
-              borderRadius: "10px",
-              border: "2px solid #3b82f6",
-              cursor: "pointer",
-              width: "auto",
-              display: "inline-block",
-            }}
-          >
+
+          <button className="secondary-btn" onClick={handleJoinRoom}>
             Join Room
           </button>
         </div>

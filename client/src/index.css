@@ -1,1 +1,45 @@
 @import "tailwindcss";
+
+@theme {
+  --color-bg: #0F172A;
+  --color-card: #1E293B;
+  --color-field: #0B1220;
+  --color-border: #334155;
+  --color-primary: #2563EB;
+  --color-primaryHover: #1D4ED8;
+  --color-heading: #FFFFFF;
+  --color-paragraph: #94A3B8;
+
+  --bg-color: var(--color-bg);
+  --card-color: var(--color-card);
+  --border-color: var(--color-border);
+  --primary-color: var(--color-primary);
+  --heading-color: var(--color-heading);
+  --text-color: var(--color-paragraph);
+  --secondary-text: var(--color-paragraph);
+  --light-blue: #1E293B;
+  --transition: 0.3s ease;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background-color: #F0F7FF;
+  color: #1E293B;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}

@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
+import dns from "node:dns";
 
-function dbConnect(){
+// Use public DNS servers to resolve MongoDB SRV records
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
-    mongoose.connect("mongodb://127.0.0.1:27017/syncspaceDB")
-    .then(()=>console.log("database connected"))
-    .catch((e)=>console.log(e));
+function dbConnect() {
+  mongoose
+    .connect(process.env.MONGODB_URI)
+    .then(() => console.log("Database connected"))
+    .catch((e) => console.log(e));
 }
 
 export default dbConnect;
