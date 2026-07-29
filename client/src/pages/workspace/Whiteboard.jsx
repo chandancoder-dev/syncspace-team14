@@ -373,7 +373,7 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
         {/* Tool buttons */}
         <div style={groupStyle}>
           {Object.values(TOOLS).map((t) => (
-            <button key={t} title={TOOL_LABELS[t]} onClick={() => { setTool(t); setSelectedId(null); }}
+            <button key={t} title={TOOL_LABELS[t]} aria-label={TOOL_LABELS[t]} onClick={() => { setTool(t); setSelectedId(null); }}
               style={toolBtnStyle(tool === t)}>
               {TOOL_ICONS[t]}
             </button>
@@ -399,6 +399,7 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
           <button
             onClick={() => setFill(null)}
             title={fillColor === null ? 'No fill (current)' : 'Remove fill'}
+            aria-label={fillColor === null ? 'No fill (current)' : 'Remove fill'}
             style={{
               ...toolBtnStyle(false),
               ...(fillColor === null && {
@@ -428,21 +429,21 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
 
         {/* Zoom */}
         <div style={groupStyle}>
-          <button onClick={() => setScale((s) => Math.min(s * 1.2, 5))} title="Zoom In" style={toolBtnStyle(false)}><FiZoomIn /></button>
+          <button onClick={() => setScale((s) => Math.min(s * 1.2, 5))} title="Zoom In" aria-label="Zoom In" style={toolBtnStyle(false)}><FiZoomIn /></button>
           {!isCompact && (
             <span style={{ fontSize: 11, color: '#64748B', minWidth: 40, textAlign: 'center' }}>{Math.round(scale * 100)}%</span>
           )}
-          <button onClick={() => setScale((s) => Math.max(s / 1.2, 0.2))} title="Zoom Out" style={toolBtnStyle(false)}><FiZoomOut /></button>
-          <button onClick={() => { setScale(1); setPosition({ x: 0, y: 0 }); }} title="Reset View" style={toolBtnStyle(false)}><FiMaximize2 /></button>
+          <button onClick={() => setScale((s) => Math.max(s / 1.2, 0.2))} title="Zoom Out" aria-label="Zoom Out" style={toolBtnStyle(false)}><FiZoomOut /></button>
+          <button onClick={() => { setScale(1); setPosition({ x: 0, y: 0 }); }} title="Reset View" aria-label="Reset View" style={toolBtnStyle(false)}><FiMaximize2 /></button>
         </div>
 
         <div style={dividerStyle} />
 
         {/* Undo / Redo / Clear */}
         <div style={groupStyle}>
-          <button onClick={undo}        title="Undo (Ctrl+Z)" style={toolBtnStyle(false)}><FiRotateCcw /></button>
-          <button onClick={redo}        title="Redo (Ctrl+Y)" style={toolBtnStyle(false)}><FiRotateCw /></button>
-          <button onClick={clearCanvas} title="Clear All"
+          <button onClick={undo} title="Undo (Ctrl+Z)" aria-label="Undo" style={toolBtnStyle(false)}><FiRotateCcw /></button>
+          <button onClick={redo} title="Redo (Ctrl+Y)" aria-label="Redo" style={toolBtnStyle(false)}><FiRotateCw /></button>
+          <button onClick={clearCanvas} title="Clear All" aria-label="Clear All"
             style={{ ...toolBtnStyle(false), background: '#FEE2E2', color: '#EF4444' }}><FiTrash2 /></button>
         </div>
       </div>
