@@ -1,5 +1,6 @@
 import { useState } from "react";
-
+import { useNavigate, Link, useSearchParams, Navigate } from "react-router-dom";
+import axios from "axios";
 function ForgetPassword(){
 
     const [newPassword , setNewPassword] = useState("");
@@ -7,8 +8,9 @@ function ForgetPassword(){
     const [confirmPassword , setConfirmPassword] = useState("");
     const [showNewPassword , setShowNewPassword] = useState(false);
     const [showConfirmPassword , setShowConfirmPassword] = useState(false);
-
-    const handleOnSubmit = (e) =>{
+    
+    const navigate = useNavigate();
+    const handleOnSubmit = async(e) =>{
         e.preventDefault();
 
         
@@ -19,6 +21,26 @@ function ForgetPassword(){
         if(newPassword !== confirmPassword){
             alert("password don't match.");
             return;
+        }
+
+        if(newPassword.length < 6){
+            alert("Password must be atleast 6 charecters");
+            return;
+        }
+        try{
+               const res = await axios.post(
+              `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/auth/reset-password`,
+              {
+                 email : email,
+                 password : newPassword,
+              },
+             );
+
+             navigate("/login");
+        }
+        catch(e){
+          console.log(e);
+             alert(e.response?.data?.message || "password reset failed");
         }
     }
     const styles = {
