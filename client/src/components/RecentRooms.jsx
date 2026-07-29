@@ -1,32 +1,29 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import {
   FaUsers,
   FaArrowRight,
-  FaCircle,
+  FaClock,
 } from "react-icons/fa";
 
 export default function RecentRooms() {
 
   const navigate = useNavigate();
 
-
-  // =============================
+  // ==========================================
   // STATE
-  // =============================
+  // ==========================================
 
   const [rooms, setRooms] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState("");
 
 
-  // =============================
+  // ==========================================
   // FETCH RECENT ROOMS
-  // =============================
+  // ==========================================
 
   useEffect(() => {
 
@@ -45,9 +42,7 @@ export default function RecentRooms() {
           }
         );
 
-
         setRooms(response.data.rooms || []);
-
 
       } catch (error) {
 
@@ -55,7 +50,6 @@ export default function RecentRooms() {
           "Failed to fetch rooms:",
           error
         );
-
 
         if (error.response?.status === 401) {
 
@@ -65,9 +59,7 @@ export default function RecentRooms() {
           navigate("/login");
 
           return;
-
         }
-
 
         setError("Failed to load recent rooms.");
 
@@ -79,15 +71,101 @@ export default function RecentRooms() {
 
     };
 
-
     fetchRooms();
 
   }, [navigate]);
 
 
-  // =============================
+  // ==========================================
+  // DATE FORMATTER
+  // ==========================================
+
+  const formatDateTime = (dateValue) => {
+
+    if (!dateValue) {
+      return {
+        day: "Date unavailable",
+        time: "--",
+      };
+    }
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+      return {
+        day: "Date unavailable",
+        time: "--",
+      };
+    }
+
+    const today = new Date();
+
+    const yesterday = new Date();
+
+    yesterday.setDate(today.getDate() - 1);
+
+
+    const isToday =
+      date.toDateString() === today.toDateString();
+
+    const isYesterday =
+      date.toDateString() === yesterday.toDateString();
+
+
+    let day;
+
+    if (isToday) {
+
+      day = "Today";
+
+    } else if (isYesterday) {
+
+      day = "Yesterday";
+
+    } else {
+
+      day = date.toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+
+    }
+
+
+    const time = date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+
+
+    return {
+      day,
+      time,
+    };
+
+  };
+
+
+  // ==========================================
+  // GET ROOM DATE
+  // ==========================================
+
+  const getRoomDate = (room) => {
+
+    return (
+      room.updatedAt ||
+      room.lastAccessedAt ||
+      room.createdAt ||
+      room.created_at
+    );
+
+  };
+
+
+  // ==========================================
   // OPEN WORKSPACE
-  // =============================
+  // ==========================================
 
   const openRoom = (roomId) => {
 
@@ -96,9 +174,9 @@ export default function RecentRooms() {
   };
 
 
-  // =============================
-  // LOADING STATE
-  // =============================
+  // ==========================================
+  // LOADING
+  // ==========================================
 
   if (loading) {
 
@@ -125,9 +203,9 @@ export default function RecentRooms() {
   }
 
 
-  // =============================
-  // ERROR STATE
-  // =============================
+  // ==========================================
+  // ERROR
+  // ==========================================
 
   if (error) {
 
@@ -158,9 +236,9 @@ export default function RecentRooms() {
 
     <section>
 
-      {/* ============================= */}
-      {/* SECTION HEADER */}
-      {/* ============================= */}
+      {/* ==========================================
+          HEADER
+      ========================================== */}
 
       <div className="flex items-start justify-between mb-8">
 
@@ -177,10 +255,11 @@ export default function RecentRooms() {
         </div>
 
 
-        {/* View All */}
+        {/* VIEW ALL */}
 
-        <Link
-          to="/rooms"
+        <button
+          type="button"
+          onClick={() => navigate("/rooms")}
           className="
             inline-flex
             items-center
@@ -199,14 +278,14 @@ export default function RecentRooms() {
           "
         >
           View All
-        </Link>
+        </button>
 
       </div>
 
 
-      {/* ============================= */}
-      {/* EMPTY STATE */}
-      {/* ============================= */}
+      {/* ==========================================
+          EMPTY STATE
+      ========================================== */}
 
       {rooms.length === 0 ? (
 
@@ -234,189 +313,218 @@ export default function RecentRooms() {
 
       ) : (
 
-        /* ============================= */
-        /* ROOM CARDS */
-        /* ============================= */
-
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-          {rooms.map((room) => (
+          {rooms.slice(0, 3).map((room) => {
 
-            <div
-              key={room.roomId}
-              className="
-                group
-                h-full
-                bg-white
-                rounded-3xl
-                border
-                border-[#BFDBFE]
-                p-6
-                shadow-sm
-                hover:border-[#60A5FA]
-                hover:-translate-y-1
-                hover:shadow-xl
-                hover:shadow-blue-100/70
-                transition-all
-                duration-300
-                flex
-                flex-col
-              "
-            >
+            const dateTime = formatDateTime(
+              getRoomDate(room)
+            );
 
-              {/* ============================= */}
-              {/* ROOM ICON */}
-              {/* ============================= */}
+            const memberCount =
+              room.participants?.length || 0;
+
+            // If you already have a real-time field
+            // from your backend, use it here.
+            const isOnline =
+              room.onlineUsers > 0 ||
+              room.connectedUsers > 0 ||
+              memberCount > 0;
+
+            return (
 
               <div
+                key={room.roomId}
                 className="
-                  w-16
-                  h-16
-                  rounded-2xl
-                  bg-[#EFF6FF]
+                  group
+                  h-full
+                  bg-white
+                  rounded-3xl
                   border
-                  border-[#DBEAFE]
-                  flex
-                  items-center
-                  justify-center
-                  text-3xl
+                  border-[#BFDBFE]
+                  p-6
                   shadow-sm
-                  group-hover:bg-[#DBEAFE]
-                  transition-colors
-                  duration-300
-                "
-              >
-                🚀
-              </div>
-
-
-              {/* ============================= */}
-              {/* ROOM DETAILS */}
-              {/* ============================= */}
-
-              <div className="flex-1">
-
-                <h3
-                  className="
-                    mt-6
-                    text-2xl
-                    font-bold
-                    text-[#1E3A8A]
-                    truncate
-                  "
-                  title={room.name}
-                >
-                  {room.name}
-                </h3>
-
-
-                {/* Room Status */}
-
-                <div
-                  className="
-                    mt-3
-                    flex
-                    items-center
-                    gap-2
-                  "
-                >
-
-                  <FaCircle className="text-emerald-500 text-[10px]" />
-
-                  <span className="text-sm text-[#64748B]">
-                    {room.visibility} Room
-                  </span>
-
-                </div>
-
-
-                {/* Members */}
-
-                <div
-                  className="
-                    mt-6
-                    flex
-                    items-center
-                    gap-3
-                    text-sm
-                    text-[#64748B]
-                  "
-                >
-
-                  <FaUsers className="text-[#94A3B8]" />
-
-                  <span>
-                    {room.participants?.length || 0} Members
-                  </span>
-
-                </div>
-
-
-                {/* Language */}
-
-                <div className="mt-4">
-
-                  <p className="text-xs text-[#94A3B8]">
-                    Language
-                  </p>
-
-                  <p className="mt-1 text-sm text-[#334155] font-medium">
-                    {room.language}
-                  </p>
-
-                </div>
-
-              </div>
-
-
-              {/* ============================= */}
-              {/* OPEN WORKSPACE */}
-              {/* ============================= */}
-
-              <button
-                type="button"
-                onClick={() => openRoom(room.roomId)}
-                aria-label={`Open ${room.name} workspace`}
-                className="
-                  mt-8
-                  w-full
-                  bg-[#2563EB]
-                  hover:bg-[#1D4ED8]
-                  rounded-xl
-                  py-3
-                  px-4
-                  text-white
-                  font-semibold
-                  flex
-                  items-center
-                  justify-center
-                  gap-3
-                  shadow-sm
-                  hover:shadow-lg
-                  hover:shadow-blue-200
+                  hover:border-[#60A5FA]
+                  hover:-translate-y-1
+                  hover:shadow-xl
+                  hover:shadow-blue-100/70
                   transition-all
                   duration-300
-                  cursor-pointer
+                  flex
+                  flex-col
                 "
               >
 
-                <span>
-                  Open Workspace
-                </span>
+                {/* ==========================================
+                    ROOM NAME
+                ========================================== */}
 
-                <FaArrowRight
+                <div className="flex-1">
+
+                  <h3
+                    className="
+                      text-2xl
+                      font-bold
+                      text-[#1E3A8A]
+                      truncate
+                    "
+                    title={room.name}
+                  >
+                    {room.name}
+                  </h3>
+
+
+                  {/* ==========================================
+                      REAL-TIME CONNECTION STATUS
+                  ========================================== */}
+
+                  <div className="mt-4 flex items-center gap-2">
+
+                    <span
+                      className={`
+                        w-2.5
+                        h-2.5
+                        rounded-full
+                        ${isOnline
+                          ? "bg-emerald-500 animate-pulse"
+                          : "bg-slate-400"
+                        }
+                      `}
+                    />
+
+                    <span
+                      className={`
+                        text-sm
+                        font-medium
+                        ${isOnline
+                          ? "text-emerald-600"
+                          : "text-slate-500"
+                        }
+                      `}
+                    >
+                      {isOnline
+                        ? "Active Now"
+                        : "Offline"
+                      }
+                    </span>
+
+                  </div>
+
+
+                  {/* ==========================================
+                      CONNECTED USERS
+                  ========================================== */}
+
+                  <div
+                    className="
+                      mt-5
+                      flex
+                      items-center
+                      gap-3
+                      text-sm
+                      text-[#64748B]
+                    "
+                  >
+
+                    <FaUsers className="text-[#2563EB]" />
+
+                    <span>
+                      {memberCount}{" "}
+                      {memberCount === 1
+                        ? "Member"
+                        : "Members"
+                      } Connected
+                    </span>
+
+                  </div>
+
+
+                  {/* ==========================================
+                      DATE & TIME
+                  ========================================== */}
+
+                  <div
+                    className="
+                      mt-5
+                      rounded-xl
+                      bg-[#F8FAFC]
+                      border
+                      border-[#E2E8F0]
+                      p-4
+                    "
+                  >
+
+                    <div className="flex items-center gap-3">
+
+                      <FaClock className="text-[#2563EB]" />
+
+                      <div>
+
+                        <p className="text-sm font-semibold text-[#334155]">
+                          {dateTime.day}
+                        </p>
+
+                        <p className="text-xs text-[#64748B] mt-1">
+                          {dateTime.time}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                {/* ==========================================
+                    OPEN WORKSPACE
+                ========================================== */}
+
+                <button
+                  type="button"
+                  onClick={() => openRoom(room.roomId)}
                   className="
-                    transition-transform
+                    mt-7
+                    w-full
+                    bg-[#2563EB]
+                    hover:bg-[#1D4ED8]
+                    rounded-xl
+                    py-3
+                    px-4
+                    text-white
+                    font-semibold
+                    flex
+                    items-center
+                    justify-center
+                    gap-3
+                    shadow-sm
+                    hover:shadow-lg
+                    hover:shadow-blue-200
+                    transition-all
                     duration-300
-                    group-hover:translate-x-1
                   "
-                />
+                >
 
-              </button>
+                  <span>
+                    Open Workspace
+                  </span>
 
-            </div>
+                  <FaArrowRight
+                    className="
+                      transition-transform
+                      duration-300
+                      group-hover:translate-x-1
+                    "
+                  />
 
-          ))}
+                </button>
+
+              </div>
+
+            );
+
+          })}
 
         </div>
 
