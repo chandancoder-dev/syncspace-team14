@@ -67,10 +67,10 @@ const useSync = (roomId) => {
 
     // Yjs document sync
     socket.on('sync-state', ({ update }) => {
-      Y.applyUpdate(ydoc, new Uint8Array(update));
+      Y.applyUpdate(ydoc, new Uint8Array(update), 'remote');
     });
     socket.on('yjs-update', ({ update }) => {
-      Y.applyUpdate(ydoc, new Uint8Array(update));
+      Y.applyUpdate(ydoc, new Uint8Array(update), 'remote');
     });
 
     const onLocalUpdate = (update, origin) => {
@@ -82,7 +82,7 @@ const useSync = (roomId) => {
     // === Code editor awareness (y-protocols) ===
     // When local awareness changes, send to server
     const onAwarenessChange = ({ added, updated, removed }, origin) => {
-      if (origin === 'local') return; // skip if triggered by remote
+      if (origin === 'remote') return; // skip if triggered by incoming remote update
       const changedClients = added.concat(updated).concat(removed);
       const update = awarenessProtocol.encodeAwarenessUpdate(awareness, changedClients);
       socket.emit('code-awareness', { roomId, update: Array.from(update) });

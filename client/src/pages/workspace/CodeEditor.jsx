@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { MonacoBinding } from 'y-monaco';
-import { FiChevronDown, FiCode, FiUsers, FiLoader } from 'react-icons/fi';
+import { FiChevronDown, FiCode, FiUsers, FiLoader, FiPlay, FiX, FiChevronUp } from 'react-icons/fi';
 
 const LANGUAGES = [
   { id: 'javascript', label: 'JavaScript' },
@@ -19,6 +19,8 @@ const FILE_EXTENSIONS = {
   cpp: 'cpp',
 };
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
+
 const DEFAULT_CODE = {
   javascript: `// Start coding in JavaScript\nfunction hello() {\n  console.log("Hello, SyncSpace!");\n}\n\nhello();\n`,
   python: `# Start coding in Python\ndef hello():\n    print("Hello, SyncSpace!")\n\nhello()\n`,
@@ -32,6 +34,9 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
   const [, setAwarenessTick] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [output, setOutput] = useState(null);
+  const [showOutput, setShowOutput] = useState(false);
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
   const bindingRef = useRef(null);
@@ -96,10 +101,12 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
       });
 
       monaco.editor.setTheme('syncspace-light');
-      if (yText.length === 0) {
-        const currentLang = yMeta.get('language') || 'javascript';
-        yText.insert(0, DEFAULT_CODE[currentLang] || DEFAULT_CODE.javascript);
-      }
+      setTimeout(() => {
+        if (yText.length === 0) {
+          const currentLang = yMeta.get('language') || 'javascript';
+          yText.insert(0, DEFAULT_CODE[currentLang] || DEFAULT_CODE.javascript);
+        }
+      }, 500);
 
   
       // Create the Yjs <-> Monaco binding with awareness for remote cursors
@@ -139,18 +146,45 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
       }
     }
 
-    // If the shared text is still the default code, replace with new language's default
-    if (yText.length > 0) {
-      const currentText = yText.toString();
-      const isDefaultCode = Object.values(DEFAULT_CODE).some(
-        (code) => code.trim() === currentText.trim(),
-      );
-      if (isDefaultCode) {
-        ydoc.transact(() => {
-          yText.delete(0, yText.length);
-          yText.insert(0, DEFAULT_CODE[langId]);
-        });
+    // Check if current content is a default template (any language)
+    const currentText = yText.toString();
+    const normalize = (s) => s.replace(/\s+/g, '').toLowerCase();
+    const currentNorm = normalize(currentText);
+    const isDefaultCode = !currentText.trim() || Object.values(DEFAULT_CODE).some(
+      (code) => normalize(code) === currentNorm,
+    );
+
+    if (isDefaultCode) {
+      const newCode = DEFAULT_CODE[langId];
+
+      // Destroy binding first
+      if (bindingRef.current) {
+        bindingRef.current.destroy();
+        bindingRef.current = null;
       }
+
+      // Update Yjs shared text
+      ydoc.transact(() => {
+        yText.delete(0, yText.length);
+        yText.insert(0, newCode);
+      });
+
+      // Update Monaco editor directly
+      if (editorRef.current) {
+        editorRef.current.setValue(newCode);
+      }
+
+      // Recreate binding after a tick to ensure Monaco is settled
+      setTimeout(() => {
+        if (editorRef.current) {
+          bindingRef.current = new MonacoBinding(
+            yText,
+            editorRef.current.getModel(),
+            new Set([editorRef.current]),
+            awareness || undefined,
+          );
+        }
+      }, 50);
     }
   };
 
@@ -163,6 +197,54 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
       }
     }
   }, [language]);
+
+  // Execute code via backend
+  const runCode = async () => {
+    if (isRunning) return;
+
+    const code = editorRef.current ? editorRef.current.getValue() : yText.toString();
+    if (!code.trim()) {
+      setOutput({ stdout: '', stderr: 'Error: No code to execute.', exitCode: 1 });
+      setShowOutput(true);
+      return;
+    }
+
+    setIsRunning(true);
+    setOutput(null);
+    setShowOutput(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${SERVER_URL}/api/code/execute`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ code, language }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || `Server error: ${response.status}`);
+      }
+
+      setOutput({
+        stdout: data.stdout || '',
+        stderr: data.stderr || '',
+        exitCode: data.exitCode ?? -1,
+      });
+    } catch (error) {
+      setOutput({
+        stdout: '',
+        stderr: `Execution failed: ${error.message}`,
+        exitCode: 1,
+      });
+    } finally {
+      setIsRunning(false);
+    }
+  };
 
   // Close language menu on outside click
   useEffect(() => {
@@ -334,8 +416,39 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
           </div>
         </div>
 
-        {/* Right — file info + collaborators indicator */}
+        {/* Right — run button + file info + collaborators indicator */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Run button */}
+          <button
+            onClick={runCode}
+            disabled={isRunning}
+            aria-label="Run code"
+            onMouseEnter={(e) => {
+              if (!isRunning) e.currentTarget.style.background = '#16A34A';
+            }}
+            onMouseLeave={(e) => {
+              if (!isRunning) e.currentTarget.style.background = '#22C55E';
+            }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 14px',
+              background: isRunning ? '#94A3B8' : '#22C55E',
+              border: 'none',
+              borderRadius: 6,
+              color: '#FFFFFF',
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: isRunning ? 'not-allowed' : 'pointer',
+              transition: 'background 0.15s',
+              boxShadow: isRunning ? 'none' : '0 2px 6px rgba(34, 197, 94, 0.25)',
+            }}
+          >
+            {isRunning ? <FiLoader size={13} style={{ animation: 'spin 1s linear infinite' }} /> : <FiPlay size={13} />}
+            {isRunning ? 'Running...' : 'Run'}
+          </button>
+
           {activeUsers > 1 && (
             <div
               style={{
@@ -442,6 +555,116 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
           }}
         />
       </div>
+
+      {/* Output Panel */}
+      {showOutput && (
+        <div
+          style={{
+            flexShrink: 0,
+            maxHeight: '35%',
+            minHeight: 100,
+            borderTop: '1px solid #DBEAFE',
+            background: '#F8FAFC',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Output header */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '6px 16px',
+              background: '#FFFFFF',
+              borderBottom: '1px solid #DBEAFE',
+              flexShrink: 0,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#1E3A8A' }}>
+                Output
+              </span>
+              {output && (
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 600,
+                    padding: '2px 6px',
+                    borderRadius: 4,
+                    background: output.exitCode === 0 ? '#ECFDF5' : '#FEF2F2',
+                    color: output.exitCode === 0 ? '#047857' : '#DC2626',
+                    border: `1px solid ${output.exitCode === 0 ? '#A7F3D0' : '#FCA5A5'}`,
+                  }}
+                >
+                  {output.exitCode === 0 ? 'Success' : `Exit: ${output.exitCode}`}
+                </span>
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <button
+                onClick={() => setShowOutput(false)}
+                aria-label="Close output"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 24,
+                  height: 24,
+                  borderRadius: 6,
+                  border: 'none',
+                  background: 'transparent',
+                  color: '#64748B',
+                  cursor: 'pointer',
+                  fontSize: 14,
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = '#EFF6FF')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+              >
+                <FiX size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* Output content */}
+          <div
+            style={{
+              flex: 1,
+              overflow: 'auto',
+              padding: '12px 16px',
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+              fontSize: 13,
+              lineHeight: 1.6,
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+            }}
+          >
+            {isRunning ? (
+              <div style={{ color: '#64748B', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <FiLoader size={14} style={{ animation: 'spin 1s linear infinite' }} />
+                Executing code...
+              </div>
+            ) : output ? (
+              <>
+                {output.stdout && (
+                  <div style={{ color: '#1E293B' }}>{output.stdout}</div>
+                )}
+                {output.stderr && (
+                  <div style={{ color: '#DC2626', marginTop: output.stdout ? 8 : 0 }}>
+                    {output.stderr}
+                  </div>
+                )}
+                {!output.stdout && !output.stderr && (
+                  <div style={{ color: '#94A3B8', fontStyle: 'italic' }}>
+                    Program finished with no output.
+                  </div>
+                )}
+              </>
+            ) : null}
+          </div>
+        </div>
+      )}
 
       {/* Remote cursor styles + loader animation */}
       <style>{`
