@@ -6,11 +6,13 @@ import { useState } from "react";
 export default function DNavbar() {
   const navigate = useNavigate();
 
-  // Logout popup state
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
 
-  // Get currently logged-in user from localStorage
-  const getUserName = () => {
+  // ==========================================
+  // GET FULL NAME FOR NAVBAR
+  // ==========================================
+
+  const getFullName = () => {
     const storedUser = localStorage.getItem("user");
 
     if (!storedUser) {
@@ -21,52 +23,48 @@ export default function DNavbar() {
       const user = JSON.parse(storedUser);
 
       return (
+        user.fullName ||
         user.name ||
         user.username ||
-        user.fullName ||
         user.email?.split("@")[0] ||
         "User"
       );
+
     } catch (error) {
       console.error("Failed to read logged-in user:", error);
       return "User";
     }
   };
 
-  // Current user's name
-  const userName = getUserName();
+  const fullName = getFullName();
 
 
-  // =============================
+  // ==========================================
   // OPEN LOGOUT POPUP
-  // =============================
+  // ==========================================
 
   const handleLogoutClick = () => {
     setShowLogoutPopup(true);
   };
 
 
-  // =============================
+  // ==========================================
   // CONFIRM LOGOUT
-  // =============================
+  // ==========================================
 
   const confirmLogout = () => {
-
-    // Remove login information
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    // Close popup
     setShowLogoutPopup(false);
 
-    // Redirect to login page
     navigate("/login");
   };
 
 
-  // =============================
+  // ==========================================
   // CANCEL LOGOUT
-  // =============================
+  // ==========================================
 
   const cancelLogout = () => {
     setShowLogoutPopup(false);
@@ -75,9 +73,9 @@ export default function DNavbar() {
 
   return (
     <>
-      {/* ============================= */}
-      {/* NAVBAR */}
-      {/* ============================= */}
+      {/* ==========================================
+          NAVBAR
+      ========================================== */}
 
       <nav className="bg-white border-b border-[#DBEAFE] shadow-sm">
 
@@ -93,9 +91,9 @@ export default function DNavbar() {
           "
         >
 
-          {/* ============================= */}
-          {/* LOGO */}
-          {/* ============================= */}
+          {/* ==========================================
+              LOGO
+          ========================================== */}
 
           <div className="flex items-center gap-3">
 
@@ -129,15 +127,13 @@ export default function DNavbar() {
           </div>
 
 
-          {/* ============================= */}
-          {/* RIGHT SECTION */}
-          {/* ============================= */}
+          {/* ==========================================
+              RIGHT SECTION
+          ========================================== */}
 
           <div className="flex items-center gap-5">
 
-            {/* ============================= */}
-            {/* LOGGED-IN USER */}
-            {/* ============================= */}
+            {/* FULL NAME */}
 
             <div
               className="
@@ -165,15 +161,13 @@ export default function DNavbar() {
               />
 
               <p className="text-[#1E293B] font-semibold">
-                {userName}
+                {fullName}
               </p>
 
             </div>
 
 
-            {/* ============================= */}
             {/* LOGOUT BUTTON */}
-            {/* ============================= */}
 
             <button
               type="button"
@@ -196,11 +190,9 @@ export default function DNavbar() {
                 duration-300
               "
             >
-
               <FiLogOut />
 
               Logout
-
             </button>
 
           </div>
@@ -210,9 +202,9 @@ export default function DNavbar() {
       </nav>
 
 
-      {/* ============================= */}
-      {/* LOGOUT CONFIRMATION POPUP */}
-      {/* ============================= */}
+      {/* ==========================================
+          LOGOUT CONFIRMATION POPUP
+      ========================================== */}
 
       {showLogoutPopup && (
 
@@ -230,8 +222,6 @@ export default function DNavbar() {
           "
         >
 
-          {/* Popup Box */}
-
           <div
             className="
               w-full
@@ -242,11 +232,10 @@ export default function DNavbar() {
               p-7
               border
               border-[#DBEAFE]
-              animate-[fadeIn_0.2s_ease-out]
             "
           >
 
-            {/* Logout Icon */}
+            {/* ICON */}
 
             <div
               className="
@@ -266,7 +255,7 @@ export default function DNavbar() {
             </div>
 
 
-            {/* Heading */}
+            {/* HEADING */}
 
             <h2
               className="
@@ -281,7 +270,7 @@ export default function DNavbar() {
             </h2>
 
 
-            {/* Message */}
+            {/* MESSAGE */}
 
             <p
               className="
@@ -295,11 +284,9 @@ export default function DNavbar() {
             </p>
 
 
-            {/* Buttons */}
+            {/* BUTTONS */}
 
             <div className="mt-7 flex gap-4">
-
-              {/* Cancel Button */}
 
               <button
                 type="button"
@@ -322,8 +309,6 @@ export default function DNavbar() {
                 Cancel
               </button>
 
-
-              {/* Logout Button */}
 
               <button
                 type="button"
