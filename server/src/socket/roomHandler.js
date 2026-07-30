@@ -32,7 +32,7 @@ async function saveState(roomId, ydoc) {
     await YjsDocument.findOneAndUpdate(
       { roomId },
       { state },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
   } catch (error) {
     console.error(`[Yjs Persistence] Failed to save state for room ${roomId}:`, error.message);
@@ -76,6 +76,8 @@ const roomHandler = (io, socket) => {
     socket.join(roomId);
 
     room.users.set(socket.id, { user, cursor: null });
+
+    console.log(`[Room: ${roomId}] ${user?.name || 'Anonymous'} connected (${room.users.size} online)`);
 
     // Send current Yjs state to the joining user
     const state = Y.encodeStateAsUpdate(room.ydoc);
@@ -131,7 +133,12 @@ const roomHandler = (io, socket) => {
       if (!rooms.has(roomId)) return;
 
       const room = rooms.get(roomId);
+      const userData = room.users.get(socket.id);
+      const userName = userData?.user?.name || 'Anonymous';
+
       room.users.delete(socket.id);
+
+      console.log(`[Room: ${roomId}] ${userName} disconnected (${room.users.size} online)`);
 
       socket.to(roomId).emit("user-left", { socketId: socket.id });
 
