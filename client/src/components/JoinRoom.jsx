@@ -1,29 +1,44 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../styles/JoinRoom.css";
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:8000";
+
 function JoinRoom() {
+  const navigate = useNavigate();
   const [roomId, setRoomId] = useState("");
   const [name, setName] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting] = useState(false);
 
-  const handleJoinRoom = (e) => {
+  const handleJoinRoom = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (!roomId.trim()) {
-      alert("Please enter the Room ID.");
+      setError("Please enter the Room ID.");
       return;
     }
 
-    // Backend integration will be added later
-    console.log({
-      roomId,
-      name,
-    });
+    // Store name for workspace
+    const username =
+      name.trim() || localStorage.getItem("syncspace_user") || "Anonymous";
 
-    alert("Join Room functionality will be connected to the backend.");
+    if (name.trim()) {
+      localStorage.setItem("syncspace_user", name.trim());
+    }
+
+    // Navigate directly — socket roomHandler creates rooms on-the-fly
+    navigate(`/workspace/${roomId.trim()}`);
   };
 
   return (
     <div className="join-room-container">
+      <button className="back-btn" onClick={() => navigate("/dashboard")}>
+        ← Back
+      </button>
+
       <div className="join-room-card">
         <h1>Join an Existing Room</h1>
 
@@ -31,6 +46,10 @@ function JoinRoom() {
           Enter the Room ID shared with you to securely join an existing
           collaboration room.
         </p>
+
+        {error && (
+          <p style={{ color: "#ff4d4f", marginBottom: "15px" }}>{error}</p>
+        )}
 
         <form onSubmit={handleJoinRoom}>
           <div className="form-group">
@@ -55,8 +74,8 @@ function JoinRoom() {
             />
           </div>
 
-          <button type="submit" className="join-btn">
-            Join Room
+          <button type="submit" className="join-btn" disabled={isSubmitting}>
+            {isSubmitting ? "Joining..." : "Join Room"}
           </button>
         </form>
       </div>

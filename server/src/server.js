@@ -1,13 +1,12 @@
 import http from "http";
 import { Server } from "socket.io";
-import dotenv from "dotenv";
 import app from "./app.js";
-import connectDB from "./config/db.js";
+import dbConnect from "./config/db.js";
 import roomHandler from "./socket/roomHandler.js";
 
-dotenv.config();
 
-connectDB();
+// Connect to database
+dbConnect();
 
 const PORT = process.env.PORT || 8000;
 
@@ -15,18 +14,17 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
 
 io.on("connection", (socket) => {
-  console.log("A user connected");
-
+  console.log("A user connected:", socket.id);
   roomHandler(io, socket);
 
   socket.on("disconnect", () => {
-    console.log("A user disconnected");
+    console.log("A user disconnected:", socket.id);
   });
 });
 

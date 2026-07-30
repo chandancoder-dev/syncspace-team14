@@ -41,7 +41,6 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     // Check if user exists
     const user = await User.findOne({ email });
 
@@ -84,7 +83,31 @@ export const loginUser = async (req, res) => {
     });
   }
 };
+//reset user password.
+export const resetPassword = async(req, res) =>{
+    const {email , password} = req.body;
+    try{
+      const user = await User.findOne({email});
 
+      if(!user){
+          return res.status(404).json({message : "User not found"});
+      }
+      
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      user.password = hashedPassword;
+
+      await user.save();
+
+      return res.status(200).json({message : "password reset successfully"});
+
+    }
+    catch(e){
+       res.status(500).json({message : e.message});
+    }
+
+
+}
 // Get Current Logged-in User
 export const getCurrentUser = async (req, res) => {
   try {
