@@ -81,7 +81,7 @@ function CreateRoom() {
           </div>
 
           <div className="form-group">
-            <label>Description (Optional)</label>
+            <label>Description</label>
             <textarea
               placeholder="Enter room description"
               value={description}
