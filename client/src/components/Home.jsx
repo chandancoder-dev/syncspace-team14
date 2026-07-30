@@ -16,11 +16,10 @@ function Home() {
   return (
     <>
       <section className="hero">
-        <h1>🚀 Work Together in Real-Time</h1>
-
+        <h1>Build, code, and brainstorm together in one collaborative workspace.</h1>
         <p>
-          Create secure rooms and collaborate with your teammates from anywhere
-          in the world instantly.
+          Create secure coding rooms where developers and students can work together,
+          edit code, share ideas, and communicate seamlessly.
         </p>
 
         <div className="hero-buttons">
