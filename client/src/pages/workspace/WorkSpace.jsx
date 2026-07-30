@@ -353,10 +353,16 @@ const WorkSpace = () => {
               onClick={() => setShowShareMenu((v) => !v)}
               title="Share room link"
               onMouseEnter={(e) => {
-                if (!showShareMenu) e.currentTarget.style.background = '#1D4ED8';
+                e.currentTarget.style.background = '#EFF6FF';
+                e.currentTarget.style.borderColor = '#2563EB';
+                e.currentTarget.style.color = '#2563EB';
               }}
               onMouseLeave={(e) => {
-                if (!showShareMenu) e.currentTarget.style.background = '#2563EB';
+                if (!showShareMenu) {
+                  e.currentTarget.style.background = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#DBEAFE';
+                  e.currentTarget.style.color = '#475569';
+                }
               }}
               style={{
                 display: 'inline-flex',
@@ -365,14 +371,13 @@ const WorkSpace = () => {
                 height: 34,
                 padding: '0 14px',
                 borderRadius: 8,
-                border: 'none',
+                border: '1.5px solid ' + (showShareMenu ? '#2563EB' : '#DBEAFE'),
                 cursor: 'pointer',
                 fontSize: 13,
                 fontWeight: 600,
-                background: showShareMenu ? '#1D4ED8' : '#2563EB',
-                color: '#FFFFFF',
-                boxShadow: '0 2px 6px rgba(37, 99, 235, 0.25)',
-                transition: 'background 0.15s ease',
+                background: showShareMenu ? '#EFF6FF' : '#FFFFFF',
+                color: showShareMenu ? '#2563EB' : '#475569',
+                transition: 'all 0.2s ease',
               }}
             >
               <FiShare2 size={14} />
@@ -448,7 +453,7 @@ const WorkSpace = () => {
                       alignItems: 'center',
                       gap: 6,
                       padding: '0 12px',
-                      background: copied ? '#22C55E' : '#2563EB',
+                      background: copied ? '#4ac878' : '#6387d6',
                       color: '#FFFFFF',
                       border: 'none',
                       borderRadius: 8,
@@ -491,7 +496,7 @@ const WorkSpace = () => {
                     </div>
                     <div
                       style={{
-                        color: '#1E3A8A',
+                        color: '#1b7be1',
                         fontSize: 14,
                         fontWeight: 700,
                         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
@@ -517,7 +522,7 @@ const WorkSpace = () => {
                       height: 32,
                       border: '1px solid #DBEAFE',
                       background: '#FFFFFF',
-                      color: '#1E3A8A',
+                      color: '#0d4af24a',
                       borderRadius: 8,
                       cursor: 'pointer',
                     }}
@@ -607,12 +612,12 @@ const WorkSpace = () => {
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 1000,
-            backdropFilter: 'blur(3px)',
+            backdropFilter: 'blur(4px)',
           }}
         >
           <div
             style={{
-              background: '#FFFFFF',
+              background: '#e8f2fd',
               border: '1px solid #DBEAFE',
               borderRadius: 14,
               padding: '32px 36px',

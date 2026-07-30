@@ -63,6 +63,12 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
   const [shapes, setShapes]  = useState(() => yShapes.toArray());
   const [tool, setTool] = useState(TOOLS.PENCIL);
   const [selectedId, setSelectedId]= useState(null);
+  const selectedIdRef = useRef(null);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    selectedIdRef.current = selectedId;
+  }, [selectedId]);
   const [strokeColor, setStrokeColor] = useState('#000000');
   const [fillColor, setFillColor]= useState(null);
   const [strokeWidth, setStrokeWidth] = useState(3);
@@ -71,7 +77,7 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
   const [editingText, setEditingText] = useState(null);
   const [stageSize, setStageSize]= useState({ width: 800, height: 600 });
 
-  const strokeColorRef = useRef('#2563EB');
+  const strokeColorRef = useRef('#000000');
   const fillColorRef = useRef(null);
   const strokeWidthRef = useRef(3);
   const undoManagerRef = useRef(new Y.UndoManager(yShapes));
@@ -81,8 +87,22 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
   const isDrawing= useRef(false);
   const currentShapeId = useRef(null);
 
-  const setStroke = (v) => { strokeColorRef.current = v; setStrokeColor(v); };
-  const setFill   = (v) => { fillColorRef.current   = v; setFillColor(v);   };
+  const setStroke = (v) => {
+    strokeColorRef.current = v;
+    setStrokeColor(v);
+    // Apply to selected shape
+    if (selectedIdRef.current) {
+      updateShape(selectedIdRef.current, (s) => ({ ...s, stroke: v }));
+    }
+  };
+  const setFill = (v) => {
+    fillColorRef.current = v;
+    setFillColor(v);
+    // Apply to selected shape
+    if (selectedIdRef.current) {
+      updateShape(selectedIdRef.current, (s) => ({ ...s, fill: v }));
+    }
+  };
   const setWidth  = (v) => { strokeWidthRef.current = v; setStrokeWidth(v); };
 
   const makeId = () => Math.random().toString(36).substr(2, 9);
@@ -304,9 +324,9 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
     width: 40, height: 40, borderRadius: '10px',
     border: active ? '1px solid transparent' : '1px solid #DBEAFE',
     cursor: 'pointer', fontSize: 19, display: 'flex', alignItems: 'center', justifyContent: 'center',
-    background: active ? '#3B82F6' : '#FFFFFF',
+    background: active ? '#84abe9' : '#FFFFFF',
     color:      active ? '#ffffff' : '#000000',
-    boxShadow:  active ? '0 2px 10px rgba(59, 130, 246, 0.35)' : 'none',
+    boxShadow:  active ? '0 2px 10px rgba(59, 130, 246, 0.50)' : 'none',
     transition: 'all 0.15s ease',
   });
 
