@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, Link, useSearchParams, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
-import "../styles/login.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -214,13 +213,13 @@ export default function Login() {
         >
           Login
         </button>
-
         <p style={styles.register}>
-          Don't have an account?{" "}
-          <a href="#" style={styles.registerLink}>
-            Register
-          </a>
-        </p>
+  Don't have an account?{" "}
+  <Link to={registerLinkTo} style={styles.registerLink}>
+    Register
+  </Link>
+</p>
+
       </div>
     </div>
   );
