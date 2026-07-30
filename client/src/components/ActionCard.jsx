@@ -15,7 +15,7 @@ export default function ActionCard({
         overflow-hidden
         bg-white
         border
-        border-[#BFDBFE]
+       border-2 border-[#93C5FD]
         rounded-3xl
         p-7
         lg:p-8
@@ -24,7 +24,7 @@ export default function ActionCard({
         duration-300
         ease-out
         hover:-translate-y-2
-        hover:border-[#60A5FA]
+        hover:border-[#2563EB]
         hover:shadow-[0_18px_40px_rgba(37,99,235,0.15)]
       "
     >

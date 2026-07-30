@@ -326,10 +326,6 @@ export default function RecentRooms() {
 
             // If you already have a real-time field
             // from your backend, use it here.
-            const isOnline =
-              room.onlineUsers > 0 ||
-              room.connectedUsers > 0 ||
-              memberCount > 0;
 
             return (
 
@@ -373,42 +369,6 @@ export default function RecentRooms() {
                     {room.name}
                   </h3>
 
-
-                  {/* ==========================================
-                      REAL-TIME CONNECTION STATUS
-                  ========================================== */}
-
-                  <div className="mt-4 flex items-center gap-2">
-
-                    <span
-                      className={`
-                        w-2.5
-                        h-2.5
-                        rounded-full
-                        ${isOnline
-                          ? "bg-emerald-500 animate-pulse"
-                          : "bg-slate-400"
-                        }
-                      `}
-                    />
-
-                    <span
-                      className={`
-                        text-sm
-                        font-medium
-                        ${isOnline
-                          ? "text-emerald-600"
-                          : "text-slate-500"
-                        }
-                      `}
-                    >
-                      {isOnline
-                        ? "Active Now"
-                        : "Offline"
-                      }
-                    </span>
-
-                  </div>
 
 
                   {/* ==========================================

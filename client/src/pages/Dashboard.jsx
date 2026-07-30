@@ -30,7 +30,7 @@ export default function Dashboard() {
             title="Create Collaboration Room"
             description="Create a new collaborative workspace for whiteboarding, coding and team discussions."
             button="Create Room"
-            onClick={() => navigate("/create-room")}
+            onClick={() => navigate("/createroom")}
           />
 
           <ActionCard
@@ -38,7 +38,7 @@ export default function Dashboard() {
             title="Join Existing Room"
             description="Join your teammates instantly using a Room ID and continue collaborating in real time."
             button="Join Room"
-            onClick={() => navigate("/join-room")}
+            onClick={() => navigate("/joinroom")}
           />
 
         </div>
