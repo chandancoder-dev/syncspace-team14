@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, Link, useSearchParams, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
-import "../styles/login.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -24,46 +23,45 @@ export default function Login() {
   if (user) {
     return <Navigate to={nextParam || "/dashboard"} replace />;
   }
-
   const handleLogin = async () => {
-    setEmailError("");
-    setPasswordError("");
+  setEmailError("");
+  setPasswordError("");
 
-    let isValid = true;
+  let isValid = true;
 
-    if (email.trim() === "") {
-      setEmailError("Email is required");
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setEmailError("Please enter a valid email");
-      isValid = false;
-    }
+  if (email.trim() === "") {
+    setEmailError("Email is required");
+    isValid = false;
+  } else if (!/\S+@\S+\.\S+/.test(email)) {
+    setEmailError("Please enter a valid email");
+    isValid = false;
+  }
 
-    if (password.trim() === "") {
-      setPasswordError("Password is required");
-      isValid = false;
-    }
+  if (password.trim() === "") {
+    setPasswordError("Password is required");
+    isValid = false;
+  }
 
-    if (!isValid) return;
+  if (!isValid) return;
 
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/auth/login`,
-        {
-          email,
-          password,
-        },
-      );
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/api/auth/login",
+      {
+        email,
+        password,
+      }
+    );
 
-      localStorage.setItem("token", res.data.token);
-      login(res.data.user);
+    localStorage.setItem("token", res.data.token);
+    login(res.data.user);
+    navigate(nextParam || "/dashboard");
+  } catch (e) {
+    console.log(e);
+    alert(e.response?.data?.message || "Login failed");
+  }
+};
 
-      navigate(nextParam || "/dashboard");
-    } catch (e) {
-      console.log(e);
-      alert(e.response?.data?.message || "Login failed");
-    }
-  };
 
   const styles = {
     page: {
@@ -99,18 +97,19 @@ export default function Login() {
     },
     input: {
       width: "100%",
-      padding: "12px",
+      padding: "14px 16px",
       marginTop: "12px",
       borderRadius: "8px",
       border: "1px solid #DBEAFE",
       outline: "none",
-      fontSize: "15px",
+      fontSize: "16px",
       boxSizing: "border-box",
     },
     error: {
-      color: "red",
+      color: "#DC2626",
       fontSize: "13px",
       marginTop: "5px",
+      marginBottom: "8px",
     },
     checkboxRow: {
       display: "flex",
@@ -132,10 +131,10 @@ export default function Login() {
       backgroundColor: "#2563EB",
       color: "#fff",
       border: "none",
-      padding: "13px",
+      padding: "15px",
       borderRadius: "8px",
-      fontSize: "16px",
-      fontWeight: "bold",
+      fontSize: "17px",
+      fontWeight: "600",
       marginTop: "25px",
       cursor: "pointer",
     },
@@ -208,16 +207,19 @@ export default function Login() {
           </Link>
         </div>
 
-        <button style={styles.button} onClick={handleLogin}>
+        <button
+          style={styles.button}
+          onClick={handleLogin}
+        >
           Login
         </button>
-
         <p style={styles.register}>
-          Don't have an account?{" "}
-          <Link to={registerLinkTo} style={styles.registerLink}>
-            Register
-          </Link>
-        </p>
+  Don't have an account?{" "}
+  <Link to={registerLinkTo} style={styles.registerLink}>
+    Register
+  </Link>
+</p>
+
       </div>
     </div>
   );

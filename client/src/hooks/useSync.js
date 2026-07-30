@@ -49,7 +49,13 @@ const useSync = (roomId) => {
     const awareness = awarenessRef.current;
     const me = meRef.current;
 
-    const socket = io(SERVER_URL, { transports: ['websocket'] });
+    const socket = io(SERVER_URL, {
+      transports: ['websocket'],
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+    });
     socketRef.current = socket;
 
     // Set local awareness state (user info for remote cursor labels)
@@ -60,10 +66,29 @@ const useSync = (roomId) => {
 
     socket.on('connect', () => {
       setConnected(true);
+      // Join room (works for both initial connect and reconnect)
       socket.emit('join-room', { roomId, user: me });
+
+      // After reconnect, push any local changes that happened while offline
+      const localState = Y.encodeStateAsUpdate(ydoc);
+      if (localState.length > 2) {
+        // Only send if there's meaningful content (empty doc = 2 bytes)
+        socket.emit('yjs-update', { roomId, update: Array.from(localState) });
+      }
     });
 
-    socket.on('disconnect', () => setConnected(false));
+    socket.on('disconnect', (reason) => {
+      setConnected(false);
+      console.log(`[SyncSpace] Disconnected: ${reason}`);
+    });
+
+    socket.on('reconnect_attempt', (attempt) => {
+      console.log(`[SyncSpace] Reconnection attempt ${attempt}...`);
+    });
+
+    socket.on('reconnect_failed', () => {
+      console.log('[SyncSpace] Reconnection failed after all attempts');
+    });
 
     // Yjs document sync
     socket.on('sync-state', ({ update }) => {

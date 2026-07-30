@@ -8,6 +8,7 @@ import CreateRoom from "./pages/CreateRoom";
 import Register from "./pages/Register";
 import WorkSpace from "./pages/workspace/WorkSpace";
 import ForgetPassword from "./pages/ForgotPassword";
+import Rooms from "./pages/Rooms";
 
 // Components
 import About from "./components/About";
@@ -24,8 +25,8 @@ function AppContent() {
   const hideChrome =
     location.pathname.startsWith("/workspace") ||
     location.pathname.startsWith("/dashboard") ||
-    location.pathname.startsWith("/create-room") ||
-    location.pathname.startsWith("/join-room");
+    location.pathname.startsWith("/createroom") ||
+    location.pathname.startsWith("/joinroom");
 
   return (
     <>
@@ -59,6 +60,8 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/rooms" element={<Rooms />} />
 
         <Route
           path="/joinroom"
