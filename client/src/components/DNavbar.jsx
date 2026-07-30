@@ -55,10 +55,12 @@ export default function DNavbar() {
   const confirmLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("syncspace_user");
 
     setShowLogoutPopup(false);
 
-    navigate("/login");
+    // Hard redirect to home (avoids React re-render loop)
+    window.location.href = "/";
   };
 
 
@@ -97,28 +99,11 @@ export default function DNavbar() {
 
           <div className="flex items-center gap-3">
 
-            <div
-              className="
-                w-12
-                h-12
-                rounded-xl
-                bg-[#2563EB]
-                flex
-                items-center
-                justify-center
-                text-white
-                font-bold
-                text-xl
-                shadow-md
-                shadow-blue-200
-                transition-all
-                duration-300
-                hover:scale-105
-                hover:shadow-lg
-              "
-            >
-              S
-            </div>
+            <img
+              src="/SyncSpace.png"
+              alt="SyncSpace"
+              className="w-10 h-10 rounded-xl shadow-md shadow-blue-200"
+            />
 
             <h1 className="text-[#1E3A8A] text-3xl font-bold">
               SyncSpace
@@ -176,16 +161,17 @@ export default function DNavbar() {
                 flex
                 items-center
                 gap-2
-                bg-red-500
-                hover:bg-red-600
                 px-5
                 py-3
                 rounded-xl
-                text-white
                 font-medium
-                shadow-sm
-                hover:shadow-lg
-                hover:-translate-y-0.5
+                border-2
+                border-blue-200
+                text-slate-500
+                bg-transparent
+                hover:bg-red-50
+                hover:border-red-300
+                hover:text-red-600
                 transition-all
                 duration-300
               "

@@ -6,7 +6,10 @@ function Footer() {
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-section">
-          <h2>SyncSpace</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+            <img src="/SyncSpace.png" alt="SyncSpace" style={{ width: 50, height: 50 }} />
+            <h2 style={{ margin: 0 }}>SyncSpace</h2>
+          </div>
 
           <p>
             Real-Time Collaborative Coding Platform that enables developers,
