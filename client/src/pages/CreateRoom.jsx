@@ -31,8 +31,6 @@ function CreateRoom() {
         {
           name: roomName,
           description,
-          language: "JavaScript",
-          visibility: "Public",
         },
         {
           headers: {

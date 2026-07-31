@@ -99,16 +99,39 @@ const Avatar = ({ name, color, isSelf = false, offset = 0 }) => {
 const WorkSpace = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const { ydoc, awareness, socket, connected, users, me, emitCursor } = useSync(roomId);
+  const { ydoc, awareness, socket, connected, accessDenied, users, me, emitCursor } = useSync(roomId);
   const [leftWidth, setLeftWidth] = useState(50);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isHost, setIsHost] = useState(false);
   const isDragging = useRef(false);
   const containerRef = useRef();
   const shareMenuRef = useRef();
 
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+  // Check if current user is the room host
+  useEffect(() => {
+    const checkHost = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const storedUser = localStorage.getItem('user');
+        const userId = storedUser ? JSON.parse(storedUser).id : null;
+        if (!token || !userId) return;
+
+        const res = await fetch(
+          `${import.meta.env.VITE_SERVER_URL || 'http://localhost:8000'}/api/rooms/${roomId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setIsHost(data.room?.createdBy === userId);
+        }
+      } catch { /* silent */ }
+    };
+    checkHost();
+  }, [roomId]);
 
   const handleCopyLink = async () => {
     try {
@@ -177,6 +200,63 @@ const WorkSpace = () => {
   const visibleOthers = others.slice(0, MAX_VISIBLE_AVATARS);
   const overflow = others.length - visibleOthers.length;
   const totalOnline = others.length + 1;
+
+  // Access denied screen
+  if (accessDenied) {
+    return (
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#F0F7FF',
+          fontFamily: '"Poppins", system-ui, sans-serif',
+          padding: 24,
+          textAlign: 'center',
+        }}
+      >
+        <div
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: '50%',
+            background: '#FEF2F2',
+            color: '#DC2626',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 28,
+            marginBottom: 20,
+          }}
+        >
+          🔒
+        </div>
+        <h1 style={{ color: '#1E3A8A', fontSize: 24, fontWeight: 700, margin: '0 0 8px' }}>
+          Access Denied
+        </h1>
+        <p style={{ color: '#64748B', fontSize: 15, maxWidth: 400, lineHeight: 1.6, margin: '0 0 24px' }}>
+          {accessDenied}
+        </p>
+        <button
+          onClick={() => navigate('/dashboard')}
+          style={{
+            padding: '10px 24px',
+            background: '#2563EB',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: 8,
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: 'pointer',
+          }}
+        >
+          Back to Dashboard
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -348,10 +428,11 @@ const WorkSpace = () => {
             </div>
           </div>
 
+          {isHost && (
           <div ref={shareMenuRef} style={{ position: 'relative' }}>
             <button
               onClick={() => setShowShareMenu((v) => !v)}
-              title="Share room link"
+              title="Invite to room"
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#EFF6FF';
                 e.currentTarget.style.borderColor = '#2563EB';
@@ -381,7 +462,7 @@ const WorkSpace = () => {
               }}
             >
               <FiShare2 size={14} />
-              Share
+              Invite
             </button>
 
             {showShareMenu && (
@@ -533,6 +614,7 @@ const WorkSpace = () => {
               </div>
             )}
           </div>
+          )}
 
           <button
             onClick={() => setShowLeaveConfirm(true)}
@@ -568,6 +650,38 @@ const WorkSpace = () => {
           </button>
         </div>
       </div>
+
+      {/* ── Disconnect Banner ── */}
+      {!connected && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
+            padding: '8px 16px',
+            background: '#FEF2F2',
+            borderBottom: '1px solid #FCA5A5',
+            flexShrink: 0,
+          }}
+        >
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: '#EF4444',
+              animation: 'pulse 1.5s ease-in-out infinite',
+            }}
+          />
+          <span style={{ color: '#DC2626', fontSize: 13, fontWeight: 600 }}>
+            Connection lost — reconnecting...
+          </span>
+          <span style={{ color: '#64748B', fontSize: 12 }}>
+            Your changes are saved locally and will sync when reconnected.
+          </span>
+        </div>
+      )}
 
       {/* ── Main Panels ── */}
       <div ref={containerRef} style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
@@ -705,6 +819,14 @@ const WorkSpace = () => {
           </div>
         </div>
       )}
+
+      {/* Animations */}
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
+        }
+      `}</style>
     </div>
   );
 };
