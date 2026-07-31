@@ -33,10 +33,20 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const [language, setLanguage] = useState('javascript');
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
+  const [editorFailed, setEditorFailed] = useState(false);
   const [, setAwarenessTick] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState(null);
   const [showOutput, setShowOutput] = useState(false);
+
+  // Monaco load timeout 
+  useEffect(() => {
+    if (editorReady) return;
+    const timer = setTimeout(() => {
+      if (!editorReady) setEditorFailed(true);
+    }, 15000);
+    return () => clearTimeout(timer);
+  }, [editorReady]);
   const editorRef = useRef(null);
   const monacoRef = useRef(null);
   const bindingRef = useRef(null);
@@ -324,6 +334,8 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
           background: '#FFFFFF',
           minHeight: 48,
           flexShrink: 0,
+          flexWrap: 'wrap',
+          gap: 8,
         }}
       >
         {/* Left — label + language selector */}
@@ -501,16 +513,60 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
               zIndex: 5,
             }}
           >
-            <FiLoader
-              size={24}
-              style={{
-                color: '#2563EB',
-                animation: 'spin 1s linear infinite',
-              }}
-            />
-            <span style={{ color: '#64748B', fontSize: 14, fontWeight: 500 }}>
-              Loading collaborative editor...
-            </span>
+            {editorFailed ? (
+              <>
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: '50%',
+                    background: '#FEF2F2',
+                    color: '#DC2626',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 22,
+                  }}
+                >
+                  ✕
+                </div>
+                <span style={{ color: '#1E293B', fontSize: 15, fontWeight: 600 }}>
+                  Failed to load editor
+                </span>
+                <span style={{ color: '#64748B', fontSize: 13, textAlign: 'center', maxWidth: 280 }}>
+                  Monaco Editor could not be loaded. Check your network connection.
+                </span>
+                <button
+                  onClick={() => window.location.reload()}
+                  style={{
+                    marginTop: 8,
+                    padding: '8px 20px',
+                    background: '#2563EB',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: 8,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Retry
+                </button>
+              </>
+            ) : (
+              <>
+                <FiLoader
+                  size={24}
+                  style={{
+                    color: '#2563EB',
+                    animation: 'spin 1s linear infinite',
+                  }}
+                />
+                <span style={{ color: '#64748B', fontSize: 14, fontWeight: 500 }}>
+                  Loading collaborative editor...
+                </span>
+              </>
+            )}
           </div>
         )}
 
