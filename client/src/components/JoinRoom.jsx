@@ -64,7 +64,7 @@ function JoinRoom() {
           </div>
 
           <div className="form-group">
-            <label>Your Name (Optional)</label>
+            <label>Your Name </label>
 
             <input
               type="text"
