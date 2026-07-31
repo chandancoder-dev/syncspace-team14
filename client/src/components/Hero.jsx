@@ -5,11 +5,11 @@ function Hero() {
   const navigate = useNavigate();
 
   const handleCreateRoom = () => {
-    navigate("/create-room");
+    navigate("/createroom");
   };
 
   const handleJoinRoom = () => {
-    navigate("/join-room");
+    navigate("/joinroom");
   };
 
   return (
