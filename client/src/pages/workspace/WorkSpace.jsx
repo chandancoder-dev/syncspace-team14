@@ -12,6 +12,8 @@ import WhiteBoard from "./Whiteboard";
 import CodeEditor from "./CodeEditor";
 import ChatPanel from "../../components/ChatPanel";
 import useSync from "../../hooks/useSync";
+import VideoPanel from "../../components/VideoCall/VideoPanel";
+
 
 const MIN_PANEL_WIDTH = 200;
 const MAX_VISIBLE_AVATARS = 4;
@@ -629,65 +631,91 @@ const WorkSpace = () => {
         </div>
       </div>
 
-      {/* ── Main Panels ── */}
+      {/* Workspace + Video */}
+<div
+  ref={containerRef}
+  style={{
+    display: "flex",
+    flex: 1,
+    minHeight: 0,
+    overflow: "hidden",
+  }}
+>
+  {/* Whiteboard */}
+  <div
+    style={{
+      width: `${leftWidth}%`,
+      overflow: "hidden",
+      flexShrink: 0,
+    }}
+  >
+    <WhiteBoard
+      ydoc={ydoc}
+      me={me}
+      users={users}
+      emitCursor={emitCursor}
+    />
+  </div>
+
+  {/* Divider */}
+  <div
+    onMouseDown={handleDividerMouseDown}
+    style={{
+      width: 4,
+      background: "#BFDBFE",
+      cursor: "col-resize",
+      flexShrink: 0,
+    }}
+  />
+
+  {/* Code Editor + Chat */}
+  <div
+    style={{
+      flex: 1,
+      display: "flex",
+      overflow: "hidden",
+    }}
+  >
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        overflow: "hidden",
+      }}
+    >
+      <CodeEditor
+        ydoc={ydoc}
+        awareness={awareness}
+        me={me}
+        users={users}
+      />
+    </div>
+
+    {isChatOpen && (
       <div
-        ref={containerRef}
-        style={{ display: "flex", flex: 1, overflow: "hidden" }}
+        style={{
+          width: 320,
+          borderLeft: "1px solid #DBEAFE",
+          flexShrink: 0,
+        }}
       >
-        <div
-          style={{
-            width: `${leftWidth}%`,
-            height: "100%",
-            overflow: "hidden",
-            flexShrink: 0,
-          }}
-        >
-          <WhiteBoard
-            ydoc={ydoc}
-            me={me}
-            users={users}
-            emitCursor={emitCursor}
-          />
-        </div>
-
-        <div
-          onMouseDown={handleDividerMouseDown}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "#2563EB")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "#BFDBFE")}
-          style={{
-            width: 4,
-            height: "100%",
-            background: "#BFDBFE",
-            cursor: "col-resize",
-            flexShrink: 0,
-            transition: "background 0.15s",
-          }}
-        />
-
-        <div
-          style={{
-            flex: 1,
-            height: "100%",
-            overflow: "hidden",
-            display: "flex",
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 0, overflow: "hidden", display: "flex" }}>
-            <CodeEditor
-              ydoc={ydoc}
-              awareness={awareness}
-              me={me}
-              users={users}
-            />
-          </div>
-
-          {isChatOpen && (
-            <div style={{ width: "340px", flexShrink: 0, height: "100%" }}>
-              <ChatPanel onClose={() => setIsChatOpen(false)} />
-            </div>
-          )}
-        </div>
+        <ChatPanel onClose={() => setIsChatOpen(false)} />
       </div>
+    )}
+  </div>
+
+  {/* Video Sidebar */}
+  <div
+  style={{
+    width: 300,
+    flexShrink: 0,
+    borderLeft: "1px solid #DBEAFE",
+    background: "#FFFFFF",
+  }}
+>
+    <VideoPanel />
+  </div>
+</div>
 
       {/* ── Leave Confirmation Modal ── */}
       {showLeaveConfirm && (
@@ -811,5 +839,6 @@ const WorkSpace = () => {
     </div>
   );
 };
+
 
 export default WorkSpace;
