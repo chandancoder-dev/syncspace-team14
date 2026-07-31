@@ -26,7 +26,8 @@ function AppContent() {
     location.pathname.startsWith("/workspace") ||
     location.pathname.startsWith("/dashboard") ||
     location.pathname.startsWith("/createroom") ||
-    location.pathname.startsWith("/joinroom");
+    location.pathname.startsWith("/joinroom")||
+    location.pathname.startsWith("/rooms");
 
   return (
     <>
