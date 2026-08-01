@@ -480,6 +480,38 @@ export default function RecentRooms() {
 
                 </button>
 
+                <button
+                  type="button"
+                  onClick={() => navigate(`/replay/${room.roomId}`)}
+                  className="
+                    mt-3
+                    w-full
+                    bg-transparent
+                    border-2
+                    border-blue-200
+                    hover:border-[#2563EB]
+                    hover:bg-[#EFF6FF]
+                    rounded-xl
+                    py-3
+                    px-4
+                    text-[#475569]
+                    hover:text-[#2563EB]
+                    font-semibold
+                    flex
+                    items-center
+                    justify-center
+                    gap-3
+                    transition-all
+                    duration-300
+                  "
+                >
+
+                  <span>
+                    ▶ View Replay
+                  </span>
+
+                </button>
+
               </div>
 
             );

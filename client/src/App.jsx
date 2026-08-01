@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateRoom from "./pages/CreateRoom";
 import Register from "./pages/Register";
 import WorkSpace from "./pages/workspace/WorkSpace";
-import Replay from "./pages/Replay";
+import Replay from "./pages/workspace/Replay";
 import ForgetPassword from "./pages/ForgotPassword";
 import Rooms from "./pages/Rooms";
 
