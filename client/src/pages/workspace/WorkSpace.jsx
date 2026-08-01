@@ -12,6 +12,8 @@ import WhiteBoard from "./Whiteboard";
 import CodeEditor from "./CodeEditor";
 import ChatPanel from "../../components/ChatPanel";
 import useSync from "../../hooks/useSync";
+import VideoPanel from "../../components/VideoCall/VideoPanel";
+
 
 const MIN_PANEL_WIDTH = 200;
 const MAX_VISIBLE_AVATARS = 4;
@@ -120,6 +122,8 @@ const WorkSpace = () => {
   const isDragging = useRef(false);
   const containerRef = useRef();
   const shareMenuRef = useRef();
+  const [accessDenied] = useState(null);
+  
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
@@ -216,6 +220,7 @@ const WorkSpace = () => {
   // Access denied screen
   if (accessDenied) {
     return (
+
       <div
         style={{
           height: '100vh',
@@ -243,6 +248,7 @@ const WorkSpace = () => {
             marginBottom: 20,
           }}
         >
+          
           🔒
         </div>
         <h1 style={{ color: '#1E3A8A', fontSize: 24, fontWeight: 700, margin: '0 0 8px' }}>
@@ -711,97 +717,137 @@ const WorkSpace = () => {
         </div>
       </div>
 
-      {/* ── Disconnect Banner ── */}
-      {!connected && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 10,
-            padding: '8px 16px',
-            background: '#FEF2F2',
-            borderBottom: '1px solid #FCA5A5',
-            flexShrink: 0,
-          }}
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              background: '#EF4444',
-              animation: 'pulse 1.5s ease-in-out infinite',
-            }}
-          />
-          <span style={{ color: '#DC2626', fontSize: 13, fontWeight: 600 }}>
-            Connection lost — reconnecting...
-          </span>
-          <span style={{ color: '#64748B', fontSize: 12 }}>
-            Your changes are saved locally and will sync when reconnected.
-          </span>
-        </div>
-      )}
+      {/* Workspace + Video */}
+<div
+  ref={containerRef}
+  style={{
+    display: "flex",
+    flex: 1,
+    minHeight: 0,
+    overflow: "hidden",
+  }}
+>
+  {/* Whiteboard */}
+  <div
+    style={{
+      width: `${leftWidth}%`,
+      overflow: "hidden",
+      flexShrink: 0,
+    }}
+  >
+    <WhiteBoard
+      ydoc={ydoc}
+      me={me}
+      users={users}
+      emitCursor={emitCursor}
+    />
+  </div>
 
-      {/* ── Main Panels ── */}
+  {/* Divider */}
+  <div
+    onMouseDown={handleDividerMouseDown}
+    style={{
+      width: 4,
+      background: "#BFDBFE",
+      cursor: "col-resize",
+      flexShrink: 0,
+    }}
+  />
+
+  {/* Code Editor + Chat */}
+  <div
+    style={{
+      flex: 1,
+      display: "flex",
+      overflow: "hidden",
+    }}
+  >
+    <div
+      style={{
+        flex: 1,
+        minWidth: 0,
+        overflow: "hidden",
+      }}
+    >
+      <CodeEditor
+        ydoc={ydoc}
+        awareness={awareness}
+        me={me}
+        users={users}
+      />
+    </div>
+
+   {isChatOpen && (
+  <>
+    {/* Disconnect Banner */}
+    {!connected && (
       <div
-        ref={containerRef}
-        style={{ display: "flex", flex: 1, overflow: "hidden" }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 10,
+          padding: "8px 16px",
+          background: "#FEF2F2",
+          borderBottom: "1px solid #FCA5A5",
+          flexShrink: 0,
+        }}
       >
         <div
           style={{
-            width: `${leftWidth}%`,
-            height: "100%",
-            overflow: "hidden",
-            flexShrink: 0,
-          }}
-        >
-          <WhiteBoard
-            ydoc={ydoc}
-            me={me}
-            users={users}
-            emitCursor={emitCursor}
-          />
-        </div>
-
-        <div
-          onMouseDown={handleDividerMouseDown}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "#2563EB")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "#BFDBFE")}
-          style={{
-            width: 4,
-            height: "100%",
-            background: "#BFDBFE",
-            cursor: "col-resize",
-            flexShrink: 0,
-            transition: "background 0.15s",
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: "#EF4444",
+            animation: "pulse 1.5s ease-in-out infinite",
           }}
         />
-
-        <div
+        <span
           style={{
-            flex: 1,
-            height: "100%",
-            overflow: "hidden",
-            display: "flex",
+            color: "#DC2626",
+            fontSize: 13,
+            fontWeight: 600,
           }}
         >
-          <div style={{ flex: 1, minWidth: 0, overflow: "hidden", display: "flex" }}>
-            <CodeEditor
-              ydoc={ydoc}
-              awareness={awareness}
-              me={me}
-              users={users}
-            />
-          </div>
+          Connection lost — reconnecting...
+        </span>
 
-          {isChatOpen && (
-            <div style={{ width: "340px", flexShrink: 0, height: "100%" }}>
-              <ChatPanel onClose={() => setIsChatOpen(false)} />
-            </div>
-          )}
-        </div>
+        <span
+          style={{
+            color: "#64748B",
+            fontSize: 12,
+          }}
+        >
+          Your changes are saved locally and will sync when reconnected.
+        </span>
       </div>
+    )}
+
+    <div
+      style={{
+        width: 320,
+        borderLeft: "1px solid #DBEAFE",
+        flexShrink: 0,
+      }}
+    >
+      <ChatPanel onClose={() => setIsChatOpen(false)} />
+    </div>
+  </>
+)}
+  </div>
+
+  {/* Video Sidebar */}
+  <div
+  style={{
+    width: 300,
+    flexShrink: 0,
+    borderLeft: "1px solid #DBEAFE",
+    background: "#FFFFFF",
+  }}
+>
+    <VideoPanel />
+  </div>
+</div>
 
       {/* ── Leave Confirmation Modal ── */}
       {showLeaveConfirm && (
@@ -933,5 +979,6 @@ const WorkSpace = () => {
     </div>
   );
 };
+
 
 export default WorkSpace;
