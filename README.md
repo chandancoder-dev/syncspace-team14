@@ -101,6 +101,34 @@ A distributed engineering team conducts a technical interview:
 - 1MB output limit
 - Compilation error handling (C/C++/Java)
 
+### 🔁 Session Replay
+- Timeline scrubber to replay entire session history
+- Play/Pause with speed control (0.5x, 1x, 2x, 4x, 8x)
+- Split view: whiteboard shapes (SVG) + code viewer with line numbers
+- Cursor tracking shows who made each edit with tool indicator
+- Accessible from workspace header ("▶ Replay") and dashboard ("View Replay")
+- Back button context-aware (workspace → workspace, dashboard → dashboard)
+
+### 🏠 Room Lifecycle
+- Rooms stored in MongoDB with status tracking (active/ended)
+- Room creator tracked as host (createdBy)
+- Auto-adds participants when they join via shared link
+- Room marked "ended" when host leaves (others can continue)
+- Room reactivates when anyone rejoins
+- Every Yjs edit logged with timestamp + user for replay
+
+### 📹 Video Call (UI)
+- Toggle-able video call sidebar in workspace
+- "Call" button in header (hidden by default, shows panel on click)
+- Green "In Call" active state indicator
+- Video tiles, controls (mute/camera/leave), participant grid
+- WebRTC backend to be wired by team
+
+### 💬 Chat
+- Toggle-able chat sidebar in workspace
+- Real-time messaging via socket
+- "Chat" button in header toggles panel
+
 ---
 
 ## 🛠 Tech Stack
@@ -139,21 +167,21 @@ A distributed engineering team conducts a technical interview:
 syncspace-team14/
 ├── client/
 │   └── src/
-│       ├── components/        # Shared UI components
+│       ├── components/        # Shared UI (Navbar, Chat, VideoCall, etc.)
 │       ├── pages/             # Route pages
-│       │   └── workspace/     # Whiteboard + CodeEditor + WorkSpace
-│       ├── hooks/             # useSync (Socket + Yjs)
+│       │   └── workspace/     # WorkSpace, Header, Whiteboard, CodeEditor, Replay, InvitePopover
+│       ├── hooks/             # useSync (Socket + Yjs + Awareness)
 │       ├── services/          # API calls
 │       ├── styles/            # CSS files
 │       └── utils/             # Validation helpers
 │
 ├── server/
 │   └── src/
-│       ├── controllers/       # Auth, Room, Dashboard, Code execution
+│       ├── controllers/       # Auth, Room, Dashboard, Code execution, Replay
 │       ├── routes/            # API route definitions
 │       ├── middleware/        # JWT auth middleware
-│       ├── models/            # User, YjsDocument (MongoDB)
-│       ├── socket/            # roomHandler (Yjs sync + awareness)
+│       ├── models/            # User, Room, YjsDocument, YjsUpdateLog
+│       ├── socket/            # roomHandler (Yjs sync + awareness + lifecycle)
 │       ├── config/            # Database connection
 │       └── utils/             # Room ID generator
 │
