@@ -7,10 +7,24 @@ import { io } from 'socket.io-client';
 // Server URL from .env file
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
 
-// Pick a random color for this user
-const randomColor = () => {
-  const colors = ['#f87171', '#fb923c', '#facc15', '#4ade80', '#38bdf8', '#818cf8', '#e879f9'];
-  return colors[Math.floor(Math.random() * colors.length)];
+// Deterministic color for a user 
+const CURSOR_COLORS = ['#f87171', '#fb923c', '#facc15', '#4ade80', '#38bdf8', '#818cf8', '#e879f9'];
+
+const getUserColor = () => {
+  const stored = localStorage.getItem('user');
+  if (stored) {
+    try {
+      const user = JSON.parse(stored);
+      const id = user.id || user.email || '';
+      // Hash the user ID to pick a consistent color
+      let hash = 0;
+      for (let i = 0; i < id.length; i++) {
+        hash = id.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return CURSOR_COLORS[Math.abs(hash) % CURSOR_COLORS.length];
+    } catch {}
+  }
+  return CURSOR_COLORS[0];
 };
 
 // Get the logged-in user's display name
@@ -36,10 +50,11 @@ const useSync = (roomId) => {
 
   const [connected, setConnected] = useState(false);
   const [users, setUsers] = useState(new Map());
+  const [accessDenied, setAccessDenied] = useState(null);
 
   const meRef = useRef({
     name: getUserName(),
-    color: randomColor(),
+    color: getUserColor(),
   });
 
   useEffect(() => {
@@ -66,8 +81,9 @@ const useSync = (roomId) => {
 
     socket.on('connect', () => {
       setConnected(true);
-      // Join room (works for both initial connect and reconnect)
-      socket.emit('join-room', { roomId, user: me });
+      const storedUser = localStorage.getItem('user');
+      const userId = storedUser ? JSON.parse(storedUser).id : null;
+      socket.emit('join-room', { roomId, user: { ...me, id: userId } });
 
       // After reconnect, push any local changes that happened while offline
       const localState = Y.encodeStateAsUpdate(ydoc);
@@ -75,6 +91,11 @@ const useSync = (roomId) => {
         // Only send if there's meaningful content (empty doc = 2 bytes)
         socket.emit('yjs-update', { roomId, update: Array.from(localState) });
       }
+    });
+
+    socket.on('join-denied', ({ message }) => {
+      setAccessDenied(message);
+      socket.disconnect();
     });
 
     socket.on('disconnect', (reason) => {
@@ -152,6 +173,19 @@ const useSync = (roomId) => {
       });
     });
 
+    // When a user leaves, clean their awareness state (removes code editor cursor)
+    socket.on('user-awareness-removed', () => {
+      const remoteClients = [];
+      awareness.getStates().forEach((_, clientID) => {
+        if (clientID !== ydoc.clientID) {
+          remoteClients.push(clientID);
+        }
+      });
+      if (remoteClients.length > 0) {
+        awarenessProtocol.removeAwarenessStates(awareness, remoteClients, 'remote');
+      }
+    });
+
     return () => {
       ydoc.off('update', onLocalUpdate);
       awareness.off('update', onAwarenessChange);
@@ -177,6 +211,7 @@ const useSync = (roomId) => {
     awareness: awarenessRef.current,
     socket: socketRef.current,
     connected,
+    accessDenied,
     users,
     me: meRef.current,
     emitCursor,

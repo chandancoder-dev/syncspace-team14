@@ -1,5 +1,7 @@
 import * as Y from "yjs";
 import YjsDocument from "../models/YjsDocument.js";
+import YjsUpdateLog from "../models/YjsUpdateLog.js";
+import Room from "../models/Room.js";
 
 // Store Yjs docs and connected users per room (in-memory)
 const rooms = new Map();
@@ -56,6 +58,27 @@ const roomHandler = (io, socket) => {
   socket.on("join-room", async ({ roomId, user }) => {
     if (!roomId) return;
 
+    // Access Control: JWT is already verified by ProtectedRoute on the frontend.
+    // The Room ID acts as the invitation — only people who receive the link can join.
+    // Auto-add joining user as a participant if not already in the list.
+    if (user?.id) {
+      Room.findOne({ roomId }).then((dbRoom) => {
+        if (dbRoom) {
+          const alreadyParticipant = dbRoom.participants.some(
+            (p) => p.userId?.toString() === user.id
+          );
+          if (!alreadyParticipant) {
+            dbRoom.participants.push({
+              userId: user.id,
+              name: user.name || "Guest",
+              joinedAt: new Date(),
+            });
+            dbRoom.save().catch(() => {});
+          }
+        }
+      }).catch(() => {});
+    }
+
     // Create room in memory if it doesn't exist
     if (!rooms.has(roomId)) {
       const ydoc = new Y.Doc();
@@ -78,6 +101,12 @@ const roomHandler = (io, socket) => {
     room.users.set(socket.id, { user, cursor: null });
 
     console.log(`[Room: ${roomId}] ${user?.name || 'Anonymous'} connected (${room.users.size} online)`);
+
+    // Mark room as active in MongoDB when someone joins
+    Room.findOneAndUpdate(
+      { roomId },
+      { status: "active" }
+    ).catch(() => {});  // silent — room might not exist in DB yet (joined via link)
 
     // Send current Yjs state to the joining user
     const state = Y.encodeStateAsUpdate(room.ydoc);
@@ -106,6 +135,16 @@ const roomHandler = (io, socket) => {
     // Broadcast to other users in the room
     socket.to(roomId).emit("yjs-update", { update });
     scheduleSave(roomId, room.ydoc);
+
+    // Log update for replay feature (async, non-blocking)
+    const userData = room.users.get(socket.id);
+    YjsUpdateLog.create({
+      roomId,
+      update: Buffer.from(uint8Update),
+      userId: userData?.user?.id || null,
+      userName: userData?.user?.name || "Anonymous",
+      timestamp: new Date(),
+    }).catch(() => {}); // silent — don't block real-time sync
   });
 
   socket.on("awareness-update", ({ roomId, state }) => {
@@ -129,18 +168,37 @@ const roomHandler = (io, socket) => {
   socket.on("disconnecting", () => {
     const joinedRooms = Array.from(socket.rooms).filter((r) => r !== socket.id);
 
-    joinedRooms.forEach((roomId) => {
+    joinedRooms.forEach(async (roomId) => {
       if (!rooms.has(roomId)) return;
 
       const room = rooms.get(roomId);
       const userData = room.users.get(socket.id);
       const userName = userData?.user?.name || 'Anonymous';
+      const userId = userData?.user?.id;
 
       room.users.delete(socket.id);
 
       console.log(`[Room: ${roomId}] ${userName} disconnected (${room.users.size} online)`);
 
       socket.to(roomId).emit("user-left", { socketId: socket.id });
+
+      // Broadcast awareness removal so code editor cursors disappear immediately
+      socket.to(roomId).emit("user-awareness-removed", { socketId: socket.id });
+
+      // Check if the leaving user is the host
+      if (userId) {
+        try {
+          const dbRoom = await Room.findOne({ roomId });
+          if (dbRoom && dbRoom.createdBy?.toString() === userId) {
+            // Host left — mark room as ended (for dashboard History)
+            // But don't kick others — they can keep working
+            dbRoom.status = "ended";
+            dbRoom.endedAt = new Date();
+            await dbRoom.save();
+            console.log(`[Room: ${roomId}] Host left — session marked as ended`);
+          }
+        } catch {}
+      }
 
       // When the last user leaves, save state and clean up memory
       if (room.users.size === 0) {
@@ -149,8 +207,13 @@ const roomHandler = (io, socket) => {
           saveTimers.delete(roomId);
         }
 
-
         saveState(roomId, room.ydoc);
+
+        // Mark as ended if not already
+        Room.findOneAndUpdate(
+          { roomId, status: "active" },
+          { status: "ended", endedAt: new Date() }
+        ).catch(() => {});
 
         room.ydoc.destroy();
         rooms.delete(roomId);
