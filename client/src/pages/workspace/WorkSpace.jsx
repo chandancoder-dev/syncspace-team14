@@ -122,6 +122,8 @@ const WorkSpace = () => {
   const isDragging = useRef(false);
   const containerRef = useRef();
   const shareMenuRef = useRef();
+  const [accessDenied] = useState(null);
+  
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
@@ -218,6 +220,7 @@ const WorkSpace = () => {
   // Access denied screen
   if (accessDenied) {
     return (
+
       <div
         style={{
           height: '100vh',
@@ -245,6 +248,7 @@ const WorkSpace = () => {
             marginBottom: 20,
           }}
         >
+          
           🔒
         </div>
         <h1 style={{ color: '#1E3A8A', fontSize: 24, fontWeight: 700, margin: '0 0 8px' }}>
@@ -713,7 +717,6 @@ const WorkSpace = () => {
         </div>
       </div>
 
-<<<<<<< HEAD
       {/* Workspace + Video */}
 <div
   ref={containerRef}
@@ -774,52 +777,63 @@ const WorkSpace = () => {
       />
     </div>
 
-    {isChatOpen && (
-=======
-      {/* ── Disconnect Banner ── */}
-      {!connected && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 10,
-            padding: '8px 16px',
-            background: '#FEF2F2',
-            borderBottom: '1px solid #FCA5A5',
-            flexShrink: 0,
-          }}
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              background: '#EF4444',
-              animation: 'pulse 1.5s ease-in-out infinite',
-            }}
-          />
-          <span style={{ color: '#DC2626', fontSize: 13, fontWeight: 600 }}>
-            Connection lost — reconnecting...
-          </span>
-          <span style={{ color: '#64748B', fontSize: 12 }}>
-            Your changes are saved locally and will sync when reconnected.
-          </span>
-        </div>
-      )}
-
-      {/* ── Main Panels ── */}
->>>>>>> main
+   {isChatOpen && (
+  <>
+    {/* Disconnect Banner */}
+    {!connected && (
       <div
         style={{
-          width: 320,
-          borderLeft: "1px solid #DBEAFE",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 10,
+          padding: "8px 16px",
+          background: "#FEF2F2",
+          borderBottom: "1px solid #FCA5A5",
           flexShrink: 0,
         }}
       >
-        <ChatPanel onClose={() => setIsChatOpen(false)} />
+        <div
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: "#EF4444",
+            animation: "pulse 1.5s ease-in-out infinite",
+          }}
+        />
+        <span
+          style={{
+            color: "#DC2626",
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          Connection lost — reconnecting...
+        </span>
+
+        <span
+          style={{
+            color: "#64748B",
+            fontSize: 12,
+          }}
+        >
+          Your changes are saved locally and will sync when reconnected.
+        </span>
       </div>
     )}
+
+    <div
+      style={{
+        width: 320,
+        borderLeft: "1px solid #DBEAFE",
+        flexShrink: 0,
+      }}
+    >
+      <ChatPanel onClose={() => setIsChatOpen(false)} />
+    </div>
+  </>
+)}
   </div>
 
   {/* Video Sidebar */}
