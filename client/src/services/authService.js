@@ -5,6 +5,7 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:8000";
 export async function registerUser({ fullName, username, email, password }) {
   const response = await axios.post(`${SERVER_URL}/api/auth/register`, {
     name: fullName || username,
+    username,
     email,
     password,
   });

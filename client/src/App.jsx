@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateRoom from "./pages/CreateRoom";
 import Register from "./pages/Register";
 import WorkSpace from "./pages/workspace/WorkSpace";
+import Replay from "./pages/workspace/Replay";
 import ForgetPassword from "./pages/ForgotPassword";
 import Rooms from "./pages/Rooms";
 
@@ -26,7 +27,8 @@ function AppContent() {
     location.pathname.startsWith("/workspace") ||
     location.pathname.startsWith("/dashboard") ||
     location.pathname.startsWith("/createroom") ||
-    location.pathname.startsWith("/joinroom");
+    location.pathname.startsWith("/joinroom") ||
+    location.pathname.startsWith("/replay");
 
   return (
     <>
@@ -77,6 +79,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <WorkSpace />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/replay/:roomId"
+          element={
+            <ProtectedRoute>
+              <Replay />
             </ProtectedRoute>
           }
         />
