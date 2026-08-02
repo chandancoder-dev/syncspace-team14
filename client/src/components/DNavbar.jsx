@@ -29,7 +29,6 @@ export default function DNavbar() {
         user.email?.split("@")[0] ||
         "User"
       );
-
     } catch (error) {
       console.error("Failed to read logged-in user:", error);
       return "User";
@@ -38,7 +37,6 @@ export default function DNavbar() {
 
   const fullName = getFullName();
 
-
   // ==========================================
   // OPEN LOGOUT POPUP
   // ==========================================
@@ -46,7 +44,6 @@ export default function DNavbar() {
   const handleLogoutClick = () => {
     setShowLogoutPopup(true);
   };
-
 
   // ==========================================
   // CONFIRM LOGOUT
@@ -63,7 +60,6 @@ export default function DNavbar() {
     window.location.href = "/";
   };
 
-
   // ==========================================
   // CANCEL LOGOUT
   // ==========================================
@@ -72,7 +68,6 @@ export default function DNavbar() {
     setShowLogoutPopup(false);
   };
 
-
   return (
     <>
       {/* ==========================================
@@ -80,7 +75,6 @@ export default function DNavbar() {
       ========================================== */}
 
       <nav className="bg-white border-b border-[#DBEAFE] shadow-sm">
-
         <div
           className="
             max-w-7xl
@@ -92,32 +86,25 @@ export default function DNavbar() {
             justify-between
           "
         >
-
           {/* ==========================================
               LOGO
           ========================================== */}
 
           <div className="flex items-center gap-3">
-
             <img
               src="/SyncSpace.png"
               alt="SyncSpace"
               className="w-10 h-10 rounded-xl shadow-md shadow-blue-200"
             />
 
-            <h1 className="text-[#1E3A8A] text-3xl font-bold">
-              SyncSpace
-            </h1>
-
+            <h1 className="text-[#1E3A8A] text-3xl font-bold">SyncSpace</h1>
           </div>
-
 
           {/* ==========================================
               RIGHT SECTION
           ========================================== */}
 
           <div className="flex items-center gap-5">
-
             {/* FULL NAME */}
 
             <div
@@ -139,18 +126,10 @@ export default function DNavbar() {
                 hover:shadow-md
               "
             >
+              <FaRegUserCircle className="text-primary" size={28} />
 
-              <FaRegUserCircle
-                className="text-[#2563EB]"
-                size={28}
-              />
-
-              <p className="text-[#1E293B] font-semibold">
-                {fullName}
-              </p>
-
+              <p className="text-card font-semibold">{fullName}</p>
             </div>
-
 
             {/* LOGOUT BUTTON */}
 
@@ -177,23 +156,17 @@ export default function DNavbar() {
               "
             >
               <FiLogOut />
-
               Logout
             </button>
-
           </div>
-
         </div>
-
       </nav>
-
 
       {/* ==========================================
           LOGOUT CONFIRMATION POPUP
       ========================================== */}
 
       {showLogoutPopup && (
-
         <div
           className="
             fixed
@@ -207,7 +180,6 @@ export default function DNavbar() {
             px-4
           "
         >
-
           <div
             className="
               w-full
@@ -220,7 +192,6 @@ export default function DNavbar() {
               border-[#DBEAFE]
             "
           >
-
             {/* ICON */}
 
             <div
@@ -240,7 +211,6 @@ export default function DNavbar() {
               <FiLogOut />
             </div>
 
-
             {/* HEADING */}
 
             <h2
@@ -255,7 +225,6 @@ export default function DNavbar() {
               Confirm Logout
             </h2>
 
-
             {/* MESSAGE */}
 
             <p
@@ -269,11 +238,9 @@ export default function DNavbar() {
               Are you sure you want to logout from SyncSpace?
             </p>
 
-
             {/* BUTTONS */}
 
             <div className="mt-7 flex gap-4">
-
               <button
                 type="button"
                 onClick={cancelLogout}
@@ -287,14 +254,13 @@ export default function DNavbar() {
                   text-[#475569]
                   font-semibold
                   hover:bg-[#F8FAFC]
-                  hover:border-[#94A3B8]
+                  hover:border-paragraph
                   transition-all
                   duration-300
                 "
               >
                 Cancel
               </button>
-
 
               <button
                 type="button"
@@ -315,15 +281,10 @@ export default function DNavbar() {
               >
                 Logout
               </button>
-
             </div>
-
           </div>
-
         </div>
-
       )}
-
     </>
   );
 }

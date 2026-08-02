@@ -2,14 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import {
-  FaUsers,
-  FaArrowRight,
-  FaClock,
-} from "react-icons/fa";
+import { FaUsers, FaArrowRight, FaClock } from "react-icons/fa";
 
 export default function RecentRooms() {
-
   const navigate = useNavigate();
 
   // ==========================================
@@ -20,17 +15,13 @@ export default function RecentRooms() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-
   // ==========================================
   // FETCH RECENT ROOMS
   // ==========================================
 
   useEffect(() => {
-
     const fetchRooms = async () => {
-
       try {
-
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
@@ -39,20 +30,14 @@ export default function RecentRooms() {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         setRooms(response.data.rooms || []);
-
       } catch (error) {
-
-        console.error(
-          "Failed to fetch rooms:",
-          error
-        );
+        console.error("Failed to fetch rooms:", error);
 
         if (error.response?.status === 401) {
-
           localStorage.removeItem("token");
           localStorage.removeItem("user");
 
@@ -62,26 +47,19 @@ export default function RecentRooms() {
         }
 
         setError("Failed to load recent rooms.");
-
       } finally {
-
         setLoading(false);
-
       }
-
     };
 
     fetchRooms();
-
   }, [navigate]);
-
 
   // ==========================================
   // DATE FORMATTER
   // ==========================================
 
   const formatDateTime = (dateValue) => {
-
     if (!dateValue) {
       return {
         day: "Date unavailable",
@@ -104,156 +82,99 @@ export default function RecentRooms() {
 
     yesterday.setDate(today.getDate() - 1);
 
+    const isToday = date.toDateString() === today.toDateString();
 
-    const isToday =
-      date.toDateString() === today.toDateString();
-
-    const isYesterday =
-      date.toDateString() === yesterday.toDateString();
-
+    const isYesterday = date.toDateString() === yesterday.toDateString();
 
     let day;
 
     if (isToday) {
-
       day = "Today";
-
     } else if (isYesterday) {
-
       day = "Yesterday";
-
     } else {
-
       day = date.toLocaleDateString("en-US", {
         day: "2-digit",
         month: "short",
         year: "numeric",
       });
-
     }
-
 
     const time = date.toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
     });
 
-
     return {
       day,
       time,
     };
-
   };
-
 
   // ==========================================
   // GET ROOM DATE
   // ==========================================
 
   const getRoomDate = (room) => {
-
     return (
-      room.updatedAt ||
-      room.lastAccessedAt ||
-      room.createdAt ||
-      room.created_at
+      room.updatedAt || room.lastAccessedAt || room.createdAt || room.created_at
     );
-
   };
-
 
   // ==========================================
   // OPEN WORKSPACE
   // ==========================================
 
   const openRoom = (roomId) => {
-
     navigate(`/workspace/${roomId}`);
-
   };
-
 
   // ==========================================
   // LOADING
   // ==========================================
 
   if (loading) {
-
     return (
-
       <section>
-
         <div className="mb-8">
+          <h2 className="text-3xl font-bold text-[#1E3A8A]">Recent Rooms</h2>
 
-          <h2 className="text-3xl font-bold text-[#1E3A8A]">
-            Recent Rooms
-          </h2>
-
-          <p className="text-[#64748B] mt-2">
-            Loading your recent rooms...
-          </p>
-
+          <p className="text-[#64748B] mt-2">Loading your recent rooms...</p>
         </div>
-
       </section>
-
     );
-
   }
-
 
   // ==========================================
   // ERROR
   // ==========================================
 
   if (error) {
-
     return (
-
       <section>
-
         <div className="mb-8">
+          <h2 className="text-3xl font-bold text-[#1E3A8A]">Recent Rooms</h2>
 
-          <h2 className="text-3xl font-bold text-[#1E3A8A]">
-            Recent Rooms
-          </h2>
-
-          <p className="text-red-500 mt-2">
-            {error}
-          </p>
-
+          <p className="text-red-500 mt-2">{error}</p>
         </div>
-
       </section>
-
     );
-
   }
 
-
   return (
-
     <section>
-
       {/* ==========================================
           HEADER
       ========================================== */}
 
       <div className="flex items-start justify-between mb-8">
-
         <div>
-
-          <h2 className="text-3xl font-bold text-[#1E3A8A]">
-            Recent Rooms
-          </h2>
+          <h2 className="text-3xl font-bold text-[#1E3A8A]">Recent Rooms</h2>
 
           <p className="text-[#64748B] mt-2">
             Continue collaborating where you left off.
           </p>
-
         </div>
-
 
         {/* VIEW ALL */}
 
@@ -265,7 +186,7 @@ export default function RecentRooms() {
             items-center
             justify-center
             bg-[#DBEAFE]
-            text-[#1D4ED8]
+            text-primaryHover
             text-sm
             font-semibold
             px-4
@@ -279,16 +200,13 @@ export default function RecentRooms() {
         >
           View All
         </button>
-
       </div>
-
 
       {/* ==========================================
           EMPTY STATE
       ========================================== */}
 
       {rooms.length === 0 ? (
-
         <div
           className="
             bg-white
@@ -300,7 +218,6 @@ export default function RecentRooms() {
             shadow-sm
           "
         >
-
           <h3 className="text-xl font-semibold text-[#1E3A8A]">
             No Recent Rooms
           </h3>
@@ -308,27 +225,18 @@ export default function RecentRooms() {
           <p className="mt-2 text-[#64748B]">
             Create or join a collaboration room to get started.
           </p>
-
         </div>
-
       ) : (
-
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-
           {rooms.slice(0, 3).map((room) => {
+            const dateTime = formatDateTime(getRoomDate(room));
 
-            const dateTime = formatDateTime(
-              getRoomDate(room)
-            );
-
-            const memberCount =
-              room.participants?.length || 0;
+            const memberCount = room.participants?.length || 0;
 
             // If you already have a real-time field
             // from your backend, use it here.
 
             return (
-
               <div
                 key={room.roomId}
                 className="
@@ -350,13 +258,11 @@ export default function RecentRooms() {
                   flex-col
                 "
               >
-
                 {/* ==========================================
                     ROOM NAME
                 ========================================== */}
 
                 <div className="flex-1">
-
                   <h3
                     className="
                       text-2xl
@@ -368,8 +274,6 @@ export default function RecentRooms() {
                   >
                     {room.name}
                   </h3>
-
-
 
                   {/* ==========================================
                       CONNECTED USERS
@@ -385,19 +289,13 @@ export default function RecentRooms() {
                       text-[#64748B]
                     "
                   >
-
-                    <FaUsers className="text-[#2563EB]" />
+                    <FaUsers className="text-primary" />
 
                     <span>
-                      {memberCount}{" "}
-                      {memberCount === 1
-                        ? "Member"
-                        : "Members"
-                      } Connected
+                      {memberCount} {memberCount === 1 ? "Member" : "Members"}{" "}
+                      Connected
                     </span>
-
                   </div>
-
 
                   {/* ==========================================
                       DATE & TIME
@@ -413,29 +311,21 @@ export default function RecentRooms() {
                       p-4
                     "
                   >
-
                     <div className="flex items-center gap-3">
-
-                      <FaClock className="text-[#2563EB]" />
+                      <FaClock className="text-primary" />
 
                       <div>
-
-                        <p className="text-sm font-semibold text-[#334155]">
+                        <p className="text-sm font-semibold text-border">
                           {dateTime.day}
                         </p>
 
                         <p className="text-xs text-[#64748B] mt-1">
                           {dateTime.time}
                         </p>
-
                       </div>
-
                     </div>
-
                   </div>
-
                 </div>
-
 
                 {/* ==========================================
                     OPEN WORKSPACE
@@ -447,8 +337,8 @@ export default function RecentRooms() {
                   className="
                     mt-7
                     w-full
-                    bg-[#2563EB]
-                    hover:bg-[#1D4ED8]
+                    bg-primary
+                    hover:bg-primaryHover
                     rounded-xl
                     py-3
                     px-4
@@ -465,10 +355,7 @@ export default function RecentRooms() {
                     duration-300
                   "
                 >
-
-                  <span>
-                    Open Workspace
-                  </span>
+                  <span>Open Workspace</span>
 
                   <FaArrowRight
                     className="
@@ -477,7 +364,6 @@ export default function RecentRooms() {
                       group-hover:translate-x-1
                     "
                   />
-
                 </button>
 
                 <button
@@ -489,13 +375,13 @@ export default function RecentRooms() {
                     bg-transparent
                     border-2
                     border-blue-200
-                    hover:border-[#2563EB]
+                    hover:border-primary
                     hover:bg-[#EFF6FF]
                     rounded-xl
                     py-3
                     px-4
                     text-[#475569]
-                    hover:text-[#2563EB]
+                    hover:text-primary
                     font-semibold
                     flex
                     items-center
@@ -505,25 +391,13 @@ export default function RecentRooms() {
                     duration-300
                   "
                 >
-
-                  <span>
-                    ▶ View Replay
-                  </span>
-
+                  <span>▶ View Replay</span>
                 </button>
-
               </div>
-
             );
-
           })}
-
         </div>
-
       )}
-
     </section>
-
   );
-
 }
