@@ -50,7 +50,6 @@ const useSync = (roomId) => {
 
   const [connected, setConnected] = useState(false);
   const [users, setUsers] = useState(new Map());
-  const [accessDenied, setAccessDenied] = useState(null);
 
   const meRef = useRef({
     name: getUserName(),
@@ -91,11 +90,6 @@ const useSync = (roomId) => {
         // Only send if there's meaningful content (empty doc = 2 bytes)
         socket.emit('yjs-update', { roomId, update: Array.from(localState) });
       }
-    });
-
-    socket.on('join-denied', ({ message }) => {
-      setAccessDenied(message);
-      socket.disconnect();
     });
 
     socket.on('disconnect', (reason) => {
@@ -211,7 +205,6 @@ const useSync = (roomId) => {
     awareness: awarenessRef.current,
     socket: socketRef.current,
     connected,
-    accessDenied,
     users,
     me: meRef.current,
     emitCursor,

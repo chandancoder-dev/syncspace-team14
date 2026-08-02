@@ -56,21 +56,50 @@ const ChatPanel = ({ onClose }) => {
         </button>
       </div>
 
-      {/* Messages */}
+      {/* Empty Chat State */}
       <div
         style={{
           flex: 1,
-          overflowY: "auto",
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
           background: "#F8FAFC",
-          color: "#94A3B8",
-          fontSize: "14px",
-          padding: "16px",
+          padding: "20px",
+          textAlign: "center",
         }}
       >
-        No messages yet
+        <div
+          style={{
+            fontSize: "54px",
+            marginBottom: "14px",
+          }}
+        >
+          💬
+        </div>
+
+        <h3
+          style={{
+            margin: 0,
+            color: "#1E293B",
+            fontSize: "18px",
+            fontWeight: "600",
+          }}
+        >
+          No messages yet
+        </h3>
+
+        <p
+          style={{
+            marginTop: "8px",
+            color: "#64748B",
+            fontSize: "14px",
+            lineHeight: "22px",
+            maxWidth: "220px",
+          }}
+        >
+          Start the conversation by sending your first message.
+        </p>
       </div>
 
       {/* Input */}
@@ -85,6 +114,7 @@ const ChatPanel = ({ onClose }) => {
           style={{
             display: "flex",
             gap: "10px",
+            alignItems: "center",
           }}
         >
           <input
@@ -92,8 +122,8 @@ const ChatPanel = ({ onClose }) => {
             placeholder="Type a message..."
             style={{
               flex: 1,
-              padding: "12px",
-              borderRadius: "10px",
+              padding: "12px 14px",
+              borderRadius: "12px",
               border: "1px solid #CBD5E1",
               outline: "none",
               fontSize: "14px",
@@ -102,16 +132,18 @@ const ChatPanel = ({ onClose }) => {
 
           <button
             style={{
-              padding: "12px 18px",
+              width: "48px",
+              height: "48px",
               border: "none",
-              borderRadius: "10px",
+              borderRadius: "12px",
               background: "#2563EB",
               color: "#FFFFFF",
               cursor: "pointer",
+              fontSize: "20px",
               fontWeight: "600",
             }}
           >
-            Send
+            ➤
           </button>
         </div>
       </div>

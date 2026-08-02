@@ -1,5 +1,6 @@
 import "./styles/variables.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import AIAssistant from "./components/AIAssistant";
 
 // Pages
 import Home from "./pages/Home";
@@ -7,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateRoom from "./pages/CreateRoom";
 import Register from "./pages/Register";
 import WorkSpace from "./pages/workspace/WorkSpace";
+import Replay from "./pages/workspace/Replay";
 import ForgetPassword from "./pages/ForgotPassword";
 import Rooms from "./pages/Rooms";
 
@@ -21,13 +23,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
-
-  const hideChrome =
-    location.pathname.startsWith("/workspace") ||
-    location.pathname.startsWith("/dashboard") ||
-    location.pathname.startsWith("/createroom") ||
-    location.pathname.startsWith("/joinroom")||
-    location.pathname.startsWith("/rooms");
+const hideChrome =
+  location.pathname.startsWith("/workspace") ||
+  location.pathname.startsWith("/dashboard") ||
+  location.pathname.startsWith("/createroom") ||
+  location.pathname.startsWith("/joinroom") ||
+  location.pathname.startsWith("/rooms") ||
+  location.pathname.startsWith("/replay");
 
   return (
     <>
@@ -81,8 +83,16 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/replay/:roomId"
+          element={
+            <ProtectedRoute>
+              <Replay />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-
+      {!hideChrome && <AIAssistant />}
       {!hideChrome && <Footer />}
     </>
   );
