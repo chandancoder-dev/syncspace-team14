@@ -23,13 +23,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
-
-  const hideChrome =
-    location.pathname.startsWith("/workspace") ||
-    location.pathname.startsWith("/dashboard") ||
-    location.pathname.startsWith("/createroom") ||
-    location.pathname.startsWith("/joinroom") ||
-    location.pathname.startsWith("/replay");
+const hideChrome =
+  location.pathname.startsWith("/workspace") ||
+  location.pathname.startsWith("/dashboard") ||
+  location.pathname.startsWith("/createroom") ||
+  location.pathname.startsWith("/joinroom") ||
+  location.pathname.startsWith("/rooms") ||
+  location.pathname.startsWith("/replay");
 
   return (
     <>
