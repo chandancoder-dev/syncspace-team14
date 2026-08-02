@@ -105,7 +105,7 @@ export default function Navbar() {
 
           {user ? (
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              {/* User profile badge (non-clickable) */}
+              {/* User profile badge */}
               <div
                 style={{
                   display: "flex",
@@ -138,7 +138,7 @@ export default function Navbar() {
                 </span>
               </div>
 
-              {/* Dashboard button — outlined, light */}
+              {/* Dashboard button */}
               <button
                 onClick={() => navigate("/dashboard")}
                 onMouseEnter={(e) => {
@@ -275,7 +275,6 @@ export default function Navbar() {
               boxShadow: "0 20px 40px rgba(30, 58, 138, 0.18)",
             }}
           >
-            {/* Red icon */}
             <div
               style={{
                 width: 52,
@@ -360,4 +359,3 @@ export default function Navbar() {
     </>
   );
 }
-
