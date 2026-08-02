@@ -1,5 +1,6 @@
 import "./styles/variables.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import AIAssistant from "./components/AIAssistant";
 
 // Pages
 import Home from "./pages/Home";
@@ -91,7 +92,7 @@ function AppContent() {
           }
         />
       </Routes>
-
+      {!hideChrome && <AIAssistant />}
       {!hideChrome && <Footer />}
     </>
   );
