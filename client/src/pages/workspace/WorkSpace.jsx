@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
 import WhiteBoard from "./Whiteboard";
 import CodeEditor from "./CodeEditor";
 import WorkSpaceHeader from "./WorkSpaceHeader";
@@ -48,7 +49,7 @@ const WorkSpace = () => {
   const handleLeaveRoom = () => {
     // Disconnect socket before navigating
     if (socket) socket.disconnect();
-    navigate("/dashboard");
+    window.location.href = "/dashboard";
   };
 
   const handleDividerMouseDown = (e) => {
