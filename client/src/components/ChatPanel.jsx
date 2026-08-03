@@ -1,24 +1,73 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
-const messages = [
-  {
-    id: 1,
-    sender: "Rahul",
-    text: "Hello ",
-    time: "10:42 AM",
-    isMe: false,
-  },
-  {
-    id: 2,
-    sender: "You",
-    text: "Hi Rahul ",
-    time: "10:43 AM",
-    isMe: true,
-  },
-];
+const getCurrentUserIdentity = () => {
+  try {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    return {
+      id: storedUser?.id || storedUser?._id || null,
+      username:
+        storedUser?.username ||
+        storedUser?.name ||
+        storedUser?.fullName ||
+        null,
+    };
+  } catch {
+    return { id: null, username: null };
+  }
+};
 
-const ChatPanel = ({ onClose }) => {
+const ChatPanel = ({ onClose, socket, roomId, me }) => {
   const bottomRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const currentUser = getCurrentUserIdentity();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleReceiveMessage = ({
+      id,
+      senderId,
+      sender,
+      message,
+      timestamp,
+    }) => {
+      const isCurrentUser = currentUser.id && senderId
+        ? String(senderId) === String(currentUser.id)
+        : currentUser.username
+          ? sender === currentUser.username
+          : Boolean(senderId && socket.id && senderId === socket.id);
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          id,
+          sender,
+          text: message,
+          time: new Date(timestamp).toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+          }),
+          isMe: isCurrentUser,
+        },
+      ]);
+    };
+
+    socket.on("receive-message", handleReceiveMessage);
+    return () => socket.off("receive-message", handleReceiveMessage);
+  }, [socket, currentUser.id, currentUser.username]);
+
+  const handleSend = () => {
+    const message = input.trim();
+    if (!message || !socket || !roomId) return;
+
+    socket.emit("send-message", {
+      roomId,
+      message,
+      sender: me?.name || "Anonymous",
+    });
+    setInput("");
+  };
 
   /* Auto-scroll to latest message whenever messages change */
   useEffect(() => {
@@ -149,10 +198,10 @@ const ChatPanel = ({ onClose }) => {
             flex: 1,
             overflowY: "auto",
             background: "#F8FAFC",
-            padding: "18px 18px 8px 14px",
+            padding: "18px 20px 10px",
             display: "flex",
             flexDirection: "column",
-            gap: "18px",
+            gap: "22px",
           }}
         >
           {messages.map((msg) => (
@@ -162,7 +211,10 @@ const ChatPanel = ({ onClose }) => {
                 display: "flex",
                 flexDirection: msg.isMe ? "row-reverse" : "row",
                 alignItems: "flex-end",
-                gap: "12px",
+                gap: "10px",
+                width: "100%",
+                paddingRight: msg.isMe ? "4px" : 0,
+                paddingLeft: msg.isMe ? 0 : "4px",
               }}
             >
               {/* Avatar */}
@@ -196,7 +248,7 @@ const ChatPanel = ({ onClose }) => {
                   flexDirection: "column",
                   alignItems: msg.isMe ? "flex-end" : "flex-start",
                   maxWidth: "70%",
-                  gap: "5px",
+                  gap: "3px",
                   minWidth: 0,
                 }}
               >
@@ -280,6 +332,11 @@ const ChatPanel = ({ onClose }) => {
           <input
             type="text"
             placeholder="Type a message..."
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") handleSend();
+            }}
             style={{
               flex: 1,
               padding: "11px 14px",
@@ -294,6 +351,7 @@ const ChatPanel = ({ onClose }) => {
           />
 
           <button
+            onClick={handleSend}
             style={{
               width: "44px",
               height: "44px",

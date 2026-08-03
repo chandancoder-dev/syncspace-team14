@@ -1,4 +1,5 @@
 import * as Y from "yjs";
+import { randomUUID } from "node:crypto";
 import YjsDocument from "../models/YjsDocument.js";
 import YjsUpdateLog from "../models/YjsUpdateLog.js";
 import Room from "../models/Room.js";
@@ -9,9 +10,8 @@ const rooms = new Map();
 // Debounce timers for saving per room
 const saveTimers = new Map();
 
-// Save interval in ms 
+// Save interval in ms
 const SAVE_DEBOUNCE_MS = 2000;
-
 
 async function loadState(roomId) {
   try {
@@ -20,7 +20,10 @@ async function loadState(roomId) {
       return new Uint8Array(doc.state);
     }
   } catch (error) {
-    console.error(`[Yjs Persistence] Failed to load state for room ${roomId}:`, error.message);
+    console.error(
+      `[Yjs Persistence] Failed to load state for room ${roomId}:`,
+      error.message,
+    );
   }
   return null;
 }
@@ -34,10 +37,13 @@ async function saveState(roomId, ydoc) {
     await YjsDocument.findOneAndUpdate(
       { roomId },
       { state },
-      { upsert: true, returnDocument: 'after' }
+      { upsert: true, returnDocument: "after" },
     );
   } catch (error) {
-    console.error(`[Yjs Persistence] Failed to save state for room ${roomId}:`, error.message);
+    console.error(
+      `[Yjs Persistence] Failed to save state for room ${roomId}:`,
+      error.message,
+    );
   }
 }
 
@@ -62,21 +68,23 @@ const roomHandler = (io, socket) => {
     // The Room ID acts as the invitation — only people who receive the link can join.
     // Auto-add joining user as a participant if not already in the list.
     if (user?.id) {
-      Room.findOne({ roomId }).then((dbRoom) => {
-        if (dbRoom) {
-          const alreadyParticipant = dbRoom.participants.some(
-            (p) => p.userId?.toString() === user.id
-          );
-          if (!alreadyParticipant) {
-            dbRoom.participants.push({
-              userId: user.id,
-              name: user.name || "Guest",
-              joinedAt: new Date(),
-            });
-            dbRoom.save().catch(() => {});
+      Room.findOne({ roomId })
+        .then((dbRoom) => {
+          if (dbRoom) {
+            const alreadyParticipant = dbRoom.participants.some(
+              (p) => p.userId?.toString() === user.id,
+            );
+            if (!alreadyParticipant) {
+              dbRoom.participants.push({
+                userId: user.id,
+                name: user.name || "Guest",
+                joinedAt: new Date(),
+              });
+              dbRoom.save().catch(() => {});
+            }
           }
-        }
-      }).catch(() => {});
+        })
+        .catch(() => {});
     }
 
     // Create room in memory if it doesn't exist
@@ -100,13 +108,12 @@ const roomHandler = (io, socket) => {
 
     room.users.set(socket.id, { user, cursor: null });
 
-    console.log(`[Room: ${roomId}] ${user?.name || 'Anonymous'} connected (${room.users.size} online)`);
+    console.log(
+      `[Room: ${roomId}] ${user?.name || "Anonymous"} connected (${room.users.size} online)`,
+    );
 
     // Mark room as active in MongoDB when someone joins
-    Room.findOneAndUpdate(
-      { roomId },
-      { status: "active" }
-    ).catch(() => {});  // silent — room might not exist in DB yet (joined via link)
+    Room.findOneAndUpdate({ roomId }, { status: "active" }).catch(() => {}); // silent — room might not exist in DB yet (joined via link)
 
     // Send current Yjs state to the joining user
     const state = Y.encodeStateAsUpdate(room.ydoc);
@@ -160,6 +167,28 @@ const roomHandler = (io, socket) => {
   });
 
   // Code editor awareness (y-protocols) — broadcast cursor positions
+  socket.on("send-message", ({ roomId, message, sender } = {}) => {
+    const trimmedRoomId = typeof roomId === "string" ? roomId.trim() : "";
+    const trimmedMessage = typeof message === "string" ? message.trim() : "";
+
+    if (!trimmedRoomId || !trimmedMessage || !socket.rooms.has(trimmedRoomId)) {
+      return;
+    }
+
+    const senderId = rooms.get(trimmedRoomId)?.users.get(socket.id)?.user?.id || socket.id;
+
+    io.to(trimmedRoomId).emit("receive-message", {
+      id: randomUUID(),
+      senderId,
+      sender:
+        typeof sender === "string" && sender.trim()
+          ? sender.trim()
+          : "Anonymous",
+      message: trimmedMessage,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
   socket.on("code-awareness", ({ roomId, update }) => {
     if (!roomId) return;
     socket.to(roomId).emit("code-awareness", { update });
@@ -173,12 +202,14 @@ const roomHandler = (io, socket) => {
 
       const room = rooms.get(roomId);
       const userData = room.users.get(socket.id);
-      const userName = userData?.user?.name || 'Anonymous';
+      const userName = userData?.user?.name || "Anonymous";
       const userId = userData?.user?.id;
 
       room.users.delete(socket.id);
 
-      console.log(`[Room: ${roomId}] ${userName} disconnected (${room.users.size} online)`);
+      console.log(
+        `[Room: ${roomId}] ${userName} disconnected (${room.users.size} online)`,
+      );
 
       socket.to(roomId).emit("user-left", { socketId: socket.id });
 
@@ -195,7 +226,9 @@ const roomHandler = (io, socket) => {
             dbRoom.status = "ended";
             dbRoom.endedAt = new Date();
             await dbRoom.save();
-            console.log(`[Room: ${roomId}] Host left — session marked as ended`);
+            console.log(
+              `[Room: ${roomId}] Host left — session marked as ended`,
+            );
           }
         } catch {}
       }
@@ -212,7 +245,7 @@ const roomHandler = (io, socket) => {
         // Mark as ended if not already
         Room.findOneAndUpdate(
           { roomId, status: "active" },
-          { status: "ended", endedAt: new Date() }
+          { status: "ended", endedAt: new Date() },
         ).catch(() => {});
 
         room.ydoc.destroy();
