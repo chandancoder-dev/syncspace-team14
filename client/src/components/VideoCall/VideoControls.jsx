@@ -1,7 +1,6 @@
 import {
   FiMic,
   FiVideo,
-  FiMonitor,
   FiPhoneOff,
 } from "react-icons/fi";
 
@@ -28,17 +27,6 @@ export default function VideoControls() {
         >
           <FiVideo />
         </button>
-
-        {/* Screen Share */}
-        <button
-          title="Share Screen"
-          className={buttonClass}
-        >
-          <FiMonitor />
-        </button>
-
-        {/* Divider */}
-        <div className="w-px h-7 bg-blue-100" />
 
         {/* Leave */}
         <button

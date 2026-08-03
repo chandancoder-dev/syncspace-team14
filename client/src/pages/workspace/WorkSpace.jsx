@@ -48,10 +48,10 @@ const WorkSpace = () => {
   }, [roomId]);
 
   const handleLeaveRoom = () => {
-    // Disconnect socket before navigating
-    if (socket) socket.disconnect();
-    window.location.href = "/dashboard";
-  };
+  if (socket) socket.disconnect();
+
+  navigate("/dashboard");
+};
 
   const handleDividerMouseDown = (e) => {
     e.preventDefault();

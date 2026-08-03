@@ -19,6 +19,10 @@ const io = new Server(server, {
   },
 });
 
+const videoSocket = require("./socket/videoHandler.js");
+
+videoSocket(io);
+
 io.on("connection", (socket) => {
   roomHandler(io, socket);
 
