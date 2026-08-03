@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
 import WhiteBoard from "./Whiteboard";
 import CodeEditor from "./CodeEditor";
 import WorkSpaceHeader from "./WorkSpaceHeader";
 import ChatPanel from "../../components/ChatPanel";
 import useSync from "../../hooks/useSync";
 import VideoPanel from "../../components/VideoCall/VideoPanel";
-
 
 const MIN_PANEL_WIDTH = 200;
 
@@ -27,20 +27,22 @@ const WorkSpace = () => {
   useEffect(() => {
     const checkHost = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
+        const token = localStorage.getItem("token");
+        const storedUser = localStorage.getItem("user");
         const userId = storedUser ? JSON.parse(storedUser).id : null;
         if (!token || !userId) return;
 
         const res = await fetch(
-          `${import.meta.env.VITE_SERVER_URL || 'http://localhost:8000'}/api/rooms/${roomId}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          `${import.meta.env.VITE_SERVER_URL || "http://localhost:8000"}/api/rooms/${roomId}`,
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         if (res.ok) {
           const data = await res.json();
           setIsHost(data.room?.createdBy === userId);
         }
-      } catch { /* silent */ }
+      } catch {
+        /* silent */
+      }
     };
     checkHost();
   }, [roomId]);
@@ -48,7 +50,7 @@ const WorkSpace = () => {
   const handleLeaveRoom = () => {
     // Disconnect socket before navigating
     if (socket) socket.disconnect();
-    navigate("/dashboard");
+    window.location.href = "/dashboard";
   };
 
   const handleDividerMouseDown = (e) => {
@@ -106,138 +108,141 @@ const WorkSpace = () => {
       />
 
       {/* Workspace + Video */}
-<div
-  ref={containerRef}
-  style={{
-    display: "flex",
-    flex: 1,
-    minHeight: 0,
-    overflow: "hidden",
-  }}
->
-  {/* Whiteboard */}
-  <div
-    style={{
-      width: `${leftWidth}%`,
-      overflow: "hidden",
-      flexShrink: 0,
-    }}
-  >
-    <WhiteBoard
-      ydoc={ydoc}
-      me={me}
-      users={users}
-      emitCursor={emitCursor}
-    />
-  </div>
-
-  {/* Divider */}
-  <div
-    onMouseDown={handleDividerMouseDown}
-    style={{
-      width: 4,
-      background: "#BFDBFE",
-      cursor: "col-resize",
-      flexShrink: 0,
-    }}
-  />
-
-  {/* Code Editor + Chat */}
-  <div
-    style={{
-      flex: 1,
-      display: "flex",
-      overflow: "hidden",
-    }}
-  >
-    <div
-      style={{
-        flex: 1,
-        minWidth: 0,
-        overflow: "hidden",
-      }}
-    >
-      <CodeEditor
-        ydoc={ydoc}
-        awareness={awareness}
-        me={me}
-        users={users}
-      />
-    </div>
-
-   {isChatOpen && (
-  <>
-    {/* Disconnect Banner */}
-    {!connected && (
       <div
+        ref={containerRef}
         style={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 10,
-          padding: "8px 16px",
-          background: "#FEF2F2",
-          borderBottom: "1px solid #FCA5A5",
-          flexShrink: 0,
+          flex: 1,
+          minHeight: 0,
+          overflow: "hidden",
         }}
       >
+        {/* Whiteboard */}
         <div
           style={{
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            background: "#EF4444",
-            animation: "pulse 1.5s ease-in-out infinite",
+            width: `${leftWidth}%`,
+            overflow: "hidden",
+            flexShrink: 0,
+          }}
+        >
+          <WhiteBoard
+            ydoc={ydoc}
+            me={me}
+            users={users}
+            emitCursor={emitCursor}
+          />
+        </div>
+
+        {/* Divider */}
+        <div
+          onMouseDown={handleDividerMouseDown}
+          style={{
+            width: 4,
+            background: "#BFDBFE",
+            cursor: "col-resize",
+            flexShrink: 0,
           }}
         />
-        <span
-          style={{
-            color: "#DC2626",
-            fontSize: 13,
-            fontWeight: 600,
-          }}
-        >
-          Connection lost — reconnecting...
-        </span>
 
-        <span
+        {/* Code Editor + Chat */}
+        <div
           style={{
-            color: "#64748B",
-            fontSize: 12,
+            flex: 1,
+            display: "flex",
+            overflow: "hidden",
           }}
         >
-          Your changes are saved locally and will sync when reconnected.
-        </span>
+          <div
+            style={{
+              flex: 1,
+              minWidth: 0,
+              overflow: "hidden",
+            }}
+          >
+            <CodeEditor
+              ydoc={ydoc}
+              awareness={awareness}
+              me={me}
+              users={users}
+            />
+          </div>
+
+          {isChatOpen && (
+            <div
+              style={{
+                flexShrink: 0,
+                display: "flex",
+                flexDirection: "column",
+                overflow: "hidden",
+              }}
+            >
+              {/* Disconnect Banner */}
+              {!connected && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 10,
+                    padding: "8px 16px",
+                    background: "#FEF2F2",
+                    borderBottom: "1px solid #FCA5A5",
+                    flexShrink: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: "#EF4444",
+                      animation: "pulse 1.5s ease-in-out infinite",
+                    }}
+                  />
+                  <span
+                    style={{
+                      color: "#DC2626",
+                      fontSize: 13,
+                      fontWeight: 600,
+                    }}
+                  >
+                    Connection lost — reconnecting...
+                  </span>
+                  <span
+                    style={{
+                      color: "#64748B",
+                      fontSize: 12,
+                    }}
+                  >
+                    Your changes are saved locally and will sync when
+                    reconnected.
+                  </span>
+                </div>
+              )}
+              <ChatPanel
+                onClose={() => setIsChatOpen(false)}
+                socket={socket}
+                roomId={roomId}
+                me={me}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Video Sidebar — toggle on button click */}
+        {isVideoOpen && (
+          <div
+            style={{
+              width: 300,
+              flexShrink: 0,
+              borderLeft: "1px solid #DBEAFE",
+              background: "#FFFFFF",
+            }}
+          >
+            <VideoPanel />
+          </div>
+        )}
       </div>
-    )}
-
-    <div
-      style={{
-        width: 320,
-        borderLeft: "1px solid #DBEAFE",
-        flexShrink: 0,
-      }}
-    >
-      <ChatPanel onClose={() => setIsChatOpen(false)} />
-    </div>
-  </>
-)}
-  </div>
-
-  {/* Video Sidebar — toggle on button click */}
-  {isVideoOpen && (
-  <div
-  style={{
-    width: 300,
-    flexShrink: 0,
-    borderLeft: "1px solid #DBEAFE",
-    background: "#FFFFFF",
-  }}
->
-    <VideoPanel />
-  </div>
-  )}
-</div>
 
       {/* ── Leave Confirmation Modal ── */}
       {showLeaveConfirm && (
@@ -369,6 +374,5 @@ const WorkSpace = () => {
     </div>
   );
 };
-
 
 export default WorkSpace;
