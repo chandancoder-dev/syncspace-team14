@@ -175,7 +175,8 @@ const roomHandler = (io, socket) => {
       return;
     }
 
-    const senderId = rooms.get(trimmedRoomId)?.users.get(socket.id)?.user?.id || socket.id;
+    const senderId =
+      rooms.get(trimmedRoomId)?.users.get(socket.id)?.user?.id || socket.id;
 
     io.to(trimmedRoomId).emit("receive-message", {
       id: randomUUID(),
@@ -188,6 +189,25 @@ const roomHandler = (io, socket) => {
       timestamp: new Date().toISOString(),
     });
   });
+
+  const relayTypingEvent = (event, { roomId, sender } = {}) => {
+    const trimmedRoomId = typeof roomId === "string" ? roomId.trim() : "";
+    if (!trimmedRoomId || !socket.rooms.has(trimmedRoomId)) return;
+
+    const roomUser = rooms.get(trimmedRoomId)?.users.get(socket.id)?.user;
+    socket.to(trimmedRoomId).emit(event, {
+      sender:
+        typeof sender === "string" && sender.trim()
+          ? sender.trim()
+          : roomUser?.name || "Anonymous",
+      senderId: roomUser?.id || socket.id,
+    });
+  };
+
+  socket.on("typing", (payload) => relayTypingEvent("user-typing", payload));
+  socket.on("stop-typing", (payload) =>
+    relayTypingEvent("user-stop-typing", payload),
+  );
 
   socket.on("code-awareness", ({ roomId, update }) => {
     if (!roomId) return;
