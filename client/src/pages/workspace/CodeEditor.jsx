@@ -1,25 +1,33 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
-import Editor from '@monaco-editor/react';
-import { MonacoBinding } from 'y-monaco';
-import { FiChevronDown, FiCode, FiUsers, FiLoader, FiPlay, FiX, FiChevronUp } from 'react-icons/fi';
+import { useState, useRef, useCallback, useEffect } from "react";
+import Editor from "@monaco-editor/react";
+import { MonacoBinding } from "y-monaco";
+import {
+  FiChevronDown,
+  FiCode,
+  FiUsers,
+  FiLoader,
+  FiPlay,
+  FiX,
+  FiChevronUp,
+} from "react-icons/fi";
 
 const LANGUAGES = [
-  { id: 'javascript', label: 'JavaScript' },
-  { id: 'python', label: 'Python' },
-  { id: 'java', label: 'Java' },
-  { id: 'c', label: 'C' },
-  { id: 'cpp', label: 'C++' },
+  { id: "javascript", label: "JavaScript" },
+  { id: "python", label: "Python" },
+  { id: "java", label: "Java" },
+  { id: "c", label: "C" },
+  { id: "cpp", label: "C++" },
 ];
 
 const FILE_EXTENSIONS = {
-  javascript: 'js',
-  python: 'py',
-  java: 'java',
-  c: 'c',
-  cpp: 'cpp',
+  javascript: "js",
+  python: "py",
+  java: "java",
+  c: "c",
+  cpp: "cpp",
 };
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:8000";
 
 const DEFAULT_CODE = {
   javascript: `// Start coding in JavaScript\nfunction hello() {\n  console.log("Hello, SyncSpace!");\n}\n\nhello();\n`,
@@ -30,7 +38,7 @@ const DEFAULT_CODE = {
 };
 
 const CodeEditor = ({ ydoc, awareness, me, users }) => {
-  const [language, setLanguage] = useState('javascript');
+  const [language, setLanguage] = useState("javascript");
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
   const [editorFailed, setEditorFailed] = useState(false);
@@ -39,7 +47,7 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const [output, setOutput] = useState(null);
   const [showOutput, setShowOutput] = useState(false);
 
-  // Monaco load timeout 
+  // Monaco load timeout
   useEffect(() => {
     if (editorReady) return;
     const timer = setTimeout(() => {
@@ -53,21 +61,21 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const langMenuRef = useRef(null);
 
   // Get the shared Yjs text type for code
-  const yText = ydoc.getText('code');
-  const yMeta = ydoc.getMap('editor-meta');
+  const yText = ydoc.getText("code");
+  const yMeta = ydoc.getMap("editor-meta");
 
   // Re-render when awareness changes so cursor styles update
   useEffect(() => {
     if (!awareness) return;
     const onUpdate = () => setAwarenessTick((n) => n + 1);
-    awareness.on('change', onUpdate);
-    return () => awareness.off('change', onUpdate);
+    awareness.on("change", onUpdate);
+    return () => awareness.off("change", onUpdate);
   }, [awareness]);
 
   // Sync language from Yjs shared state
   useEffect(() => {
     const syncLang = () => {
-      const sharedLang = yMeta.get('language');
+      const sharedLang = yMeta.get("language");
       if (sharedLang && LANGUAGES.some((l) => l.id === sharedLang)) {
         setLanguage(sharedLang);
       }
@@ -83,42 +91,41 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
       monacoRef.current = monaco;
 
       // Define custom theme
-      monaco.editor.defineTheme('syncspace-light', {
-        base: 'vs',
+      monaco.editor.defineTheme("syncspace-light", {
+        base: "vs",
         inherit: true,
         rules: [
-          { token: 'comment', foreground: '64748B', fontStyle: 'italic' },
-          { token: 'keyword', foreground: '2563EB' },
-          { token: 'string', foreground: '059669' },
-          { token: 'number', foreground: 'D97706' },
-          { token: 'type', foreground: '1E3A8A' },
+          { token: "comment", foreground: "64748B", fontStyle: "italic" },
+          { token: "keyword", foreground: "2563EB" },
+          { token: "string", foreground: "059669" },
+          { token: "number", foreground: "D97706" },
+          { token: "type", foreground: "1E3A8A" },
         ],
         colors: {
-          'editor.background': '#FFFFFF',
-          'editor.foreground': '#1E293B',
-          'editor.lineHighlightBackground': '#F8FAFC',
-          'editor.selectionBackground': '#DBEAFE',
-          'editor.inactiveSelectionBackground': '#EFF6FF',
-          'editorLineNumber.foreground': '#94A3B8',
-          'editorLineNumber.activeForeground': '#2563EB',
-          'editorCursor.foreground': '#2563EB',
-          'editorIndentGuide.background': '#E2E8F0',
-          'editorIndentGuide.activeBackground': '#BFDBFE',
-          'editor.selectionHighlightBackground': '#DBEAFE80',
-          'editorBracketMatch.background': '#DBEAFE',
-          'editorBracketMatch.border': '#2563EB',
+          "editor.background": "#FFFFFF",
+          "editor.foreground": "#1E293B",
+          "editor.lineHighlightBackground": "#F8FAFC",
+          "editor.selectionBackground": "#DBEAFE",
+          "editor.inactiveSelectionBackground": "#EFF6FF",
+          "editorLineNumber.foreground": "#94A3B8",
+          "editorLineNumber.activeForeground": "#2563EB",
+          "editorCursor.foreground": "#2563EB",
+          "editorIndentGuide.background": "#E2E8F0",
+          "editorIndentGuide.activeBackground": "#BFDBFE",
+          "editor.selectionHighlightBackground": "#DBEAFE80",
+          "editorBracketMatch.background": "#DBEAFE",
+          "editorBracketMatch.border": "#2563EB",
         },
       });
 
-      monaco.editor.setTheme('syncspace-light');
+      monaco.editor.setTheme("syncspace-light");
       setTimeout(() => {
         if (yText.length === 0) {
-          const currentLang = yMeta.get('language') || 'javascript';
+          const currentLang = yMeta.get("language") || "javascript";
           yText.insert(0, DEFAULT_CODE[currentLang] || DEFAULT_CODE.javascript);
         }
       }, 500);
 
-  
       // Create the Yjs <-> Monaco binding with awareness for remote cursors
       bindingRef.current = new MonacoBinding(
         yText,
@@ -133,7 +140,6 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
     [yText, yMeta, awareness],
   );
 
-
   useEffect(() => {
     return () => {
       if (bindingRef.current) {
@@ -146,7 +152,7 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const handleLanguageChange = (langId) => {
     setLanguage(langId);
     setShowLangMenu(false);
-    yMeta.set('language', langId);
+    yMeta.set("language", langId);
 
     // Update Monaco's language model
     if (editorRef.current && monacoRef.current) {
@@ -158,11 +164,13 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
 
     // Check if current content is a default template (any language)
     const currentText = yText.toString();
-    const normalize = (s) => s.replace(/\s+/g, '').toLowerCase();
+    const normalize = (s) => s.replace(/\s+/g, "").toLowerCase();
     const currentNorm = normalize(currentText);
-    const isDefaultCode = !currentText.trim() || Object.values(DEFAULT_CODE).some(
-      (code) => normalize(code) === currentNorm,
-    );
+    const isDefaultCode =
+      !currentText.trim() ||
+      Object.values(DEFAULT_CODE).some(
+        (code) => normalize(code) === currentNorm,
+      );
 
     if (isDefaultCode) {
       const newCode = DEFAULT_CODE[langId];
@@ -212,9 +220,15 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const runCode = async () => {
     if (isRunning) return;
 
-    const code = editorRef.current ? editorRef.current.getValue() : yText.toString();
+    const code = editorRef.current
+      ? editorRef.current.getValue()
+      : yText.toString();
     if (!code.trim()) {
-      setOutput({ stdout: '', stderr: 'Error: No code to execute.', exitCode: 1 });
+      setOutput({
+        stdout: "",
+        stderr: "Error: No code to execute.",
+        exitCode: 1,
+      });
       setShowOutput(true);
       return;
     }
@@ -224,11 +238,11 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
     setShowOutput(true);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await fetch(`${SERVER_URL}/api/code/execute`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ code, language }),
@@ -241,13 +255,13 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
       }
 
       setOutput({
-        stdout: data.stdout || '',
-        stderr: data.stderr || '',
+        stdout: data.stdout || "",
+        stderr: data.stderr || "",
         exitCode: data.exitCode ?? -1,
       });
     } catch (error) {
       setOutput({
-        stdout: '',
+        stdout: "",
         stderr: `Execution failed: ${error.message}`,
         exitCode: 1,
       });
@@ -264,8 +278,8 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
         setShowLangMenu(false);
       }
     };
-    document.addEventListener('mousedown', onClick);
-    return () => document.removeEventListener('mousedown', onClick);
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
   }, [showLangMenu]);
 
   const currentLang = LANGUAGES.find((l) => l.id === language);
@@ -273,12 +287,12 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
 
   // Generate dynamic CSS for remote cursor colors based on awareness states
   const generateRemoteCursorStyles = () => {
-    if (!awareness) return '';
-    let css = '';
+    if (!awareness) return "";
+    let css = "";
     awareness.getStates().forEach((state, clientID) => {
       if (clientID === ydoc.clientID) return;
-      const color = state.user?.color || '#2563EB';
-      const name = (state.user?.name || 'Anonymous').replace(/"/g, '\\"');
+      const color = state.user?.color || "#2563EB";
+      const name = (state.user?.name || "Anonymous").replace(/"/g, '\\"');
       css += `
         .yRemoteSelection-${clientID} {
           background-color: ${color}30;
@@ -313,39 +327,39 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   return (
     <div
       style={{
-        height: '100%',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        background: '#FFFFFF',
-        borderLeft: '1px solid #DBEAFE',
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        background: "#FFFFFF",
+        borderLeft: "1px solid #DBEAFE",
         fontFamily: '"Poppins", system-ui, sans-serif',
-        overflow: 'hidden',
+        overflow: "hidden",
       }}
     >
       {/* Toolbar */}
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '8px 16px',
-          borderBottom: '1px solid #DBEAFE',
-          background: '#FFFFFF',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "8px 16px",
+          borderBottom: "1px solid #DBEAFE",
+          background: "#FFFFFF",
           minHeight: 48,
           flexShrink: 0,
-          flexWrap: 'wrap',
+          flexWrap: "wrap",
           gap: 8,
         }}
       >
         {/* Left — label + language selector */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
+              display: "flex",
+              alignItems: "center",
               gap: 6,
-              color: '#1E3A8A',
+              color: "#1E3A8A",
               fontWeight: 700,
               fontSize: 14,
             }}
@@ -355,41 +369,45 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
           </div>
 
           {/* Language selector */}
-          <div ref={langMenuRef} style={{ position: 'relative' }}>
+          <div ref={langMenuRef} style={{ position: "relative" }}>
             <button
               onClick={() => setShowLangMenu((v) => !v)}
               aria-label="Select language"
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
+                display: "inline-flex",
+                alignItems: "center",
                 gap: 6,
-                padding: '5px 12px',
-                background: '#EFF6FF',
-                border: '1px solid #DBEAFE',
+                padding: "5px 12px",
+                background: "#EFF6FF",
+                border: "1px solid #DBEAFE",
                 borderRadius: 6,
-                color: '#1E3A8A',
+                color: "#1E3A8A",
                 fontSize: 12,
                 fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'background 0.15s',
+                cursor: "pointer",
+                transition: "background 0.15s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = '#DBEAFE')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = '#EFF6FF')}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "#DBEAFE")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "#EFF6FF")
+              }
             >
-              {currentLang?.label || 'JavaScript'}
+              {currentLang?.label || "JavaScript"}
               <FiChevronDown size={14} />
             </button>
 
             {showLangMenu && (
               <div
                 style={{
-                  position: 'absolute',
-                  top: 'calc(100% + 6px)',
+                  position: "absolute",
+                  top: "calc(100% + 6px)",
                   left: 0,
-                  background: '#FFFFFF',
-                  border: '1px solid #DBEAFE',
+                  background: "#FFFFFF",
+                  border: "1px solid #DBEAFE",
                   borderRadius: 10,
-                  boxShadow: '0 8px 20px rgba(30, 58, 138, 0.12)',
+                  boxShadow: "0 8px 20px rgba(30, 58, 138, 0.12)",
                   zIndex: 50,
                   minWidth: 160,
                   padding: 4,
@@ -400,24 +418,27 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
                     key={lang.id}
                     onClick={() => handleLanguageChange(lang.id)}
                     style={{
-                      display: 'block',
-                      width: '100%',
-                      textAlign: 'left',
-                      padding: '8px 12px',
-                      background: language === lang.id ? '#EFF6FF' : 'transparent',
-                      border: 'none',
+                      display: "block",
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "8px 12px",
+                      background:
+                        language === lang.id ? "#EFF6FF" : "transparent",
+                      border: "none",
                       borderRadius: 6,
-                      color: language === lang.id ? '#2563EB' : '#1E293B',
+                      color: language === lang.id ? "#2563EB" : "#1E293B",
                       fontWeight: language === lang.id ? 600 : 400,
                       fontSize: 13,
-                      cursor: 'pointer',
-                      transition: 'background 0.12s',
+                      cursor: "pointer",
+                      transition: "background 0.12s",
                     }}
                     onMouseEnter={(e) => {
-                      if (language !== lang.id) e.currentTarget.style.background = '#F8FAFC';
+                      if (language !== lang.id)
+                        e.currentTarget.style.background = "#F8FAFC";
                     }}
                     onMouseLeave={(e) => {
-                      if (language !== lang.id) e.currentTarget.style.background = 'transparent';
+                      if (language !== lang.id)
+                        e.currentTarget.style.background = "transparent";
                     }}
                   >
                     {lang.label}
@@ -429,49 +450,58 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
         </div>
 
         {/* Right — run button + file info + collaborators indicator */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {/* Run button */}
           <button
             onClick={runCode}
             disabled={isRunning}
             aria-label="Run code"
             onMouseEnter={(e) => {
-              if (!isRunning) e.currentTarget.style.background = '#16A34A';
+              if (!isRunning) e.currentTarget.style.background = "#16A34A";
             }}
             onMouseLeave={(e) => {
-              if (!isRunning) e.currentTarget.style.background = '#22C55E';
+              if (!isRunning) e.currentTarget.style.background = "#22C55E";
             }}
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
+              display: "inline-flex",
+              alignItems: "center",
               gap: 6,
-              padding: '6px 14px',
-              background: isRunning ? '#94A3B8' : '#22C55E',
-              border: 'none',
+              padding: "6px 14px",
+              background: isRunning ? "#94A3B8" : "#22C55E",
+              border: "none",
               borderRadius: 6,
-              color: '#FFFFFF',
+              color: "#FFFFFF",
               fontSize: 12,
               fontWeight: 700,
-              cursor: isRunning ? 'not-allowed' : 'pointer',
-              transition: 'background 0.15s',
-              boxShadow: isRunning ? 'none' : '0 2px 6px rgba(34, 197, 94, 0.25)',
+              cursor: isRunning ? "not-allowed" : "pointer",
+              transition: "background 0.15s",
+              boxShadow: isRunning
+                ? "none"
+                : "0 2px 6px rgba(34, 197, 94, 0.25)",
             }}
           >
-            {isRunning ? <FiLoader size={13} style={{ animation: 'spin 1s linear infinite' }} /> : <FiPlay size={13} />}
-            {isRunning ? 'Running...' : 'Run'}
+            {isRunning ? (
+              <FiLoader
+                size={13}
+                style={{ animation: "spin 1s linear infinite" }}
+              />
+            ) : (
+              <FiPlay size={13} />
+            )}
+            {isRunning ? "Running..." : "Run"}
           </button>
 
           {activeUsers > 1 && (
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
+                display: "flex",
+                alignItems: "center",
                 gap: 5,
                 fontSize: 11,
-                color: '#2563EB',
-                background: '#EFF6FF',
-                border: '1px solid #DBEAFE',
-                padding: '3px 8px',
+                color: "#2563EB",
+                background: "#EFF6FF",
+                border: "1px solid #DBEAFE",
+                padding: "3px 8px",
                 borderRadius: 999,
                 fontWeight: 600,
               }}
@@ -484,32 +514,32 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
           <span
             style={{
               fontSize: 11,
-              color: '#64748B',
-              background: '#F8FAFC',
-              border: '1px solid #E2E8F0',
-              padding: '3px 8px',
+              color: "#64748B",
+              background: "#F8FAFC",
+              border: "1px solid #E2E8F0",
+              padding: "3px 8px",
               borderRadius: 4,
-              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
             }}
           >
-            main.{FILE_EXTENSIONS[language] || 'js'}
+            main.{FILE_EXTENSIONS[language] || "js"}
           </span>
         </div>
       </div>
 
       {/* Monaco Editor */}
-      <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
+      <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
         {!editorReady && (
           <div
             style={{
-              position: 'absolute',
+              position: "absolute",
               inset: 0,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
               gap: 12,
-              background: '#FFFFFF',
+              background: "#FFFFFF",
               zIndex: 5,
             }}
           >
@@ -519,35 +549,45 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
                   style={{
                     width: 48,
                     height: 48,
-                    borderRadius: '50%',
-                    background: '#FEF2F2',
-                    color: '#DC2626',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    borderRadius: "50%",
+                    background: "#FEF2F2",
+                    color: "#DC2626",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     fontSize: 22,
                   }}
                 >
                   ✕
                 </div>
-                <span style={{ color: '#1E293B', fontSize: 15, fontWeight: 600 }}>
+                <span
+                  style={{ color: "#1E293B", fontSize: 15, fontWeight: 600 }}
+                >
                   Failed to load editor
                 </span>
-                <span style={{ color: '#64748B', fontSize: 13, textAlign: 'center', maxWidth: 280 }}>
-                  Monaco Editor could not be loaded. Check your network connection.
+                <span
+                  style={{
+                    color: "#64748B",
+                    fontSize: 13,
+                    textAlign: "center",
+                    maxWidth: 280,
+                  }}
+                >
+                  Monaco Editor could not be loaded. Check your network
+                  connection.
                 </span>
                 <button
                   onClick={() => window.location.reload()}
                   style={{
                     marginTop: 8,
-                    padding: '8px 20px',
-                    background: '#2563EB',
-                    color: '#FFFFFF',
-                    border: 'none',
+                    padding: "8px 20px",
+                    background: "#2563EB",
+                    color: "#FFFFFF",
+                    border: "none",
                     borderRadius: 8,
                     fontSize: 13,
                     fontWeight: 600,
-                    cursor: 'pointer',
+                    cursor: "pointer",
                   }}
                 >
                   Retry
@@ -558,11 +598,13 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
                 <FiLoader
                   size={24}
                   style={{
-                    color: '#2563EB',
-                    animation: 'spin 1s linear infinite',
+                    color: "#2563EB",
+                    animation: "spin 1s linear infinite",
                   }}
                 />
-                <span style={{ color: '#64748B', fontSize: 14, fontWeight: 500 }}>
+                <span
+                  style={{ color: "#64748B", fontSize: 14, fontWeight: 500 }}
+                >
                   Loading collaborative editor...
                 </span>
               </>
@@ -578,23 +620,24 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
           loading={null}
           options={{
             fontSize: 14,
-            fontFamily: "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace",
+            fontFamily:
+              "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace",
             fontLigatures: true,
-            lineNumbers: 'on',
+            lineNumbers: "on",
             minimap: { enabled: false },
             scrollBeyondLastLine: false,
             smoothScrolling: true,
-            cursorBlinking: 'smooth',
-            cursorSmoothCaretAnimation: 'on',
+            cursorBlinking: "smooth",
+            cursorSmoothCaretAnimation: "on",
             padding: { top: 16, bottom: 16 },
-            renderLineHighlight: 'all',
+            renderLineHighlight: "all",
             bracketPairColorization: { enabled: true },
-            autoClosingBrackets: 'always',
-            autoClosingQuotes: 'always',
+            autoClosingBrackets: "always",
+            autoClosingQuotes: "always",
             formatOnPaste: true,
             formatOnType: true,
             tabSize: 2,
-            wordWrap: 'on',
+            wordWrap: "on",
             suggest: {
               showMethods: true,
               showFunctions: true,
@@ -617,29 +660,29 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
         <div
           style={{
             flexShrink: 0,
-            maxHeight: '35%',
+            maxHeight: "35%",
             minHeight: 100,
-            borderTop: '1px solid #DBEAFE',
-            background: '#F8FAFC',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
+            borderTop: "1px solid #DBEAFE",
+            background: "#F8FAFC",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
           }}
         >
           {/* Output header */}
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '6px 16px',
-              background: '#FFFFFF',
-              borderBottom: '1px solid #DBEAFE',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "6px 16px",
+              background: "#FFFFFF",
+              borderBottom: "1px solid #DBEAFE",
               flexShrink: 0,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#1E3A8A' }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#1E3A8A" }}>
                 Output
               </span>
               {output && (
@@ -647,36 +690,42 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
                   style={{
                     fontSize: 10,
                     fontWeight: 600,
-                    padding: '2px 6px',
+                    padding: "2px 6px",
                     borderRadius: 4,
-                    background: output.exitCode === 0 ? '#ECFDF5' : '#FEF2F2',
-                    color: output.exitCode === 0 ? '#047857' : '#DC2626',
-                    border: `1px solid ${output.exitCode === 0 ? '#A7F3D0' : '#FCA5A5'}`,
+                    background: output.exitCode === 0 ? "#ECFDF5" : "#FEF2F2",
+                    color: output.exitCode === 0 ? "#047857" : "#DC2626",
+                    border: `1px solid ${output.exitCode === 0 ? "#A7F3D0" : "#FCA5A5"}`,
                   }}
                 >
-                  {output.exitCode === 0 ? 'Success' : `Exit: ${output.exitCode}`}
+                  {output.exitCode === 0
+                    ? "Success"
+                    : `Exit: ${output.exitCode}`}
                 </span>
               )}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <button
                 onClick={() => setShowOutput(false)}
                 aria-label="Close output"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   width: 24,
                   height: 24,
                   borderRadius: 6,
-                  border: 'none',
-                  background: 'transparent',
-                  color: '#64748B',
-                  cursor: 'pointer',
+                  border: "none",
+                  background: "transparent",
+                  color: "#64748B",
+                  cursor: "pointer",
                   fontSize: 14,
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = '#EFF6FF')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "#EFF6FF")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = "transparent")
+                }
               >
                 <FiX size={14} />
               </button>
@@ -687,32 +736,47 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
           <div
             style={{
               flex: 1,
-              overflow: 'auto',
-              padding: '12px 16px',
-              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+              overflow: "auto",
+              padding: "12px 16px",
+              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
               fontSize: 13,
               lineHeight: 1.6,
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
             }}
           >
             {isRunning ? (
-              <div style={{ color: '#64748B', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <FiLoader size={14} style={{ animation: 'spin 1s linear infinite' }} />
+              <div
+                style={{
+                  color: "#64748B",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                <FiLoader
+                  size={14}
+                  style={{ animation: "spin 1s linear infinite" }}
+                />
                 Executing code...
               </div>
             ) : output ? (
               <>
                 {output.stdout && (
-                  <div style={{ color: '#1E293B' }}>{output.stdout}</div>
+                  <div style={{ color: "#1E293B" }}>{output.stdout}</div>
                 )}
                 {output.stderr && (
-                  <div style={{ color: '#DC2626', marginTop: output.stdout ? 8 : 0 }}>
+                  <div
+                    style={{
+                      color: "#DC2626",
+                      marginTop: output.stdout ? 8 : 0,
+                    }}
+                  >
                     {output.stderr}
                   </div>
                 )}
                 {!output.stdout && !output.stderr && (
-                  <div style={{ color: '#94A3B8', fontStyle: 'italic' }}>
+                  <div style={{ color: "#94A3B8", fontStyle: "italic" }}>
                     Program finished with no output.
                   </div>
                 )}
