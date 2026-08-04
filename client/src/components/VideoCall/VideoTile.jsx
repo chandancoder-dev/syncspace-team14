@@ -23,33 +23,7 @@ export default function VideoTile({
   stream,
 }) {
   return (
-    <div
-      className="
-        relative
-        w-full
-        h-40
-        rounded-2xl
-        border
-        border-blue-100
-        bg-slate-800
-        overflow-hidden
-        shadow-sm
-        hover:shadow-lg
-        transition-all
-      "
-    >
-      {/* Mic Status */}
-      <div className="absolute top-3 left-3 bg-red-500 rounded-full p-1 text-white z-10">
-        <FiMicOff size={12} />
-      </div>
-
-      {/* You Badge */}
-      {isSelf && (
-        <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-semibold px-2 py-1 rounded-full z-10">
-          You
-        </div>
-      )}
-
+    <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-800">
       {/* Show Live Camera */}
       {isSelf && stream ? (
         <video
@@ -76,6 +50,18 @@ export default function VideoTile({
         </div>
       )}
 
+      {/* Mic Status */}
+      <div className="absolute top-3 left-3 bg-red-500 rounded-full p-1 text-white z-10">
+        <FiMicOff size={12} />
+      </div>
+
+      {/* You Badge */}
+      {isSelf && (
+        <div className="absolute top-3 right-3 bg-blue-600 text-white text-[10px] font-semibold px-2 py-1 rounded-full z-10">
+          You
+        </div>
+      )}
+
       {/* Participant Name */}
       <div className="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur text-white text-xs font-medium px-3 py-1 rounded-full z-10">
         {name}
@@ -83,4 +69,3 @@ export default function VideoTile({
     </div>
   );
 }
-
