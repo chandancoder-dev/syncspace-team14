@@ -4,34 +4,58 @@ export default function useVideoCall() {
   const localVideoRef = useRef(null);
 
   const [stream, setStream] = useState(null);
+  const [cameraOn, setCameraOn] = useState(false);
 
   useEffect(() => {
-    async function startCamera() {
-      try {
-        const media = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
+    if (localVideoRef.current && stream) {
+      localVideoRef.current.srcObject = stream;
 
-        setStream(media);
-
-        if (localVideoRef.current) {
-          localVideoRef.current.srcObject = media;
-        }
-      } catch (err) {
-        console.error(err);
-      }
+      localVideoRef.current.play().catch(console.error);
     }
-
-    startCamera();
-
-    return () => {
-      stream?.getTracks().forEach(track => track.stop());
-    };
   }, [stream]);
+
+  const startCamera = async () => {
+    if (stream) return;
+
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+
+      setStream(mediaStream);
+      setCameraOn(true);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const stopCamera = () => {
+    if (!stream) return;
+
+    stream.getTracks().forEach(track => track.stop());
+
+    setStream(null);
+    setCameraOn(false);
+
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = null;
+    }
+  };
+
+  const toggleCamera = () => {
+    if (cameraOn) {
+      stopCamera();
+    } else {
+      startCamera();
+    }
+  };
 
   return {
     localVideoRef,
     stream,
+    cameraOn,
+    toggleCamera,
+    stopCamera,
   };
 }
