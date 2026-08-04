@@ -1,15 +1,7 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import Editor from "@monaco-editor/react";
-import { MonacoBinding } from "y-monaco";
-import {
-  FiChevronDown,
-  FiCode,
-  FiUsers,
-  FiLoader,
-  FiPlay,
-  FiX,
-  FiChevronUp,
-} from "react-icons/fi";
+import { useState, useRef, useCallback, useEffect } from 'react';
+import Editor from '@monaco-editor/react';
+import { MonacoBinding } from 'y-monaco';
+import { FiChevronDown, FiCode, FiUsers, FiLoader, FiPlay, FiX } from 'react-icons/fi';
 
 const LANGUAGES = [
   { id: "javascript", label: "JavaScript" },
