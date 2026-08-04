@@ -94,15 +94,15 @@ const useSync = (roomId) => {
 
     socket.on('disconnect', (reason) => {
       setConnected(false);
-      console.log(`[SyncSpace] Disconnected: ${reason}`);
+      if (import.meta.env.DEV) console.log(`[SyncSpace] Disconnected: ${reason}`);
     });
 
     socket.on('reconnect_attempt', (attempt) => {
-      console.log(`[SyncSpace] Reconnection attempt ${attempt}...`);
+      if (import.meta.env.DEV) console.log(`[SyncSpace] Reconnection attempt ${attempt}...`);
     });
 
     socket.on('reconnect_failed', () => {
-      console.log('[SyncSpace] Reconnection failed after all attempts');
+      if (import.meta.env.DEV) console.log('[SyncSpace] Reconnection failed after all attempts');
     });
 
     // Yjs document sync

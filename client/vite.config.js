@@ -10,4 +10,10 @@ export default defineConfig({
       'monaco-editor': path.resolve(__dirname, 'node_modules/monaco-editor'),
     },
   },
+  server: {
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    },
+  },
 })

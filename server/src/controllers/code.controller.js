@@ -13,6 +13,11 @@ const LANGUAGE_CONFIG = {
     compile: null,
     run: (filePath) => ["node", [filePath]],
   },
+  typescript: {
+    extension: "ts",
+    compile: null,
+    run: (filePath) => ["node", ["--experimental-strip-types", filePath]],
+  },
   python: {
     extension: "py",
     compile: null,
@@ -32,6 +37,16 @@ const LANGUAGE_CONFIG = {
     extension: "cpp",
     compile: (filePath, dir) => ["g++", [filePath, "-o", join(dir, "a.out")]],
     run: (filePath, dir) => [join(dir, "a.out"), []],
+  },
+  ruby: {
+    extension: "rb",
+    compile: null,
+    run: (filePath) => ["ruby", [filePath]],
+  },
+  swift: {
+    extension: "swift",
+    compile: null,
+    run: (filePath) => ["swift", [filePath]],
   },
 };
 

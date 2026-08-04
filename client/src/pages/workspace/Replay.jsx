@@ -5,6 +5,16 @@ import { FiPlay, FiPause, FiSkipBack, FiSkipForward, FiArrowLeft } from 'react-i
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:8000';
 
+// Deterministic color per user name
+const CURSOR_COLORS = ['#f87171', '#fb923c', '#facc15', '#4ade80', '#38bdf8', '#818cf8', '#e879f9'];
+const getUserColor = (name = '') => {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return CURSOR_COLORS[Math.abs(hash) % CURSOR_COLORS.length];
+};
+
 export default function Replay() {
   const { roomId } = useParams();
   const navigate = useNavigate();
@@ -41,16 +51,6 @@ export default function Replay() {
   const ydocRef = useRef(null);
   const prevShapesRef = useRef([]);
   const prevCodeRef = useRef('');
-
-  // Deterministic color per user name
-  const CURSOR_COLORS = ['#f87171', '#fb923c', '#facc15', '#4ade80', '#38bdf8', '#818cf8', '#e879f9'];
-  const getUserColor = (name = '') => {
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return CURSOR_COLORS[Math.abs(hash) % CURSOR_COLORS.length];
-  };
 
   // Fetch replay data
   useEffect(() => {
