@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import app from "./app.js";
 import dbConnect from "./config/db.js";
 import roomHandler from "./socket/roomHandler.js";
-
+import videoHandler from "./socket/videoHandler.js"; // <-- ADD THIS
 
 // Connect to database
 dbConnect();
@@ -18,6 +18,9 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+
+// Initialize video socket handlers
+videoHandler(io);
 
 io.on("connection", (socket) => {
   roomHandler(io, socket);
