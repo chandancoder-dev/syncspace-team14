@@ -12,6 +12,7 @@
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
     "@tailwindcss/vite": "^4.3.3",
+    "@webcontainer/api": "^1.6.4",
     "axios": "^1.18.1",
     "konva": "^10.3.0",
     "lucide-react": "^0.525.0",
