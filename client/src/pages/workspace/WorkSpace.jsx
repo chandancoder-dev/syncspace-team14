@@ -7,6 +7,7 @@ import WorkSpaceHeader from "./WorkSpaceHeader";
 import ChatPanel from "../../components/ChatPanel";
 import useSync from "../../hooks/useSync";
 import VideoPanel from "../../components/VideoCall/VideoPanel";
+import useVideoCall from "../../hooks/useVideoCall";
 
 const MIN_PANEL_WIDTH = 200;
 
@@ -15,6 +16,11 @@ const WorkSpace = () => {
   const navigate = useNavigate();
   const { ydoc, awareness, socket, connected, users, me, emitCursor } =
     useSync(roomId);
+   const {
+  localVideoRef,
+  stream,
+  stopCamera,
+} = useVideoCall();
   const [leftWidth, setLeftWidth] = useState(50);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [isHost, setIsHost] = useState(false);
@@ -48,10 +54,17 @@ const WorkSpace = () => {
   }, [roomId]);
 
   const handleLeaveRoom = () => {
-    // Disconnect socket before navigating
-    if (socket) socket.disconnect();
-    window.location.href = "/dashboard";
-  };
+  // Stop camera & microphone
+  stopCamera();
+
+  // Disconnect socket
+  if (socket) {
+    socket.disconnect();
+  }
+
+  // Go back to dashboard
+  navigate("/dashboard");
+};
 
   const handleDividerMouseDown = (e) => {
     e.preventDefault();
@@ -231,17 +244,21 @@ const WorkSpace = () => {
 
         {/* Video Sidebar — toggle on button click */}
         {isVideoOpen && (
-          <div
-            style={{
-              width: 300,
-              flexShrink: 0,
-              borderLeft: "1px solid #DBEAFE",
-              background: "#FFFFFF",
-            }}
-          >
-            <VideoPanel />
-          </div>
-        )}
+  <div
+    style={{
+      width: 300,
+      flexShrink: 0,
+      borderLeft: "1px solid #DBEAFE",
+      background: "#FFFFFF",
+    }}
+  >
+    <VideoPanel
+      localVideoRef={localVideoRef}
+      stream={stream}
+      stopCamera={stopCamera}
+    />
+  </div>
+)}
       </div>
 
       {/* ── Leave Confirmation Modal ── */}
