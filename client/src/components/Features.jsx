@@ -40,6 +40,14 @@ function Features() {
               projects and discussions.
             </p>
           </div>
+          <div className="card">
+            <h3>Video & Audio Calling</h3>
+
+            <p>
+              Connect with your teammates through high-quality voice and video
+              calls without leaving the collaborative workspace.
+            </p>
+          </div>
         </div>
       </div>
     </section>
