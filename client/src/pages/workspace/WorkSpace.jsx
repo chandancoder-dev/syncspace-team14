@@ -239,6 +239,7 @@ const WorkSpace = () => {
                 socket={socket}
                 roomId={roomId}
                 me={me}
+                users={users}
               />
             </div>
           )}

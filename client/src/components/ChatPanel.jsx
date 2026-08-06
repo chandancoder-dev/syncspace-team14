@@ -16,7 +16,7 @@ const getCurrentUserIdentity = () => {
   }
 };
 
-const ChatPanel = ({ onClose, socket, roomId, me }) => {
+const ChatPanel = ({ onClose, socket, roomId, me, users = new Map() }) => {
   const bottomRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   const isTypingRef = useRef(false);
@@ -24,6 +24,27 @@ const ChatPanel = ({ onClose, socket, roomId, me }) => {
   const [input, setInput] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const currentUser = getCurrentUserIdentity();
+  const participants = [
+    me,
+    ...Array.from(users.values()).map(({ user }) => user),
+  ]
+    .filter(Boolean)
+    .reduce((uniqueParticipants, participant) => {
+      const name = participant.name || participant.username || "Anonymous";
+      const id = participant.id || participant.email || name;
+
+      return uniqueParticipants.some((user) => user.id === id)
+        ? uniqueParticipants
+        : [...uniqueParticipants, { id, name }];
+    }, []);
+  const visibleParticipants = participants.slice(0, 3);
+  const additionalParticipants =
+    participants.length - visibleParticipants.length;
+  const avatarGradients = [
+    "linear-gradient(135deg, #2563EB, #1D4ED8)",
+    "linear-gradient(135deg, #7C3AED, #4F46E5)",
+    "linear-gradient(135deg, #DB2777, #BE185D)",
+  ];
 
   const stopTyping = () => {
     if (typingTimeoutRef.current) {
@@ -167,61 +188,203 @@ const ChatPanel = ({ onClose, socket, roomId, me }) => {
       {/* Header */}
       <div
         style={{
-          padding: "14px 18px",
+          padding: "16px 18px",
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
           alignItems: "center",
+          gap: "10px",
           borderBottom: "1px solid #E5E7EB",
-          background: "#F8FAFC",
+          background: "#FFFFFF",
           flexShrink: 0,
         }}
       >
-        <div>
-          <h3
-            style={{
-              margin: 0,
-              fontSize: "18px",
-              color: "#1E3A8A",
-              lineHeight: "1.2",
-            }}
-          >
-            Chat
-          </h3>
-          <span
-            style={{
-              fontSize: "12px",
-              color: "#64748B",
-            }}
-          >
-            Team Conversation
-          </span>
-        </div>
-
-        <button
-          onClick={onClose}
-          title="Close chat"
+        {/* Left Section */}
+        <div
           style={{
-            border: "none",
-            background: "transparent",
-            cursor: "pointer",
-            fontSize: "18px",
-            color: "#64748B",
-            width: "32px",
-            height: "32px",
-            borderRadius: "8px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            transition: "background 0.15s",
-            padding: 0,
+            gap: "12px",
+            flex: 1,
+            minWidth: 0,
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "#E2E8F0")}
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.background = "transparent")
-          }
         >
-          ✕
-        </button>
+          <div
+            style={{
+              width: "auto",
+              height: "42px",
+              background: "transparent",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#FFFFFF",
+              fontSize: 0,
+              boxShadow: "none",
+              flexShrink: 0,
+            }}
+          >
+            {visibleParticipants.map((participant, index) => (
+              <div
+                key={participant.id}
+                title={participant.name}
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  marginLeft: index ? "-12px" : 0,
+                  borderRadius: "50%",
+                  background: avatarGradients[index % avatarGradients.length],
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#FFFFFF",
+                  fontSize: "16px",
+                  fontWeight: "700",
+                  border: "2px solid #FFFFFF",
+                  boxShadow: "0 3px 8px rgba(30, 58, 138, 0.2)",
+                  zIndex: visibleParticipants.length - index,
+                  flexShrink: 0,
+                }}
+              >
+                {participant.name.charAt(0).toUpperCase()}
+              </div>
+            ))}
+            {additionalParticipants > 0 && (
+              <div
+                title={`${additionalParticipants} more participant${additionalParticipants === 1 ? "" : "s"}`}
+                style={{
+                  width: "42px",
+                  height: "42px",
+                  marginLeft: "-12px",
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #475569, #334155)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#FFFFFF",
+                  fontSize: "14px",
+                  fontWeight: "700",
+                  border: "2px solid #FFFFFF",
+                  boxShadow: "0 3px 8px rgba(30, 58, 138, 0.2)",
+                  zIndex: 0,
+                  flexShrink: 0,
+                }}
+              >
+                +{additionalParticipants}
+              </div>
+            )}
+          </div>
+
+          <div
+            style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            marginLeft: "8px",
+            flex: 1,
+            minWidth: 0,
+            }}
+          >
+            <div
+              style={{
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
+                background: "#22C55E",
+                flexShrink: 0,
+              }}
+            />
+
+            <span
+              style={{
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#334155",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              Team Conversation
+            </span>
+          </div>
+        </div>
+
+        {/* Right Section */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            marginLeft: "auto",
+            flexShrink: 0,
+          }}
+        >
+          <button
+            title="Search Messages"
+            style={{
+              width: "32px",
+              height: "32px",
+              border: "none",
+              borderRadius: "10px",
+              background: "transparent",
+              cursor: "pointer",
+              fontSize: "18px",
+              color: "#64748B",
+              transition: "0.2s",
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#EFF6FF")}
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+          >
+            🔍
+          </button>
+
+          <button
+            title="More Options"
+            style={{
+              width: "36px",
+              height: "36px",
+              border: "none",
+              borderRadius: "10px",
+              background: "transparent",
+              cursor: "pointer",
+              fontSize: "18px",
+              color: "#64748B",
+              transition: "0.2s",
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#EFF6FF")}
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+          >
+            ⋮
+          </button>
+
+          <button
+            onClick={onClose}
+            title="Close Chat"
+            style={{
+              width: "36px",
+              height: "36px",
+              border: "none",
+              borderRadius: "10px",
+              background: "transparent",
+              cursor: "pointer",
+              fontSize: "18px",
+              color: "#64748B",
+              transition: "0.2s",
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#FEE2E2")}
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+          >
+            ✕
+          </button>
+        </div>
       </div>
 
       {/* Message List or Empty State */}
@@ -309,7 +472,7 @@ const ChatPanel = ({ onClose, socket, roomId, me }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "14px",
+                  fontSize: "18px",
                   fontWeight: "700",
                   flexShrink: 0,
                   boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
