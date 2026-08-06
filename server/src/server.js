@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import app from "./app.js";
 import dbConnect from "./config/db.js";
 import roomHandler from "./socket/roomHandler.js";
-import videoHandler from "./socket/videoHandler.js"; // <-- ADD THIS
+import videoHandler from "./socket/videoHandler.js"; 
 
 // Connect to database
 dbConnect();
