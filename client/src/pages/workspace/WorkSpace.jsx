@@ -135,9 +135,11 @@ const WorkSpace = () => {
         {/* Whiteboard */}
         <div
           style={{
-            width: `${leftWidth}%`,
+            width: (isChatOpen && isVideoOpen) ? '25%' : (isChatOpen || isVideoOpen) ? '35%' : `${leftWidth}%`,
             overflow: "hidden",
-            flexShrink: 0,
+            flexShrink: 1,
+            minWidth: 120,
+            transition: "width 0.2s ease",
           }}
         >
           <WhiteBoard
@@ -185,10 +187,14 @@ const WorkSpace = () => {
           {isChatOpen && (
             <div
               style={{
+                width: isVideoOpen ? 260 : 300,
+                minWidth: 220,
                 flexShrink: 0,
+                borderLeft: "1px solid #DBEAFE",
                 display: "flex",
                 flexDirection: "column",
                 overflow: "hidden",
+                transition: "width 0.2s ease",
               }}
             >
               {/* Disconnect Banner */}
@@ -249,10 +255,12 @@ const WorkSpace = () => {
         {isVideoOpen && (
   <div
     style={{
-      width: 300,
+      width: isChatOpen ? 250 : 300,
+      minWidth: 220,
       flexShrink: 0,
       borderLeft: "1px solid #DBEAFE",
       background: "#FFFFFF",
+      transition: "width 0.2s ease",
     }}
   >
     <VideoPanel
