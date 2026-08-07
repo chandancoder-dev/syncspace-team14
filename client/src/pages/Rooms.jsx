@@ -150,6 +150,15 @@ export default function Rooms() {
                     Open Workspace
                     <FaArrowRight />
                   </button>
+
+                  <button
+                    onClick={() =>
+                      navigate(`/replay/${room.roomId}`)
+                    }
+                    className="mt-3 w-full bg-transparent border-2 border-blue-200 hover:border-blue-600 hover:bg-blue-50 text-gray-600 hover:text-blue-600 font-semibold py-3 rounded-xl flex justify-center items-center gap-2 transition-all duration-300"
+                  >
+                    ▶ View Replay
+                  </button>
                 </div>
               );
             })}
