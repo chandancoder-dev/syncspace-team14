@@ -1,20 +1,25 @@
 import "../styles/Features.css";
+import { FaChalkboard, FaCode, FaComments, FaVideo } from "react-icons/fa";
 
 function Features() {
   return (
     <section className="features">
       <div className="features-container">
-        <p className="features-tagline">Why Choose SyncSpace</p>
+        <div className="features-tagline">Why Choose SyncSpace</div>
 
-        <h2>Features</h2>
+        <h2>Powerful Collaboration Features</h2>
 
         <p className="features-subtitle">
-          Everything you need to collaborate efficiently with your team in one
-          workspace.
+          Everything you need to brainstorm, code, communicate, and collaborate
+          with your team in one modern workspace.
         </p>
 
         <div className="feature-cards">
           <div className="card">
+            <div className="icon-box">
+              <FaChalkboard />
+            </div>
+
             <h3>Interactive Whiteboard</h3>
 
             <p>
@@ -24,28 +29,41 @@ function Features() {
           </div>
 
           <div className="card">
+            <div className="icon-box">
+              <FaCode />
+            </div>
+
             <h3>Collaborative Code Editor</h3>
 
             <p>
-              Write, edit, and review code simultaneously with your teammates
-              without switching platforms.
+              Write, edit, and review code simultaneously with teammates without
+              switching platforms.
             </p>
           </div>
 
           <div className="card">
+            <div className="icon-box">
+              <FaComments />
+            </div>
+
             <h3>Real-Time Chat</h3>
 
             <p>
-              Communicate instantly with your team while collaborating on
-              projects and discussions.
+              Communicate instantly while discussing ideas, solving problems,
+              and collaborating together.
             </p>
           </div>
+
           <div className="card">
+            <div className="icon-box">
+              <FaVideo />
+            </div>
+
             <h3>Video & Audio Calling</h3>
 
             <p>
-              Connect with your teammates through high-quality voice and video
-              calls without leaving the collaborative workspace.
+              Stay connected through high-quality voice and video meetings
+              without leaving your workspace.
             </p>
           </div>
         </div>
