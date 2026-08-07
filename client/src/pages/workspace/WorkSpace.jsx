@@ -135,7 +135,7 @@ const WorkSpace = () => {
         {/* Whiteboard */}
         <div
           style={{
-            width: (isChatOpen && isVideoOpen) ? '25%' : (isChatOpen || isVideoOpen) ? '35%' : `${leftWidth}%`,
+            width: (isChatOpen && isVideoOpen) ? '20%' : (isChatOpen || isVideoOpen) ? '30%' : `${leftWidth}%`,
             overflow: "hidden",
             flexShrink: 1,
             minWidth: 120,
@@ -166,7 +166,8 @@ const WorkSpace = () => {
           style={{
             flex: 1,
             display: "flex",
-            overflow: "hidden",
+            minWidth: 0,
+            overflow: "visible",
           }}
         >
           <div
@@ -187,8 +188,8 @@ const WorkSpace = () => {
           {isChatOpen && (
             <div
               style={{
-                width: isVideoOpen ? 260 : 300,
-                minWidth: 220,
+                width: isVideoOpen ? 300 : 340,
+                minWidth: 300,
                 flexShrink: 0,
                 borderLeft: "1px solid #DBEAFE",
                 display: "flex",
