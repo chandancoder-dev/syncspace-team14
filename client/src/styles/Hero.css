@@ -1,108 +1,212 @@
 .hero {
+  position: relative;
+  overflow: hidden;
+
   min-height: 90vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 60px 20px;
-  background: var(--bg-color);
+
+  padding: 80px 20px;
+
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
 }
 
+/* Background Glow Effects */
+
+.hero-bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.35;
+  z-index: 0;
+}
+
+.hero-bg-circle-1 {
+  width: 280px;
+  height: 280px;
+  background: #3b82f6;
+  top: -80px;
+  left: -80px;
+}
+
+.hero-bg-circle-2 {
+  width: 320px;
+  height: 320px;
+  background: #60a5fa;
+  bottom: -100px;
+  right: -100px;
+}
+
+/* Hero Content */
+
 .hero-content {
+  position: relative;
+  z-index: 2;
+
   max-width: 900px;
   text-align: center;
 }
 
+/* Badge */
+
 .hero-tagline {
   display: inline-block;
-  padding: 8px 18px;
-  border: 1px solid var(--primary-color);
-  border-radius: 25px;
-  background: var(--light-blue);
+
+  padding: 10px 22px;
+
+  border: 1px solid rgba(37, 99, 235, 0.2);
+
+  border-radius: 999px;
+
+  background: rgba(37, 99, 235, 0.08);
+
   color: var(--primary-color);
+
   font-size: 14px;
   font-weight: 600;
-  margin-bottom: 24px;
+
+  margin-bottom: 28px;
 }
 
+/* Heading */
+
 .hero h1 {
-  font-size: 58px;
+  font-size: 64px;
+
+  line-height: 1.1;
+
+  letter-spacing: -2px;
+
+  font-weight: 700;
+
   color: var(--heading-color);
-  line-height: 1.2;
-  margin-bottom: 20px;
+
+  margin-bottom: 24px;
 }
 
 .hero h1 span {
   color: var(--primary-color);
 }
 
+/* Subtitle */
+
 .hero-description {
-  font-size: 22px;
+  font-size: 24px;
+
+  font-weight: 500;
+
   color: var(--text-color);
-  margin-bottom: 18px;
+
+  margin-bottom: 20px;
 }
+
+/* Paragraph */
 
 .hero-text {
+  max-width: 760px;
+
+  margin: 0 auto 45px;
+
   font-size: 18px;
-  color: var(--secondary-text);
+
   line-height: 1.8;
-  margin-bottom: 40px;
+
+  color: var(--secondary-text);
 }
+
+/* Buttons */
 
 .hero-buttons {
-  display: flex !important;
-  flex-direction: row !important;
+  display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-  flex-wrap: nowrap;
+
+  gap: 18px;
+
+  flex-wrap: wrap;
 }
 
-/* Common Button Style */
+/* Shared Button */
+
 .primary-btn,
 .secondary-btn {
-  padding: 14px 34px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  padding: 16px 34px;
+
   min-width: 220px;
+
+  border-radius: 12px;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
 }
 
-/* Create Room Button */
+/* Primary Button */
+
 .primary-btn {
-  background: var(--primary-color);
-  color: #ffffff;
   border: none;
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+
+  background: var(--primary-color);
+
+  color: #ffffff;
+
+  box-shadow: 0 15px 30px rgba(37, 99, 235, 0.25);
 }
 
 .primary-btn:hover {
   background: #1d4ed8;
-  transform: translateY(-3px);
+
+  transform: translateY(-4px);
+
+  box-shadow: 0 20px 40px rgba(37, 99, 235, 0.35);
 }
 
-/* Join Room Button */
+/* Secondary Button */
+
 .secondary-btn {
   background: #ffffff;
-  color: #2563eb;
-  border: 2px solid #2563eb;
+
+  color: var(--primary-color);
+
+  border: 2px solid var(--primary-color);
+
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
 }
 
 .secondary-btn:hover {
-  background: #2563eb;
+  background: var(--primary-color);
+
   color: #ffffff;
-  border: 2px solid #2563eb;
-  transform: translateY(-3px);
+
+  transform: translateY(-4px);
+}
+
+/* Responsive */
+
+@media (max-width: 992px) {
+  .hero h1 {
+    font-size: 52px;
+  }
+
+  .hero-description {
+    font-size: 21px;
+  }
 }
 
 @media (max-width: 768px) {
   .hero {
-    padding: 80px 20px;
+    min-height: auto;
+
+    padding: 100px 20px 80px;
   }
 
   .hero h1 {
-    font-size: 40px;
+    font-size: 42px;
   }
 
   .hero-description {
@@ -111,11 +215,44 @@
 
   .hero-text {
     font-size: 16px;
+
+    line-height: 1.7;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+
+    width: 100%;
   }
 
   .primary-btn,
   .secondary-btn {
-    padding: 12px 20px;
-    font-size: 14px;
+    width: 100%;
+
+    max-width: 320px;
+  }
+
+  .hero-bg-circle-1 {
+    width: 180px;
+    height: 180px;
+  }
+
+  .hero-bg-circle-2 {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 34px;
+  }
+
+  .hero-description {
+    font-size: 17px;
+  }
+
+  .hero-tagline {
+    font-size: 13px;
   }
 }
