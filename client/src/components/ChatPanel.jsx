@@ -18,9 +18,27 @@ const getCurrentUserIdentity = () => {
 
 const ChatPanel = ({ onClose, socket, roomId, me }) => {
   const bottomRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+  const isTypingRef = useRef(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [typingUsers, setTypingUsers] = useState([]);
   const currentUser = getCurrentUserIdentity();
+
+  const stopTyping = () => {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+
+    if (!isTypingRef.current || !socket || !roomId) return;
+
+    socket.emit("stop-typing", {
+      roomId,
+      sender: me?.name || "Anonymous",
+    });
+    isTypingRef.current = false;
+  };
 
   useEffect(() => {
     if (!socket) return;
@@ -32,11 +50,12 @@ const ChatPanel = ({ onClose, socket, roomId, me }) => {
       message,
       timestamp,
     }) => {
-      const isCurrentUser = currentUser.id && senderId
-        ? String(senderId) === String(currentUser.id)
-        : currentUser.username
-          ? sender === currentUser.username
-          : Boolean(senderId && socket.id && senderId === socket.id);
+      const isCurrentUser =
+        currentUser.id && senderId
+          ? String(senderId) === String(currentUser.id)
+          : currentUser.username
+            ? sender === currentUser.username
+            : Boolean(senderId && socket.id && senderId === socket.id);
 
       setMessages((currentMessages) => [
         ...currentMessages,
@@ -57,10 +76,69 @@ const ChatPanel = ({ onClose, socket, roomId, me }) => {
     return () => socket.off("receive-message", handleReceiveMessage);
   }, [socket, currentUser.id, currentUser.username]);
 
+  useEffect(() => {
+    if (!socket) return;
+
+    const isCurrentUser = ({ sender, senderId }) =>
+      currentUser.id && senderId
+        ? String(senderId) === String(currentUser.id)
+        : currentUser.username
+          ? sender === currentUser.username
+          : Boolean(senderId && socket.id && senderId === socket.id);
+
+    const handleUserTyping = ({ sender, senderId } = {}) => {
+      if (isCurrentUser({ sender, senderId })) return;
+
+      const id = senderId || sender;
+      setTypingUsers((users) =>
+        users.some((user) => user.id === id)
+          ? users
+          : [...users, { id, name: sender }],
+      );
+    };
+
+    const handleUserStopTyping = ({ sender, senderId } = {}) => {
+      const id = senderId || sender;
+      setTypingUsers((users) => users.filter((user) => user.id !== id));
+    };
+
+    socket.on("user-typing", handleUserTyping);
+    socket.on("user-stop-typing", handleUserStopTyping);
+
+    return () => {
+      socket.off("user-typing", handleUserTyping);
+      socket.off("user-stop-typing", handleUserStopTyping);
+    };
+  }, [socket, currentUser.id, currentUser.username]);
+
+  useEffect(() => () => stopTyping(), [socket, roomId, me?.name]);
+
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setInput(value);
+
+    if (!value.trim()) {
+      stopTyping();
+      return;
+    }
+
+    if (!isTypingRef.current && socket && roomId) {
+      socket.emit("typing", {
+        roomId,
+        sender: me?.name || "Anonymous",
+      });
+      isTypingRef.current = true;
+    }
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(stopTyping, 1000);
+  };
+
   const handleSend = () => {
     const message = input.trim();
     if (!message || !socket || !roomId) return;
 
+    stopTyping();
     socket.emit("send-message", {
       roomId,
       message,
@@ -313,6 +391,22 @@ const ChatPanel = ({ onClose, socket, roomId, me }) => {
         </div>
       )}
 
+      {typingUsers.length > 0 && (
+        <div
+          style={{
+            padding: "0 18px 8px",
+            color: "#64748B",
+            fontSize: "12px",
+            fontStyle: "italic",
+            background: "#FFFFFF",
+          }}
+        >
+          {typingUsers.length === 1
+            ? `${typingUsers[0].name} is typing...`
+            : `${typingUsers.map((user) => user.name).join(", ")} are typing...`}
+        </div>
+      )}
+
       {/* Input */}
       <div
         style={{
@@ -333,7 +427,7 @@ const ChatPanel = ({ onClose, socket, roomId, me }) => {
             type="text"
             placeholder="Type a message..."
             value={input}
-            onChange={(event) => setInput(event.target.value)}
+            onChange={handleInputChange}
             onKeyDown={(event) => {
               if (event.key === "Enter") handleSend();
             }}

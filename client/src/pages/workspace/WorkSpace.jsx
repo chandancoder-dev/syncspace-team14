@@ -19,6 +19,8 @@ const WorkSpace = () => {
    const {
   localVideoRef,
   stream,
+  cameraOn,
+  toggleCamera,
   stopCamera,
 } = useVideoCall();
   const [leftWidth, setLeftWidth] = useState(50);
@@ -252,11 +254,13 @@ const WorkSpace = () => {
       background: "#FFFFFF",
     }}
   >
-    <VideoPanel
-      localVideoRef={localVideoRef}
-      stream={stream}
-      stopCamera={stopCamera}
-    />
+   <VideoPanel
+  localVideoRef={localVideoRef}
+  stream={stream}
+  cameraOn={cameraOn}
+  toggleCamera={toggleCamera}
+  stopCamera={stopCamera}
+/>
   </div>
 )}
       </div>

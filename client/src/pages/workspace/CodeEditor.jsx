@@ -1,41 +1,13 @@
-import { useState, useRef, useCallback, useEffect } from "react";
-import Editor from "@monaco-editor/react";
-import { MonacoBinding } from "y-monaco";
-import {
-  FiChevronDown,
-  FiCode,
-  FiUsers,
-  FiLoader,
-  FiPlay,
-  FiX,
-  FiChevronUp,
-} from "react-icons/fi";
-
-const LANGUAGES = [
-  { id: "javascript", label: "JavaScript" },
-  { id: "python", label: "Python" },
-  { id: "java", label: "Java" },
-  { id: "c", label: "C" },
-  { id: "cpp", label: "C++" },
-];
-
-const FILE_EXTENSIONS = {
-  javascript: "js",
-  python: "py",
-  java: "java",
-  c: "c",
-  cpp: "cpp",
-};
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:8000";
-
-const DEFAULT_CODE = {
-  javascript: `// Start coding in JavaScript\nfunction hello() {\n  console.log("Hello, SyncSpace!");\n}\n\nhello();\n`,
-  python: `# Start coding in Python\ndef hello():\n    print("Hello, SyncSpace!")\n\nhello()\n`,
-  java: `// Start coding in Java\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, SyncSpace!");\n    }\n}\n`,
-  c: `// Start coding in C\n#include <stdio.h>\n\nint main() {\n    printf("Hello, SyncSpace!\\n");\n    return 0;\n}\n`,
-  cpp: `// Start coding in C++\n#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello, SyncSpace!" << endl;\n    return 0;\n}\n`,
-};
+import { useState, useRef, useCallback, useEffect } from 'react';
+import Editor from '@monaco-editor/react';
+import { MonacoBinding } from 'y-monaco';
+import { FiChevronDown, FiCode, FiUsers, FiLoader, FiPlay } from 'react-icons/fi';
+import { LANGUAGES, FILE_EXTENSIONS, DEFAULT_CODE } from '../../hooks/codeEditorConfig';
+import useCodeExecution from '../../hooks/useCodeExecution';
+import useWebContainer from '../../hooks/useWebContainer';
+import FileExplorer from './FileExplorer';
+import EditorTabs from './EditorTabs';
+import Terminal from './Terminal';
 
 const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const [language, setLanguage] = useState("javascript");
@@ -43,9 +15,27 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const [editorReady, setEditorReady] = useState(false);
   const [editorFailed, setEditorFailed] = useState(false);
   const [, setAwarenessTick] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-  const [output, setOutput] = useState(null);
-  const [showOutput, setShowOutput] = useState(false);
+  const { isRunning, output, runCode } = useCodeExecution();
+
+  // WebContainer state (for multi-file mode)
+  const wc = useWebContainer(language);
+  const defaultFileName = language === 'java' ? 'Main.java' : `main.${FILE_EXTENSIONS[language] || 'js'}`;
+  const [openFiles, setOpenFiles] = useState([defaultFileName]);
+  const [activeFile, setActiveFile] = useState(defaultFileName);
+  const [fileContent, setFileContent] = useState(DEFAULT_CODE.javascript);
+  const [showTerminal, setShowTerminal] = useState(false);
+
+  // Update file explorer when language changes
+  useEffect(() => {
+    const newFileName = language === 'java' ? 'Main.java' : `main.${FILE_EXTENSIONS[language] || 'js'}`;
+    setOpenFiles([newFileName]);
+    setActiveFile(newFileName);
+    setFileContent(DEFAULT_CODE[language] || '');
+    // Reset WebContainer files for the new language
+    if (wc.booted) {
+      wc.resetFiles(language);
+    }
+  }, [language]);
 
   // Monaco load timeout
   useEffect(() => {
@@ -216,60 +206,6 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
     }
   }, [language]);
 
-  // Execute code via backend
-  const runCode = async () => {
-    if (isRunning) return;
-
-    const code = editorRef.current
-      ? editorRef.current.getValue()
-      : yText.toString();
-    if (!code.trim()) {
-      setOutput({
-        stdout: "",
-        stderr: "Error: No code to execute.",
-        exitCode: 1,
-      });
-      setShowOutput(true);
-      return;
-    }
-
-    setIsRunning(true);
-    setOutput(null);
-    setShowOutput(true);
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${SERVER_URL}/api/code/execute`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ code, language }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || `Server error: ${response.status}`);
-      }
-
-      setOutput({
-        stdout: data.stdout || "",
-        stderr: data.stderr || "",
-        exitCode: data.exitCode ?? -1,
-      });
-    } catch (error) {
-      setOutput({
-        stdout: "",
-        stderr: `Execution failed: ${error.message}`,
-        exitCode: 1,
-      });
-    } finally {
-      setIsRunning(false);
-    }
-  };
-
   // Close language menu on outside click
   useEffect(() => {
     if (!showLangMenu) return;
@@ -286,6 +222,77 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const activeUsers = Array.from(users.values()).length + 1; // +1 for self
 
   // Generate dynamic CSS for remote cursor colors based on awareness states
+  // ============================================
+  // WebContainer File Management (JS mode)
+  // ============================================
+
+  // Boot WebContainer for file system
+  useEffect(() => {
+    if (!wc.booted && !wc.booting) {
+      wc.boot();
+    }
+  }, [wc.booted, wc.booting]);
+
+  // Open file from explorer
+  const handleFileSelect = async (path) => {
+    setActiveFile(path);
+    if (!openFiles.includes(path)) {
+      setOpenFiles((prev) => [...prev, path]);
+    }
+    // Read content from WebContainer
+    if (wc.booted) {
+      const content = await wc.readFile(path);
+      setFileContent(content);
+    } else {
+      const file = wc.files[path];
+      setFileContent(file?.content || '');
+    }
+  };
+
+  // Close tab
+  const handleCloseTab = (path) => {
+    setOpenFiles((prev) => prev.filter((f) => f !== path));
+    if (activeFile === path) {
+      const remaining = openFiles.filter((f) => f !== path);
+      setActiveFile(remaining[remaining.length - 1] || '');
+    }
+  };
+
+  // Save current file to WebContainer
+  const handleEditorChange = (value) => {
+    setFileContent(value || '');
+    if (wc.booted && activeFile) {
+      wc.writeFile(activeFile, value || '');
+    }
+  };
+
+  // Run current file in WebContainer
+  const handleRunJS = async () => {
+    setShowTerminal(true);
+    if (wc.booted) {
+      await wc.runFile(activeFile || 'index.js');
+    }
+  };
+
+  // Create file
+  const handleCreateFile = (name) => {
+    wc.createFile(name, `// ${name}\n`);
+    handleFileSelect(name);
+  };
+
+  // Create folder
+  const handleCreateFolder = (name) => {
+    wc.createFolder(name);
+  };
+
+  // Delete file
+  const handleDeleteFile = (path) => {
+    wc.deleteFile(path);
+    handleCloseTab(path);
+  };
+
+  // ============================================
+
   const generateRemoteCursorStyles = () => {
     if (!awareness) return "";
     let css = "";
@@ -453,7 +460,14 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           {/* Run button */}
           <button
-            onClick={runCode}
+            onClick={() => {
+              setShowTerminal(true);
+              if ((language === 'javascript' || language === 'typescript') && wc.booted) {
+                handleRunJS();
+              } else {
+                runCode(editorRef.current?.getValue() || yText.toString(), language);
+              }
+            }}
             disabled={isRunning}
             aria-label="Run code"
             onMouseEnter={(e) => {
@@ -527,9 +541,39 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
         </div>
       </div>
 
-      {/* Monaco Editor */}
-      <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
-        {!editorReady && (
+      {/* Main Editor Area */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+
+        {/* File Explorer */}
+        {wc.booted && (
+          <div style={{ width: 200, flexShrink: 0 }}>
+            <FileExplorer
+              files={wc.files}
+              selectedPath={activeFile}
+              onSelect={handleFileSelect}
+              onCreateFile={handleCreateFile}
+              onCreateFolder={handleCreateFolder}
+              onDelete={handleDeleteFile}
+            />
+          </div>
+        )}
+
+        {/* Editor + Terminal column */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
+          {/* Tabs */}
+          {openFiles.length > 0 && (
+            <EditorTabs
+              openFiles={openFiles}
+              activeFile={activeFile}
+              onSelect={handleFileSelect}
+              onClose={handleCloseTab}
+            />
+          )}
+
+          {/* Monaco Editor */}
+          <div style={{ flex: 1, overflow: "hidden", position: "relative" }}>
+            {!editorReady && (
           <div
             style={{
               position: "absolute",
@@ -655,136 +699,20 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
         />
       </div>
 
-      {/* Output Panel */}
-      {showOutput && (
-        <div
-          style={{
-            flexShrink: 0,
-            maxHeight: "35%",
-            minHeight: 100,
-            borderTop: "1px solid #DBEAFE",
-            background: "#F8FAFC",
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-          }}
-        >
-          {/* Output header */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "6px 16px",
-              background: "#FFFFFF",
-              borderBottom: "1px solid #DBEAFE",
-              flexShrink: 0,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#1E3A8A" }}>
-                Output
-              </span>
-              {output && (
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 600,
-                    padding: "2px 6px",
-                    borderRadius: 4,
-                    background: output.exitCode === 0 ? "#ECFDF5" : "#FEF2F2",
-                    color: output.exitCode === 0 ? "#047857" : "#DC2626",
-                    border: `1px solid ${output.exitCode === 0 ? "#A7F3D0" : "#FCA5A5"}`,
-                  }}
-                >
-                  {output.exitCode === 0
-                    ? "Success"
-                    : `Exit: ${output.exitCode}`}
-                </span>
-              )}
+          {/* Terminal */}
+          {showTerminal && (
+            <div style={{ height: 180, flexShrink: 0, borderTop: '1px solid #334155' }}>
+              <Terminal
+                output={language === 'javascript' ? wc.terminalOutput : (output ? `${output.stdout}${output.stderr ? '\n' + output.stderr : ''}` : '')}
+                isRunning={language === 'javascript' ? wc.isProcessRunning : isRunning}
+                onClear={language === 'javascript' ? wc.clearTerminal : () => {}}
+                onKill={language === 'javascript' ? wc.killProcess : () => {}}
+              />
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <button
-                onClick={() => setShowOutput(false)}
-                aria-label="Close output"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: 24,
-                  height: 24,
-                  borderRadius: 6,
-                  border: "none",
-                  background: "transparent",
-                  color: "#64748B",
-                  cursor: "pointer",
-                  fontSize: 14,
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background = "#EFF6FF")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background = "transparent")
-                }
-              >
-                <FiX size={14} />
-              </button>
-            </div>
-          </div>
+          )}
 
-          {/* Output content */}
-          <div
-            style={{
-              flex: 1,
-              overflow: "auto",
-              padding: "12px 16px",
-              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-              fontSize: 13,
-              lineHeight: 1.6,
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-            }}
-          >
-            {isRunning ? (
-              <div
-                style={{
-                  color: "#64748B",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                <FiLoader
-                  size={14}
-                  style={{ animation: "spin 1s linear infinite" }}
-                />
-                Executing code...
-              </div>
-            ) : output ? (
-              <>
-                {output.stdout && (
-                  <div style={{ color: "#1E293B" }}>{output.stdout}</div>
-                )}
-                {output.stderr && (
-                  <div
-                    style={{
-                      color: "#DC2626",
-                      marginTop: output.stdout ? 8 : 0,
-                    }}
-                  >
-                    {output.stderr}
-                  </div>
-                )}
-                {!output.stdout && !output.stderr && (
-                  <div style={{ color: "#94A3B8", fontStyle: "italic" }}>
-                    Program finished with no output.
-                  </div>
-                )}
-              </>
-            ) : null}
-          </div>
-        </div>
-      )}
+        </div> {/* end Editor + Terminal column */}
+      </div> {/* end Main Editor Area */}
 
       {/* Remote cursor styles + loader animation */}
       <style>{`
