@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaUsers, FaArrowRight, FaClock } from "react-icons/fa";
+import { FaUsers, FaArrowRight, FaClock, FaArrowLeft, FaPlay } from "react-icons/fa";
 
 export default function Rooms() {
   const navigate = useNavigate();
@@ -94,9 +94,10 @@ export default function Rooms() {
       <div className="max-w-6xl mx-auto">
         <button
           onClick={() => navigate("/dashboard")}
-          className="text-blue-600 font-medium mb-6 hover:underline"
+          className="inline-flex items-center gap-2 bg-white border border-blue-200 text-blue-600 font-medium px-4 py-2 rounded-lg mb-6 hover:bg-blue-50 hover:border-blue-400 transition-colors duration-200"
         >
-          ← Back to Dashboard
+          <FaArrowLeft />
+          Back to Dashboard
         </button>
 
         <h1 className="text-4xl font-bold text-[#1E3A8A]">
@@ -157,7 +158,9 @@ export default function Rooms() {
                     }
                     className="mt-3 w-full bg-transparent border-2 border-blue-200 hover:border-blue-600 hover:bg-blue-50 text-gray-600 hover:text-blue-600 font-semibold py-3 rounded-xl flex justify-center items-center gap-2 transition-all duration-300"
                   >
-                    ▶ View Replay
+                    <FaPlay className="text-xs" />
+                    View Replay
+                    <FaArrowRight />
                   </button>
                 </div>
               );
