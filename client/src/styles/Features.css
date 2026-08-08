@@ -1,6 +1,6 @@
 .features {
-  padding: 90px 20px;
-  background: var(--bg-color);
+  padding: 100px 20px;
+  background: #ffffff;
 }
 
 .features-container {
@@ -11,20 +11,20 @@
 
 .features-tagline {
   display: inline-block;
-  padding: 8px 18px;
-  border: 1px solid var(--primary-color);
-  border-radius: 25px;
-  background: var(--light-blue);
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.08);
   color: var(--primary-color);
+  border: 1px solid rgba(37, 99, 235, 0.2);
   font-size: 14px;
   font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .features h2 {
-  font-size: 44px;
+  font-size: 46px;
   color: var(--heading-color);
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 .features-subtitle {
@@ -37,63 +37,70 @@
 
 .feature-cards {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  max-width: 600px;
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 28px;
 }
 
 .card {
-  width: 320px;
-  background: var(--card-color);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 35px 30px;
-  transition: all var(--transition);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
-}
-
-.card {
-  width: 320px;
-  background: var(--card-color);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 35px 30px;
-  transition: all var(--transition);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 36px 30px;
+  text-align: left;
+  transition: all 0.35s ease;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
 }
 
 .card:hover {
-  transform: translateY(-10px) scale(1.03);
+  transform: translateY(-10px);
   border-color: var(--primary-color);
-  box-shadow:
-    0 0 20px rgba(37, 99, 235, 0.35),
-    0 0 40px rgba(37, 99, 235, 0.25),
-    0 20px 45px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15);
+}
+
+.icon-box {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  margin-bottom: 24px;
 }
 
 .card h3 {
+  font-size: 22px;
   color: var(--heading-color);
-  font-size: 24px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .card p {
-  color: var(--text-color);
-  font-size: 16px;
+  color: var(--secondary-text);
   line-height: 1.8;
+  font-size: 16px;
 }
 
 @media (max-width: 768px) {
   .features {
-    padding: 55px 20px;
+    padding: 80px 20px;
   }
 
   .features h2 {
-    font-size: 32px;
+    font-size: 34px;
   }
 
   .features-subtitle {
-    font-size: 15px;
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
+
+  .card {
+    text-align: center;
+  }
+
+  .icon-box {
+    margin: 0 auto 20px;
   }
 }

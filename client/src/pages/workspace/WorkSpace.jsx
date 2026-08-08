@@ -11,6 +11,94 @@ import useVideoCall from "../../hooks/useVideoCall";
 
 const MIN_PANEL_WIDTH = 200;
 
+// Draggable floating chat panel
+const DraggableChat = ({ onClose, socket, roomId, me, users }) => {
+  const [pos, setPos] = useState({ x: window.innerWidth - 660, y: window.innerHeight - 450 });
+  const dragging = useRef(false);
+  const offset = useRef({ x: 0, y: 0 });
+
+  const handleMouseDown = (e) => {
+    dragging.current = true;
+    offset.current = { x: e.clientX - pos.x, y: e.clientY - pos.y };
+    document.body.style.userSelect = 'none';
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!dragging.current) return;
+      setPos({ x: e.clientX - offset.current.x, y: e.clientY - offset.current.y });
+    };
+    const handleMouseUp = () => {
+      dragging.current = false;
+      document.body.style.userSelect = '';
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: pos.y,
+        left: pos.x,
+        width: 320,
+        height: 380,
+        borderRadius: 14,
+        border: '1px solid #DBEAFE',
+        boxShadow: '0 12px 40px rgba(30, 58, 138, 0.2)',
+        overflow: 'hidden',
+        zIndex: 50,
+        background: '#FFFFFF',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* Drag handle */}
+      <div
+        onMouseDown={handleMouseDown}
+        style={{
+          padding: '6px 12px',
+          background: '#F8FAFC',
+          borderBottom: '1px solid #DBEAFE',
+          cursor: 'move',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexShrink: 0,
+          userSelect: 'none',
+        }}
+      >
+        <span style={{ fontSize: 11, fontWeight: 700, color: '#1E3A8A' }}>💬 Chat</span>
+        <button
+          onClick={onClose}
+          style={{
+            width: 20, height: 20, borderRadius: 4,
+            border: 'none', background: 'transparent',
+            color: '#64748B', cursor: 'pointer', fontSize: 14,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          ✕
+        </button>
+      </div>
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        <ChatPanel
+          onClose={onClose}
+          socket={socket}
+          roomId={roomId}
+          me={me}
+          users={users}
+        />
+      </div>
+    </div>
+  );
+};
+
 const WorkSpace = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
@@ -137,7 +225,9 @@ const WorkSpace = () => {
           style={{
             width: `${leftWidth}%`,
             overflow: "hidden",
-            flexShrink: 0,
+            flexShrink: 1,
+            minWidth: 150,
+            transition: "width 0.2s ease",
           }}
         >
           <WhiteBoard
@@ -164,13 +254,14 @@ const WorkSpace = () => {
           style={{
             flex: 1,
             display: "flex",
-            overflow: "hidden",
+            minWidth: 0,
+            overflow: "visible",
           }}
         >
           <div
             style={{
               flex: 1,
-              minWidth: 0,
+              minWidth: 200,
               overflow: "hidden",
             }}
           >
@@ -182,10 +273,12 @@ const WorkSpace = () => {
             />
           </div>
 
-          {isChatOpen && (
+          {isChatOpen && !isVideoOpen && (
             <div
               style={{
+                width: 340,
                 flexShrink: 0,
+                borderLeft: "1px solid #DBEAFE",
                 display: "flex",
                 flexDirection: "column",
                 overflow: "hidden",
@@ -205,32 +298,8 @@ const WorkSpace = () => {
                     flexShrink: 0,
                   }}
                 >
-                  <div
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: "#EF4444",
-                      animation: "pulse 1.5s ease-in-out infinite",
-                    }}
-                  />
-                  <span
-                    style={{
-                      color: "#DC2626",
-                      fontSize: 13,
-                      fontWeight: 600,
-                    }}
-                  >
-                    Connection lost — reconnecting...
-                  </span>
-                  <span
-                    style={{
-                      color: "#64748B",
-                      fontSize: 12,
-                    }}
-                  >
-                    Your changes are saved locally and will sync when
-                    reconnected.
+                  <span style={{ color: "#DC2626", fontSize: 12, fontWeight: 600 }}>
+                    Reconnecting...
                   </span>
                 </div>
               )}
@@ -239,6 +308,7 @@ const WorkSpace = () => {
                 socket={socket}
                 roomId={roomId}
                 me={me}
+                users={users}
               />
             </div>
           )}
@@ -252,6 +322,7 @@ const WorkSpace = () => {
       flexShrink: 0,
       borderLeft: "1px solid #DBEAFE",
       background: "#FFFFFF",
+      transition: "width 0.2s ease",
     }}
   >
     <VideoPanel
@@ -264,6 +335,17 @@ const WorkSpace = () => {
   </div>
 )}
       </div>
+
+      {/* Floating Chat — when both chat and video are open (draggable) */}
+      {isChatOpen && isVideoOpen && (
+        <DraggableChat
+          onClose={() => setIsChatOpen(false)}
+          socket={socket}
+          roomId={roomId}
+          me={me}
+          users={users}
+        />
+      )}
 
       {/* ── Leave Confirmation Modal ── */}
       {showLeaveConfirm && (

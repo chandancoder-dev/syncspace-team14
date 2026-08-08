@@ -9,22 +9,25 @@ export default function VideoPanel({
   stopCamera,
 }) {
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-white overflow-hidden">
 
-      <div className="px-4 py-3 border-b border-blue-100 bg-white sticky top-0 z-10">
-        <h3 className="text-sm font-semibold text-slate-700">
-          Participants (3)
+      {/* Header */}
+      <div className="px-3 py-2 border-b border-blue-100 bg-white flex-shrink-0">
+        <h3 className="text-xs font-semibold text-slate-700">
+          Video Call
         </h3>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4">
+      {/* Video Grid */}
+      <div className="flex-1 overflow-y-auto p-2">
         <VideoGrid
           localVideoRef={localVideoRef}
           stream={stream}
         />
       </div>
 
-      <div className="border-t border-blue-100 p-4 bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+      {/* Controls */}
+      <div className="border-t border-blue-100 p-2 bg-white flex-shrink-0">
         <VideoControls
           cameraOn={cameraOn}
           toggleCamera={toggleCamera}

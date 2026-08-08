@@ -24,6 +24,7 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const [activeFile, setActiveFile] = useState(defaultFileName);
   const [fileContent, setFileContent] = useState(DEFAULT_CODE.javascript);
   const [showTerminal, setShowTerminal] = useState(false);
+  const [showExplorer, setShowExplorer] = useState(false);
 
   // Update file explorer when language changes
   useEffect(() => {
@@ -239,13 +240,18 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
     if (!openFiles.includes(path)) {
       setOpenFiles((prev) => [...prev, path]);
     }
-    // Read content from WebContainer
+    // Read content from WebContainer or local state
+    let content = '';
     if (wc.booted) {
-      const content = await wc.readFile(path);
-      setFileContent(content);
+      content = await wc.readFile(path) || '';
     } else {
       const file = wc.files[path];
-      setFileContent(file?.content || '');
+      content = file?.content || '';
+    }
+    setFileContent(content);
+    // Force Monaco to show the new content
+    if (editorRef.current) {
+      editorRef.current.setValue(content);
     }
   };
 
@@ -276,7 +282,7 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
 
   // Create file
   const handleCreateFile = (name) => {
-    wc.createFile(name, `// ${name}\n`);
+    wc.createFile(name, '');
     handleFileSelect(name);
   };
 
@@ -454,6 +460,59 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
               </div>
             )}
           </div>
+
+          {/* Files dropdown */}
+          {wc.booted && (
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setShowExplorer(!showExplorer)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 5,
+                  padding: '5px 10px',
+                  background: showExplorer ? '#EFF6FF' : 'transparent',
+                  border: '1px solid #DBEAFE',
+                  borderRadius: 6,
+                  color: showExplorer ? '#2563EB' : '#475569',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                📁 Files
+                <FiChevronDown size={12} />
+              </button>
+
+              {showExplorer && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    left: 0,
+                    width: 220,
+                    maxHeight: 300,
+                    background: '#FFFFFF',
+                    border: '1px solid #DBEAFE',
+                    borderRadius: 10,
+                    boxShadow: '0 8px 20px rgba(30, 58, 138, 0.12)',
+                    zIndex: 50,
+                    overflow: 'auto',
+                  }}
+                >
+                  <FileExplorer
+                    files={wc.files}
+                    selectedPath={activeFile}
+                    onSelect={(path) => { handleFileSelect(path); setShowExplorer(false); }}
+                    onCreateFile={handleCreateFile}
+                    onCreateFolder={handleCreateFolder}
+                    onDelete={handleDeleteFile}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right — run button + file info + collaborators indicator */}
@@ -543,20 +602,6 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
 
       {/* Main Editor Area */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-
-        {/* File Explorer */}
-        {wc.booted && (
-          <div style={{ width: 200, flexShrink: 0 }}>
-            <FileExplorer
-              files={wc.files}
-              selectedPath={activeFile}
-              onSelect={handleFileSelect}
-              onCreateFile={handleCreateFile}
-              onCreateFolder={handleCreateFolder}
-              onDelete={handleDeleteFile}
-            />
-          </div>
-        )}
 
         {/* Editor + Terminal column */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>

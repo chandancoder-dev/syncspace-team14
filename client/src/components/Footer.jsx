@@ -5,15 +5,16 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
-        <div className="footer-section">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-            <img src="/SyncSpace.png" alt="SyncSpace" style={{ width: 50, height: 50 }} />
-            <h2 style={{ margin: 0 }}>SyncSpace</h2>
+        <div className="footer-brand">
+          <div className="footer-logo">
+            <img src="/SyncSpace.png" alt="SyncSpace Logo" />
+            <h2>SyncSpace</h2>
           </div>
 
           <p>
             Real-Time Collaborative Coding Platform that enables developers,
-            students, and teams to code, brainstorm, and communicate seamlessly.
+            students, and teams to code, brainstorm, and communicate seamlessly
+            in one shared workspace.
           </p>
         </div>
 
@@ -39,7 +40,7 @@ function Footer() {
         <div className="footer-section">
           <h3>Contact</h3>
 
-          <p>Email: support@syncspace.com</p>
+          <p>support@syncspace.com</p>
         </div>
       </div>
 
