@@ -24,6 +24,7 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
   const [activeFile, setActiveFile] = useState(defaultFileName);
   const [fileContent, setFileContent] = useState(DEFAULT_CODE.javascript);
   const [showTerminal, setShowTerminal] = useState(false);
+  const [terminalHeight, setTerminalHeight] = useState(200);
   const [showExplorer, setShowExplorer] = useState(false);
 
   // Update file explorer when language changes
@@ -746,12 +747,48 @@ const CodeEditor = ({ ydoc, awareness, me, users }) => {
 
           {/* Terminal */}
           {showTerminal && (
-            <div style={{ height: 180, flexShrink: 0, borderTop: '1px solid #334155' }}>
+            <div style={{ height: terminalHeight, flexShrink: 0, position: 'relative' }}>
+              {/* Drag handle to resize terminal */}
+              <div
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  const startY = e.clientY;
+                  const startH = terminalHeight;
+                  const onMove = (ev) => {
+                    const diff = startY - ev.clientY;
+                    setTerminalHeight(Math.max(100, Math.min(500, startH + diff)));
+                  };
+                  const onUp = () => {
+                    window.removeEventListener('mousemove', onMove);
+                    window.removeEventListener('mouseup', onUp);
+                  };
+                  window.addEventListener('mousemove', onMove);
+                  window.addEventListener('mouseup', onUp);
+                }}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 4,
+                  cursor: 'ns-resize',
+                  background: '#334155',
+                  zIndex: 5,
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = '#2563EB')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = '#334155')}
+              />
               <Terminal
-                output={language === 'javascript' ? wc.terminalOutput : (output ? `${output.stdout}${output.stderr ? '\n' + output.stderr : ''}` : '')}
-                isRunning={language === 'javascript' ? wc.isProcessRunning : isRunning}
-                onClear={language === 'javascript' ? wc.clearTerminal : () => {}}
-                onKill={language === 'javascript' ? wc.killProcess : () => {}}
+                output={language === 'javascript' || language === 'typescript' ? wc.terminalOutput : (output ? `${output.stdout}${output.stderr ? '\n' + output.stderr : ''}` : '')}
+                isRunning={language === 'javascript' || language === 'typescript' ? wc.isProcessRunning : isRunning}
+                onClear={language === 'javascript' || language === 'typescript' ? wc.clearTerminal : () => {}}
+                onKill={language === 'javascript' || language === 'typescript' ? wc.killProcess : () => {}}
+                onCommand={(cmd) => {
+                  if ((language === 'javascript' || language === 'typescript') && wc.booted) {
+                    const parts = cmd.split(' ');
+                    wc.runCommand(parts[0], parts.slice(1));
+                  }
+                }}
               />
             </div>
           )}
