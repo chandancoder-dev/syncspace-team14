@@ -182,7 +182,10 @@ const ChatPanel = ({ onClose, socket, roomId, me, users = new Map() }) => {
         borderLeft: "1px solid #DBEAFE",
         display: "flex",
         flexDirection: "column",
+        boxSizing: "border-box",
+        maxWidth: "100%",
         minWidth: 0,
+        overflow: "hidden",
       }}
     >
       {/* Header */}
@@ -195,6 +198,8 @@ const ChatPanel = ({ onClose, socket, roomId, me, users = new Map() }) => {
           gap: "10px",
           borderBottom: "1px solid #E5E7EB",
           background: "#FFFFFF",
+          boxSizing: "border-box",
+          minWidth: 0,
           flexShrink: 0,
         }}
       >
@@ -275,12 +280,12 @@ const ChatPanel = ({ onClose, socket, roomId, me, users = new Map() }) => {
 
           <div
             style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            marginLeft: "8px",
-            flex: 1,
-            minWidth: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              marginLeft: "8px",
+              flex: 1,
+              minWidth: 0,
             }}
           >
             <div
@@ -319,50 +324,6 @@ const ChatPanel = ({ onClose, socket, roomId, me, users = new Map() }) => {
           }}
         >
           <button
-            title="Search Messages"
-            style={{
-              width: "32px",
-              height: "32px",
-              border: "none",
-              borderRadius: "10px",
-              background: "transparent",
-              cursor: "pointer",
-              fontSize: "18px",
-              color: "#64748B",
-              transition: "0.2s",
-              flexShrink: 0,
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#EFF6FF")}
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "transparent")
-            }
-          >
-            🔍
-          </button>
-
-          <button
-            title="More Options"
-            style={{
-              width: "36px",
-              height: "36px",
-              border: "none",
-              borderRadius: "10px",
-              background: "transparent",
-              cursor: "pointer",
-              fontSize: "18px",
-              color: "#64748B",
-              transition: "0.2s",
-              flexShrink: 0,
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#EFF6FF")}
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "transparent")
-            }
-          >
-            ⋮
-          </button>
-
-          <button
             onClick={onClose}
             title="Close Chat"
             style={{
@@ -382,7 +343,7 @@ const ChatPanel = ({ onClose, socket, roomId, me, users = new Map() }) => {
               (e.currentTarget.style.background = "transparent")
             }
           >
-            ✕
+            X
           </button>
         </div>
       </div>
@@ -576,6 +537,9 @@ const ChatPanel = ({ onClose, socket, roomId, me, users = new Map() }) => {
           padding: "12px 14px",
           borderTop: "1px solid #E5E7EB",
           background: "#FFFFFF",
+          boxSizing: "border-box",
+          width: "100%",
+          minWidth: 0,
           flexShrink: 0,
         }}
       >
@@ -584,6 +548,7 @@ const ChatPanel = ({ onClose, socket, roomId, me, users = new Map() }) => {
             display: "flex",
             gap: "8px",
             alignItems: "center",
+            minWidth: 0,
           }}
         >
           <input
@@ -629,7 +594,7 @@ const ChatPanel = ({ onClose, socket, roomId, me, users = new Map() }) => {
             onMouseEnter={(e) => (e.currentTarget.style.background = "#1D4ED8")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "#2563EB")}
           >
-            ➤
+            {">"}
           </button>
         </div>
       </div>
