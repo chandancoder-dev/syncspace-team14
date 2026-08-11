@@ -25,13 +25,23 @@ export default function Navbar() {
 
   const getUserName = () => {
     if (user?.name) return user.name;
+
     const stored = localStorage.getItem("user");
+
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        return parsed.name || parsed.username || parsed.email?.split("@")[0] || "User";
-      } catch { return "User"; }
+        return (
+          parsed.name ||
+          parsed.username ||
+          parsed.email?.split("@")[0] ||
+          "User"
+        );
+      } catch {
+        return "User";
+      }
     }
+
     return "User";
   };
 
@@ -39,6 +49,9 @@ export default function Navbar() {
     const name = getUserName();
     return name.charAt(0).toUpperCase();
   };
+
+  const isLoginActive = location.pathname === "/login";
+  const isRegisterActive = location.pathname === "/register";
 
   return (
     <>
@@ -55,57 +68,103 @@ export default function Navbar() {
           position: "sticky",
           top: 0,
           zIndex: 100,
+          boxSizing: "border-box",
         }}
       >
-        {/* Logo + Brand */}
+        {/* Logo */}
         <div
-          style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            cursor: "pointer",
+          }}
           onClick={() => navigate("/")}
         >
-          <img src="/SyncSpace.png" alt="SyncSpace" style={{ width: 34, height: 34 }} />
-          <span style={{ fontSize: 20, fontWeight: 700, color: "#2563EB" }}>SyncSpace</span>
+          <img
+            src="/SyncSpace.png"
+            alt="SyncSpace"
+            style={{
+              width: 34,
+              height: 34,
+              objectFit: "contain",
+            }}
+          />
+
+          <span
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              color: "#2563EB",
+            }}
+          >
+            SyncSpace
+          </span>
         </div>
 
-        {/* Nav Links + Auth */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {navItems.map((item) => (
-            <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
-              onMouseEnter={(e) => {
-                if (location.pathname !== item.path) {
-                  e.currentTarget.style.background = "#EFF6FF";
-                  e.currentTarget.style.color = "#2563EB";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (location.pathname !== item.path) {
-                  e.currentTarget.style.background = "transparent";
-                  e.currentTarget.style.color = "#475569";
-                }
-              }}
-              style={{
-                padding: "8px 16px",
-                borderRadius: 8,
-                border: "none",
-                background: location.pathname === item.path ? "#EFF6FF" : "transparent",
-                color: location.pathname === item.path ? "#2563EB" : "#475569",
-                fontSize: 14,
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
+        {/* Navigation */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+
+            return (
+              <button
+                key={item.path}
+                onClick={() => navigate(item.path)}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: 8,
+                  border: "none",
+                  background: isActive ? "#EFF6FF" : "transparent",
+                  color: isActive ? "#2563EB" : "#475569",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = "#EFF6FF";
+                    e.currentTarget.style.color = "#2563EB";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "#475569";
+                  }
+                }}
+              >
+                {item.label}
+              </button>
+            );
+          })}
 
           {/* Divider */}
-          <div style={{ width: 1, height: 28, background: "#DBEAFE", margin: "0 8px" }} />
+          <div
+            style={{
+              width: 1,
+              height: 28,
+              background: "#DBEAFE",
+              margin: "0 8px",
+            }}
+          />
 
           {user ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              {/* User profile badge (non-clickable) */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              {/* User */}
               <div
                 style={{
                   display: "flex",
@@ -133,24 +192,21 @@ export default function Navbar() {
                 >
                   {getInitial()}
                 </div>
-                <span style={{ fontSize: 13, fontWeight: 600, color: "#1E293B" }}>
+
+                <span
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "#1E293B",
+                  }}
+                >
                   {getUserName()}
                 </span>
               </div>
 
-              {/* Dashboard button — outlined, light */}
+              {/* Dashboard */}
               <button
                 onClick={() => navigate("/dashboard")}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#EFF6FF";
-                  e.currentTarget.style.borderColor = "#2563EB";
-                  e.currentTarget.style.color = "#2563EB";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "transparent";
-                  e.currentTarget.style.borderColor = "#BFDBFE";
-                  e.currentTarget.style.color = "#475569";
-                }}
                 style={{
                   padding: "7px 16px",
                   background: "transparent",
@@ -162,23 +218,23 @@ export default function Navbar() {
                   cursor: "pointer",
                   transition: "all 0.2s ease",
                 }}
-              >
-                Dashboard
-              </button>
-
-              {/* Logout button */}
-              <button
-                onClick={() => setShowConfirm(true)}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#FEF2F2";
-                  e.currentTarget.style.borderColor = "#FCA5A5";
-                  e.currentTarget.style.color = "#DC2626";
+                  e.currentTarget.style.background = "#EFF6FF";
+                  e.currentTarget.style.borderColor = "#2563EB";
+                  e.currentTarget.style.color = "#2563EB";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = "transparent";
                   e.currentTarget.style.borderColor = "#BFDBFE";
-                  e.currentTarget.style.color = "#64748B";
+                  e.currentTarget.style.color = "#475569";
                 }}
+              >
+                Dashboard
+              </button>
+
+              {/* Logout */}
+              <button
+                onClick={() => setShowConfirm(true)}
                 style={{
                   padding: "7px 12px",
                   background: "transparent",
@@ -190,57 +246,89 @@ export default function Navbar() {
                   cursor: "pointer",
                   transition: "all 0.2s ease",
                 }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#FEF2F2";
+                  e.currentTarget.style.borderColor = "#FCA5A5";
+                  e.currentTarget.style.color = "#DC2626";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.borderColor = "#BFDBFE";
+                  e.currentTarget.style.color = "#64748B";
+                }}
               >
                 Logout
               </button>
             </div>
           ) : (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              {/* LOGIN */}
               <button
                 onClick={() => navigate("/login")}
+                style={{
+                  padding: "8px 16px",
+                  background: isLoginActive ? "#EFF6FF" : "transparent",
+                  color: isLoginActive ? "#2563EB" : "#475569",
+                  border: isLoginActive
+                    ? "1px solid #BFDBFE"
+                    : "1px solid transparent",
+                  borderRadius: 8,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  boxShadow: isLoginActive
+                    ? "0 0 0 2px rgba(191, 219, 254, 0.35)"
+                    : "none",
+                }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "#EFF6FF";
                   e.currentTarget.style.color = "#2563EB";
+                  e.currentTarget.style.borderColor = "#BFDBFE";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "transparent";
-                  e.currentTarget.style.color = "#475569";
-                }}
-                style={{
-                  padding: "8px 16px",
-                  background: "transparent",
-                  color: "#475569",
-                  border: "none",
-                  borderRadius: 8,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
+                  if (!isLoginActive) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "#475569";
+                    e.currentTarget.style.borderColor = "transparent";
+                  }
                 }}
               >
                 Login
               </button>
+
+              {/* REGISTER */}
               <button
                 onClick={() => navigate("/register")}
+                style={{
+                  padding: "8px 16px",
+                  background: isRegisterActive
+                    ? "#1D4ED8"
+                    : "#2563EB",
+                  color: "#FFFFFF",
+                  border: "none",
+                  borderRadius: 8,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  boxShadow: "0 2px 6px rgba(37, 99, 235, 0.25)",
+                }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "#1D4ED8";
                   e.currentTarget.style.transform = "translateY(-1px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#2563EB";
+                  e.currentTarget.style.background = isRegisterActive
+                    ? "#1D4ED8"
+                    : "#2563EB";
                   e.currentTarget.style.transform = "translateY(0)";
-                }}
-                style={{
-                  padding: "8px 16px",
-                  background: "#2563EB",
-                  color: "#FFFFFF",
-                  border: "none",
-                  borderRadius: 8,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  boxShadow: "0 2px 6px rgba(37, 99, 235, 0.25)",
                 }}
               >
                 Register
@@ -250,7 +338,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Logout Confirmation Modal */}
+      {/* Logout Confirmation */}
       {showConfirm && (
         <div
           style={{
@@ -275,7 +363,6 @@ export default function Navbar() {
               boxShadow: "0 20px 40px rgba(30, 58, 138, 0.18)",
             }}
           >
-            {/* Red icon */}
             <div
               style={{
                 width: 52,
@@ -290,35 +377,34 @@ export default function Navbar() {
                 fontSize: 22,
               }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="22"
-                height="22"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>
+              ↪
             </div>
 
-            <h2 style={{ color: "#2563EB", fontSize: 20, fontWeight: 700, margin: "0 0 8px" }}>
+            <h2
+              style={{
+                color: "#2563EB",
+                fontSize: 20,
+                fontWeight: 700,
+                margin: "0 0 8px",
+              }}
+            >
               Log out of SyncSpace?
             </h2>
-            <p style={{ color: "#64748B", fontSize: 14, margin: "0 0 24px", lineHeight: 1.6 }}>
+
+            <p
+              style={{
+                color: "#64748B",
+                fontSize: 14,
+                margin: "0 0 24px",
+                lineHeight: 1.6,
+              }}
+            >
               You'll need to sign in again to access your rooms and workspaces.
             </p>
 
             <div style={{ display: "flex", gap: 10 }}>
               <button
                 onClick={() => setShowConfirm(false)}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#EFF6FF")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "#FFFFFF")}
                 style={{
                   flex: 1,
                   padding: "11px 0",
@@ -329,15 +415,13 @@ export default function Navbar() {
                   fontSize: 14,
                   fontWeight: 600,
                   cursor: "pointer",
-                  transition: "background 0.15s",
                 }}
               >
                 Cancel
               </button>
+
               <button
                 onClick={confirmLogout}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#B91C1C")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "#DC2626")}
                 style={{
                   flex: 1,
                   padding: "11px 0",
@@ -348,7 +432,6 @@ export default function Navbar() {
                   fontSize: 14,
                   fontWeight: 600,
                   cursor: "pointer",
-                  transition: "background 0.15s",
                 }}
               >
                 Yes, Logout
@@ -360,4 +443,3 @@ export default function Navbar() {
     </>
   );
 }
-

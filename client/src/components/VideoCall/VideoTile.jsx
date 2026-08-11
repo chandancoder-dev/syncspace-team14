@@ -11,9 +11,7 @@ const getInitials = (name = "") => {
     return parts[0][0].toUpperCase();
   }
 
-  return (
-    parts[0][0] + parts[parts.length - 1][0]
-  ).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
 export default function VideoTile({
@@ -23,9 +21,8 @@ export default function VideoTile({
   localVideoRef = null,
 }) {
   return (
-    <div className="relative w-full aspect-video bg-slate-800 rounded-xl overflow-hidden shadow-md">
-
-      {/* Show Local Camera */}
+    <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-800 shadow-md">
+      {/* Show Live Camera */}
       {isSelf && stream ? (
         <video
           ref={localVideoRef}
@@ -36,7 +33,6 @@ export default function VideoTile({
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-
           {/* Avatar */}
           <div
             className={`w-14 h-14 rounded-full flex items-center justify-center text-white text-lg font-bold ${
@@ -51,7 +47,6 @@ export default function VideoTile({
             <FiVideoOff />
             <span>Camera Off</span>
           </div>
-
         </div>
       )}
 
@@ -71,7 +66,6 @@ export default function VideoTile({
       <div className="absolute bottom-0 left-0 right-0 bg-black/50 px-3 py-2 text-white text-sm font-medium">
         {name}
       </div>
-
     </div>
   );
 }

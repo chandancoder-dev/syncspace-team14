@@ -9,8 +9,7 @@ export default function VideoPanel({
   stopCamera,
 }) {
   return (
-    <div className="h-full flex flex-col bg-white">
-
+    <div className="flex flex-col h-full bg-white">
       {/* Header */}
       <div className="px-4 py-3 border-b border-blue-100 bg-white sticky top-0 z-10">
         <h3 className="text-sm font-semibold text-slate-700">
@@ -18,7 +17,7 @@ export default function VideoPanel({
         </h3>
       </div>
 
-      {/* Participants */}
+      {/* Video Grid */}
       <div className="flex-1 overflow-y-auto p-4">
         <VideoGrid
           localVideoRef={localVideoRef}
@@ -34,7 +33,6 @@ export default function VideoPanel({
           stopCamera={stopCamera}
         />
       </div>
-
     </div>
   );
 }

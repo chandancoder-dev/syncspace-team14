@@ -4,18 +4,12 @@ import "../styles/Hero.css";
 function Hero() {
   const navigate = useNavigate();
 
-  const handleCreateRoom = () => {
-    navigate("/createroom");
-  };
-
-  const handleJoinRoom = () => {
-    navigate("/joinroom");
-  };
-
   return (
     <section className="hero">
       <div className="hero-content">
-        <p className="hero-tagline">Real-Time Collaborative Coding Platform</p>
+        <div className="hero-tagline">
+          Real-Time Collaborative Coding Platform
+        </div>
 
         <h1>
           Collaborate in <span>Real Time</span>
@@ -32,11 +26,17 @@ function Hero() {
         </p>
 
         <div className="hero-buttons">
-          <button className="primary-btn" onClick={handleCreateRoom}>
+          <button
+            className="primary-btn"
+            onClick={() => navigate("/createroom")}
+          >
             Create Room
           </button>
 
-          <button className="secondary-btn" onClick={handleJoinRoom}>
+          <button
+            className="secondary-btn"
+            onClick={() => navigate("/joinroom")}
+          >
             Join Room
           </button>
         </div>

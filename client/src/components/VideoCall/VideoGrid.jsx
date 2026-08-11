@@ -5,8 +5,7 @@ export default function VideoGrid({
   stream,
 }) {
   return (
-    <div className="grid grid-cols-1 gap-4">
-
+    <div className="flex flex-col gap-5">
       {/* Local participant */}
       <VideoTile
         name="You"
@@ -18,7 +17,6 @@ export default function VideoGrid({
       {/* Other participant placeholders */}
       <VideoTile name="Waiting..." />
       <VideoTile name="Waiting..." />
-
     </div>
   );
 }

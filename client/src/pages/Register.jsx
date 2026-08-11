@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useSearchParams, Navigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useSearchParams,
+  Navigate,
+} from "react-router-dom";
 import FormInput from "../components/FormInput";
 import { validateRegisterForm } from "../utils/validation";
 import { registerUser } from "../services/authService";
@@ -15,123 +20,264 @@ const initialFormState = {
 function Register() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const nextParam = searchParams.get("next");
+
   const loginLinkTo = nextParam
     ? `/login?next=${encodeURIComponent(nextParam)}`
     : "/login";
 
-  // If already logged in, redirect away from register page
   const token = localStorage.getItem("token");
-  if (token) {
-    return <Navigate to="/dashboard" replace />;
-  }
 
   const [formData, setFormData] = useState(initialFormState);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  if (token) {
+    return <Navigate to={nextParam || "/dashboard"} replace />;
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
-    if (serverError) setServerError("");
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+
+    if (serverError) {
+      setServerError("");
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const validationErrors = validateRegisterForm(formData);
+
     setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
 
     setIsSubmitting(true);
+
     try {
       await registerUser(formData);
       navigate(loginLinkTo);
     } catch (err) {
-      setServerError(err?.response?.data?.message || "Registration failed. Please try again.");
+      setServerError(
+        err?.response?.data?.message ||
+          "Registration failed. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const styles = {
+    page: {
+      minHeight: "100vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#F0F7FF",
+      fontFamily: "Arial, sans-serif",
+      padding: "40px 20px",
+      boxSizing: "border-box",
+    },
+
+    card: {
+      width: "100%",
+      maxWidth: "460px",
+      backgroundColor: "#FFFFFF",
+      border: "1px solid #DBEAFE",
+      borderRadius: "16px",
+      padding: "40px",
+      boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
+      boxSizing: "border-box",
+    },
+
+    heading: {
+      textAlign: "center",
+      color: "#1E3A8A",
+      marginBottom: "10px",
+      fontSize: "32px",
+      fontWeight: "bold",
+    },
+
+    subHeading: {
+      textAlign: "center",
+      color: "#64748B",
+      marginBottom: "30px",
+      fontSize: "15px",
+      lineHeight: "1.5",
+    },
+
+    button: {
+      width: "100%",
+      backgroundColor: "#2563EB",
+      color: "#FFFFFF",
+      border: "none",
+      padding: "17px",
+      borderRadius: "8px",
+      fontSize: "18px",
+      fontWeight: "600",
+      marginTop: "25px",
+      cursor: isSubmitting ? "not-allowed" : "pointer",
+      boxShadow: "0 4px 10px rgba(37, 99, 235, 0.20)",
+      transition: "all 0.2s ease",
+      opacity: isSubmitting ? 0.7 : 1,
+    },
+
+    footer: {
+      textAlign: "center",
+      marginTop: "20px",
+      color: "#475569",
+      fontSize: "15px",
+    },
+
+    link: {
+      color: "#2563EB",
+      textDecoration: "none",
+      fontWeight: "bold",
+    },
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">Create your account</h1>
-          <p className="text-gray-500 mt-1">Join to start creating and collaborating in real time.</p>
-        </div>
+    <div style={styles.page}>
+      <div style={styles.card}>
+        <h1 style={styles.heading}>Create your account</h1>
+
+        <p style={styles.subHeading}>
+          Join to start creating and collaborating in real time.
+        </p>
 
         {nextParam && (
-          <div className="mb-4 px-3 py-2 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E3A8A] text-sm text-center">
+          <div
+            style={{
+              padding: "10px 12px",
+              background: "#EFF6FF",
+              border: "1px solid #BFDBFE",
+              borderRadius: "8px",
+              color: "#1E3A8A",
+              fontSize: "13px",
+              marginBottom: "16px",
+              textAlign: "center",
+            }}
+          >
             Create an account to join your shared room.
           </div>
         )}
 
         {serverError && (
-          <div className="mb-4 px-4 py-2 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+          <div
+            style={{
+              padding: "10px 12px",
+              background: "#FEF2F2",
+              border: "1px solid #FECACA",
+              borderRadius: "8px",
+              color: "#DC2626",
+              fontSize: "13px",
+              marginBottom: "16px",
+            }}
+          >
             {serverError}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <FormInput
-            label="Full Name"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            placeholder="e.g. Jane Smith"
-            error={errors.fullName}
-          />
-          <FormInput
-            label="Username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="e.g. janesmith"
-            error={errors.username}
-          />
-          <FormInput
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="e.g. jane@example.com"
-            error={errors.email}
-          />
-          <FormInput
-            label="Password"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="At least 6 characters"
-            error={errors.password}
-          />
-          <FormInput
-            label="Confirm Password"
-            name="confirmPassword"
-            type="password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="Re-enter your password"
-            error={errors.confirmPassword}
-          />
+        <form onSubmit={handleSubmit}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "18px",
+            }}
+          >
+            <FormInput
+              label="Full Name"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder="e.g. Jane Smith"
+              error={errors.fullName}
+            />
+
+            <FormInput
+              label="Username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="e.g. janesmith"
+              error={errors.username}
+            />
+
+            <FormInput
+              label="Email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="e.g. jane@example.com"
+              error={errors.email}
+            />
+
+            <FormInput
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="At least 6 characters"
+              error={errors.password}
+            />
+
+            <FormInput
+              label="Confirm Password"
+              name="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Re-enter your password"
+              error={errors.confirmPassword}
+            />
+          </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors"
+            style={styles.button}
+            onMouseEnter={(e) => {
+              if (!isSubmitting) {
+                e.currentTarget.style.backgroundColor = "#1D4ED8";
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow =
+                  "0 6px 14px rgba(37, 99, 235, 0.25)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#2563EB";
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 4px 10px rgba(37, 99, 235, 0.20)";
+            }}
           >
             {isSubmitting ? "Creating account..." : "Register"}
           </button>
         </form>
 
-        <p className="text-center text-gray-500 mt-6">
+        <p style={styles.footer}>
           Already have an account?{" "}
-          <Link to={loginLinkTo} className="text-blue-600 hover:text-blue-700 font-medium">
+          <Link to={loginLinkTo} style={styles.link}>
             Log in
           </Link>
         </p>
