@@ -9,7 +9,7 @@ export default function VideoPanel({
   stopCamera,
 }) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-white">
       {/* Header */}
       <div className="px-4 py-3 border-b border-blue-100 bg-white sticky top-0 z-10">
         <h3 className="text-sm font-semibold text-slate-700">

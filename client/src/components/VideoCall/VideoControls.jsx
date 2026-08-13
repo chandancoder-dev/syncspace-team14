@@ -17,7 +17,6 @@ export default function VideoControls({
   return (
     <div className="flex justify-center items-center">
       <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-full border border-blue-100 shadow-sm">
-
         {/* Mic toggle */}
         <button
           onClick={() => setIsMuted(!isMuted)}
@@ -55,7 +54,6 @@ export default function VideoControls({
         >
           <FiPhoneOff />
         </button>
-
       </div>
     </div>
   );

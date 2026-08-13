@@ -10,21 +10,35 @@ import { MdMeetingRoom } from "react-icons/md";
 export default function Dashboard() {
   const navigate = useNavigate();
 
+  const handleScrollToActionCards = () => {
+    const section = document.getElementById("action-cards");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleScrollToRecentRooms = () => {
+    const section = document.getElementById("recent-rooms");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F0F7FF]">
-
       {/* Navbar */}
       <DNavbar />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8">
-
         {/* Welcome Section */}
-        <WelcomeCard />
+        <WelcomeCard
+          onCreateRoomClick={handleScrollToActionCards}
+          onRecentClick={handleScrollToRecentRooms}
+        />
 
         {/* Action Cards */}
-        <div className="grid lg:grid-cols-2 gap-8 mt-10">
-
+        <div id="action-cards" className="grid lg:grid-cols-2 gap-8 mt-10">
           <ActionCard
             icon={<FaPlusCircle />}
             title="Create Collaboration Room"
@@ -40,16 +54,13 @@ export default function Dashboard() {
             button="Join Room"
             onClick={() => navigate("/joinroom")}
           />
-
         </div>
 
         {/* Recent Rooms */}
-        <div className="mt-12">
+        <div id="recent-rooms" className="mt-12">
           <RecentRooms />
         </div>
-
       </main>
-
     </div>
   );
 }
