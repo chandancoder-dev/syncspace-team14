@@ -1,8 +1,12 @@
 import VideoTile from "./VideoTile";
 
-export default function VideoGrid({ localVideoRef, stream }) {
+export default function VideoGrid({
+  localVideoRef,
+  stream,
+}) {
   return (
     <div className="flex flex-col gap-5">
+
       <VideoTile
         name="You"
         isSelf
@@ -12,6 +16,7 @@ export default function VideoGrid({ localVideoRef, stream }) {
 
       <VideoTile name="Waiting..." />
       <VideoTile name="Waiting..." />
+
     </div>
   );
 }
