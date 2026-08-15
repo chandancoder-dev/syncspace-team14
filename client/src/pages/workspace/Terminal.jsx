@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FiPlus, FiTrash2, FiSquare, FiChevronUp, FiX } from 'react-icons/fi';
+import { FiTrash2, FiSquare, FiX } from 'react-icons/fi';
 
 export default function Terminal({ output, isRunning, onClear, onKill, onCommand, onClose }) {
   const scrollRef = useRef(null);

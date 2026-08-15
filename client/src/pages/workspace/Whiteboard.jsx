@@ -53,7 +53,7 @@ const TOOL_LABELS = {
 };
 
 
-const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave } = {}) => {
+const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor } = {}) => {
   const ydocRef = useRef(externalYdoc || new Y.Doc());
   const ydoc    = ydocRef.current;
   const yShapes = ydoc.getArray('shapes');
@@ -507,8 +507,6 @@ const Whiteboard = ({ ydoc: externalYdoc, users = new Map(), emitCursor, onLeave
               boxShadow: '0 4px 12px rgba(0,0,0,0.10)' }} />
         )}
       </div>
-
-      {onLeave && null}
     </div>
   );
 };
