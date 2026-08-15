@@ -6,17 +6,17 @@ export default function VideoGrid({
 }) {
   return (
     <div className="flex flex-col gap-5">
-
+      {/* Local participant */}
       <VideoTile
         name="You"
-        isSelf
-        localVideoRef={localVideoRef}
+        isSelf={true}
         stream={stream}
+        localVideoRef={localVideoRef}
       />
 
+      {/* Other participant placeholders */}
       <VideoTile name="Waiting..." />
       <VideoTile name="Waiting..." />
-
     </div>
   );
 }

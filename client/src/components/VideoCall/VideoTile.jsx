@@ -11,19 +11,17 @@ const getInitials = (name = "") => {
     return parts[0][0].toUpperCase();
   }
 
-  return (
-    parts[0][0] + parts[parts.length - 1][0]
-  ).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
 export default function VideoTile({
-  name,
+  name = "Waiting...",
   isSelf = false,
-  localVideoRef,
-  stream,
+  stream = null,
+  localVideoRef = null,
 }) {
   return (
-    <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-800">
+    <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-800 shadow-md">
       {/* Show Live Camera */}
       {isSelf && stream ? (
         <video
@@ -35,6 +33,7 @@ export default function VideoTile({
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
+          {/* Avatar */}
           <div
             className={`w-14 h-14 rounded-full flex items-center justify-center text-white text-lg font-bold ${
               isSelf ? "bg-blue-600" : "bg-slate-500"
@@ -43,6 +42,7 @@ export default function VideoTile({
             {getInitials(name)}
           </div>
 
+          {/* Camera Off */}
           <div className="mt-3 flex items-center gap-2 text-slate-300 text-sm">
             <FiVideoOff />
             <span>Camera Off</span>
@@ -63,7 +63,7 @@ export default function VideoTile({
       )}
 
       {/* Participant Name */}
-      <div className="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur text-white text-xs font-medium px-3 py-1 rounded-full z-10">
+      <div className="absolute bottom-0 left-0 right-0 bg-black/50 px-3 py-2 text-white text-sm font-medium">
         {name}
       </div>
     </div>

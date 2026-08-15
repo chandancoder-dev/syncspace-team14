@@ -325,7 +325,7 @@ const WorkSpace = () => {
       transition: "width 0.2s ease",
     }}
   >
-    <VideoPanel
+   <VideoPanel
   localVideoRef={localVideoRef}
   stream={stream}
   cameraOn={cameraOn}
