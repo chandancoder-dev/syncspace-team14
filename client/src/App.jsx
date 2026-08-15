@@ -23,13 +23,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const location = useLocation();
-const hideChrome =
-  location.pathname.startsWith("/workspace") ||
-  location.pathname.startsWith("/dashboard") ||
-  location.pathname.startsWith("/createroom") ||
-  location.pathname.startsWith("/joinroom") ||
-  location.pathname.startsWith("/rooms") ||
-  location.pathname.startsWith("/replay");
+  const hideChrome =
+    location.pathname.startsWith("/workspace") ||
+    location.pathname.startsWith("/dashboard") ||
+    location.pathname.startsWith("/createroom") ||
+    location.pathname.startsWith("/joinroom") ||
+    location.pathname.startsWith("/rooms") ||
+    location.pathname.startsWith("/replay");
 
   return (
     <>
@@ -37,23 +37,20 @@ const hideChrome =
 
       <Routes>
         <Route path="/" element={<Home />} />
-         <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/features" element={<Features />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
 
-        {/* <Route
+        <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
           }
-        /> */}
-
-        <Route path="/dashboard" element={<Dashboard />} />
+        />
 
         <Route
           path="/createroom"
